@@ -8,8 +8,8 @@ let major = semver.major(tag);
 let minor = major + '.' + semver.minor(tag);
 
 let tags = [
-    major,
-    minor,
+    'v' + major,
+    'v' + minor,
 ];
 
 core.info(`Tags: ${JSON.stringify(tags)}`);
