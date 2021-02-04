@@ -1,0 +1,40 @@
+name: Release container
+
+on:
+  push:
+    branches-ignore:
+      - '**'
+    tags:
+      - '*.*.*'
+
+jobs:
+  tags:
+    runs-on: ubuntu-latest
+    outputs:
+      original-tag: ${{ steps.tags.outputs.original-tag }}
+      tags: ${{ steps.tags.outputs.tags }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Compile tag list
+        id: tags
+        uses: ./.github/actions/generate-tags
+        with: 
+          tag-ref: ${{ github.ref }}
+
+  update-tags:
+    runs-on: ubuntu-latest
+    needs: [tags]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.ORGANIZATION_ADMIN_TOKEN }}
+          ORIGINAL_TAG: ${{ needs.tags.outputs.original-tag }}
+          TAGS: ${{ needs.tags.outputs.tags }}
+        run: |
+          for TAG in ${TAGS};do
+              echo "Creating and pushing ${TAG}"
+              git tag ${TAG} ${ORIGINAL_TAG}
+              git push origin ${TAG}
+          done

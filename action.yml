@@ -1,0 +1,17 @@
+name: 'Create CI matrix for package'
+description: 'Creates a continuous integration matrix for use with laminas-continuous-integration-action by introspecting package files.'
+outputs:
+  config:
+    description: >-
+      JSON object for use as a job matrix. It contains the element "include",
+      which in turn defines the four elements "name" (a string representing the
+      job name), "job" (a JSON string representing the job to run),
+      "operating-system" (for use with the "runs-on" property of the job), and
+      "action" (the name of the container to use to run the job). It can also
+      optionally contain the element "exclude" with a list of objects indicating
+      jobs that should not be run (based on partial or full match of elements in
+      a job).
+
+runs:
+  using: 'node12'
+  main: 'index.js'
