@@ -1,5 +1,8 @@
 name: 'Create CI matrix for package'
 description: 'Creates a continuous integration matrix for use with laminas-continuous-integration-action by introspecting package files.'
+branding:
+  icon: 'share-2'
+  color: 'blue'
 outputs:
   config:
     description: >-
