@@ -16,5 +16,5 @@ outputs:
       a job).
 
 runs:
-  using: 'node12'
-  main: 'index.js'
+  using: 'docker'
+  image: 'docker://ghcr.io/laminas/laminas-ci-matrix-action:0'
