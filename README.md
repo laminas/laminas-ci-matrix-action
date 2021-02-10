@@ -11,6 +11,9 @@ Currently, it identifies the following:
 - phpcs checks based on the presence of `phpcs.xml.dist` or `phpcs.xml` files.
 - Psalm checks based on the presence of `psalm.xml.dist` or `psalm.xml` files.
 - phpbench benchmarks based on the presence of a `phpbench.json`.
+- Markdown documentation based on the presence of a `mkdocs.yml` and/or markdown files in the `doc/book/` or `doc/books/` trees.
+
+Further, when triggered by a `pull_request` event, it determines what checks are necessary based on which files were affected.
 
 ## Usage
 
@@ -22,10 +25,9 @@ jobs:
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v2
-        name: Gather CI configuration
+      - name: Gather CI configuration
         id: matrix
-        uses: laminas/laminas-ci-matrix-action@v0
+        uses: laminas/laminas-ci-matrix-action@v1
 
   qa:
     name: QA Checks
@@ -36,7 +38,7 @@ jobs:
       matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
     steps:
       - name: ${{ matrix.name }}
-        uses: laminas/laminas-continuous-integration-action@v0
+        uses: laminas/laminas-continuous-integration-action@v1
         with:
           job: ${{ matrix.job }}
 ```
@@ -110,3 +112,15 @@ The package can include a configuration file in its root, `.laminas-ci.json`, wh
 
 The "checks" array should be in the same format as listed above for the outputs.
 Please remember that the **job** element **MUST** be a JSON **string**
+
+The easiest way to exclude a single job is via the `name` parameter:
+
+```json
+{
+  "exclude": [
+    {
+      "name": "PHPUnit on PHP 8.0 with latest dependencies"
+    }
+  ]
+}
+```
