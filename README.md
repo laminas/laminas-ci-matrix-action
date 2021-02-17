@@ -45,6 +45,11 @@ jobs:
 
 Generally, you will use this as a dependency of a job that uses [laminas/laminas-continuous-integration-action](https://github.com/laminas/laminas-continuous-integration-action), as demonstrated in the above configuration.
 
+> ### DO NOT use actions/checkout
+>
+> **DO NOT** use the `actions/checkout` action in a step prior to using this action.
+> Doing so will lead to errors, as this action performs git checkouts into the WORKDIR, and a non-empty WORKDIR causes that operation to fail.
+
 ## Outputs
 
 It spits out a single output, "matrix", which is a JSON string in the following format:
