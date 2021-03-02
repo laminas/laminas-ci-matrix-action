@@ -1,7 +1,7 @@
 FROM node:current-alpine
 
-LABEL "repository"="http://github.com/laminas/laminas-ci-matrix-container"
-LABEL "homepage"="http://github.com/laminas/laminas-ci-matrix-container"
+LABEL "repository"="http://github.com/laminas/laminas-ci-matrix-action"
+LABEL "homepage"="http://github.com/laminas/laminas-ci-matrix-action"
 LABEL "maintainer"="https://github.com/laminas/technical-steering-committee/"
 
 RUN apk update \
