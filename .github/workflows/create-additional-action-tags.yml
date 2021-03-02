@@ -1,11 +1,8 @@
-name: Release container
+name: Create major and minor tags for action
 
 on:
-  push:
-    branches-ignore:
-      - '**'
-    tags:
-      - '*.*.*'
+  release:
+    types: [published]
 
 jobs:
   tags:
@@ -17,7 +14,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Compile tag list
         id: tags
-        uses: ./.github/actions/generate-tags
+        uses: ./.github/actions/generate-action-tags
         with: 
           tag-ref: ${{ github.ref }}
 

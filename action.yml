@@ -17,4 +17,4 @@ outputs:
 
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/laminas/laminas-ci-matrix-container:1'
+  image: 'docker://ghcr.io/laminas/laminas-ci-matrix:1'
