@@ -1,5 +1,5 @@
-name: 'Create major/minor tags'
-description: 'Create a list of major and minor versions to tag from the current tag.'
+name: 'Create major/minor tags for action'
+description: 'Create a list of major and minor versions of the action to tag from the current tag.'
 outputs:
   original-tag:
     description: 'Original tag name'
