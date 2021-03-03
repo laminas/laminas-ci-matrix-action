@@ -8,15 +8,15 @@ jobs:
   tags:
     runs-on: ubuntu-latest
     outputs:
-      original-tag: ${{ steps.tags.outputs.original-tag }}
       tags: ${{ steps.tags.outputs.tags }}
     steps:
-      - uses: actions/checkout@v2
       - name: Compile tag list
         id: tags
-        uses: ./.github/actions/generate-action-tags
-        with: 
-          tag-ref: ${{ github.ref }}
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          MAJOR="v$(echo ${TAG} | cut -d. -f1)"
+          MINOR="${MAJOR}.$(echo ${GITHUB_REF} | cut -d. -f2)"
+          echo "::set-output name=tags::${MAJOR}%0A${MINOR}"
 
   update-tags:
     runs-on: ubuntu-latest
@@ -27,9 +27,10 @@ jobs:
       - name: Update tags
         env:
           GITHUB_TOKEN: ${{ secrets.ORGANIZATION_ADMIN_TOKEN }}
-          ORIGINAL_TAG: ${{ needs.tags.outputs.original-tag }}
+          ORIGINAL_TAG: ${{ github.ref }}
           TAGS: ${{ needs.tags.outputs.tags }}
         run: |
+          ORIGINAL_TAG=${ORIGINAL_TAG/refs\/tags\//}
           for TAG in ${TAGS};do
               echo "Creating and pushing ${TAG}"
               git tag -f ${TAG} ${ORIGINAL_TAG}
