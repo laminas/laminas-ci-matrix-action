@@ -13,10 +13,11 @@ jobs:
       - name: Compile tag list
         id: tags
         run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
           PREFIX=ghrc.io/laminas/laminas-ci-matrix
-          MAJOR="${PREFIX}:$(echo ${GITHUB_REF} | cut -d. -f1)"
-          MINOR="${MAJOR}.$(echo ${GITHUB_REF} | cut -d. -f2)"
-          PATCH="${PREFIX}:${GITHUB_REF}"
+          MAJOR="${PREFIX}:$(echo ${TAG} | cut -d. -f1)"
+          MINOR="${MAJOR}.$(echo ${TAG} | cut -d. -f2)"
+          PATCH="${PREFIX}:${TAG}"
           echo "::set-output name=tags::${MAJOR}%0A${MINOR}%0A${PATCH}"
 
   release-container:
