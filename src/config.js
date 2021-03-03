@@ -56,15 +56,16 @@ function gatherVersions (composerJson) {
 }
 
 class Config {
-    code_checks    = true;
-    doc_linting    = true;
-    versions       = [];
-    stable_version = CURRENT_STABLE;
-    extensions     = [];
-    php_ini        = ['memory_limit=-1'];
-    dependencies   = ['lowest', 'latest'];
-    checks         = [];
-    exclude        = [];
+    code_checks       = true;
+    doc_linting       = true;
+    versions          = [];
+    stable_version    = CURRENT_STABLE;
+    extensions        = [];
+    php_ini           = ['memory_limit=-1'];
+    dependencies      = ['lowest', 'latest'];
+    checks            = [];
+    exclude           = [];
+    additional_checks = [];
 
     /**
      * @param {Requirements} requirements
@@ -99,6 +100,10 @@ class Config {
 
         if (configuration.exclude !== undefined && Array.isArray(configuration.exclude)) {
             this.exclude = configuration.exclude;
+        }
+
+        if (configuration.additional_checks !== undefined && Array.isArray(configuration.additional_checks)) {
+            this.additional_checks = configuration.additional_checks;
         }
     }
 }
