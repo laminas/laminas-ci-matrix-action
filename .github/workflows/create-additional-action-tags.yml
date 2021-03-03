@@ -13,7 +13,8 @@ jobs:
       - name: Compile tag list
         id: tags
         run: |
-          MAJOR="v$(echo ${GITHUB_REF} | cut -d. -f1)"
+          TAG=${GITHUB_REF/refs\/tags\//}
+          MAJOR="v$(echo ${TAG} | cut -d. -f1)"
           MINOR="${MAJOR}.$(echo ${GITHUB_REF} | cut -d. -f2)"
           echo "::set-output name=tags::${MAJOR}%0A${MINOR}"
 
@@ -29,6 +30,7 @@ jobs:
           ORIGINAL_TAG: ${{ github.ref }}
           TAGS: ${{ needs.tags.outputs.tags }}
         run: |
+          ORIGINAL_TAG=${ORIGINAL_TAG/refs\/tags\//}
           for TAG in ${TAGS};do
               echo "Creating and pushing ${TAG}"
               git tag -f ${TAG} ${ORIGINAL_TAG}
