@@ -10,12 +10,14 @@ jobs:
     outputs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
-      - uses: actions/checkout@v2
       - name: Compile tag list
         id: tags
-        uses: ./.github/actions/generate-container-tags
-        with: 
-          tag-ref: ${{ github.ref }}
+        run: |
+          PREFIX=ghrc.io/laminas/laminas-ci-matrix
+          MAJOR="${PREFIX}:$(echo ${GITHUB_REF} | cut -d. -f1)"
+          MINOR="${MAJOR}.$(echo ${GITHUB_REF} | cut -d. -f2)"
+          PATCH="${PREFIX}:${GITHUB_REF}"
+          echo "::set-output name=tags::${MAJOR}%0A${MINOR}%0A${PATCH}"
 
   release-container:
     runs-on: ubuntu-latest
