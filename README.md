@@ -108,6 +108,10 @@ The package can include a configuration file in its root, `.laminas-ci.json`, wh
     {
     },
   ],
+  "additional_checks": [
+    {
+    },
+  ]
   "exclude": [
     {
     }
@@ -117,6 +121,40 @@ The package can include a configuration file in its root, `.laminas-ci.json`, wh
 
 The "checks" array should be in the same format as listed above for the outputs.
 Please remember that the **job** element **MUST** be a JSON **string**
+
+### Providing additional checks
+
+The `additional_checks` key allows package authors to provide checks to run in addition to any discovered.
+This allows providing checks for tools the matrix discovery tools do not know about, or providing one-off checks (such as benchmarks or mutation tests).
+
+The syntax for the `additional_checks` key is as follows:
+
+```json
+{
+    "additional_checks": [
+        {
+            "name": "(string; REQUIRED) name of the check to run",
+            "job": {
+                "command": "(string; REQUIRED) command to run",
+                "php": "(string; OPTIONAL) PHP version to run on (defaults to stable-php); * indicates all versions",
+                "dependencies": "(string; OPTIONAL) dependency set to run on (defaults to locked); * indicates all sets",
+                "extensions": [
+                    "(array of strings; OPTIONAL) specific extensions to install for this check only"
+                ],
+                "ini": [
+                    "(array of strings; OPTIONAL) specific php.ini settings to use for this check only"
+                ]
+            }
+        }
+    ]
+}
+```
+
+A job per PHP version per dependency set will be created, and the "name" will be appended with "on PHP {VERSION} with {DEPS} dependencies" during an actual run.
+
+The tool discovers checks first, then appends any `additional_checks` are concatenated, and then any `exclude` rules are applied.
+
+### Excluding specific jobs
 
 The easiest way to exclude a single job is via the `name` parameter:
 

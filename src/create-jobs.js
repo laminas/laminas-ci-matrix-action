@@ -4,6 +4,7 @@ import { Check } from './check.js';
 import { Command } from './command.js';
 import { Config } from './config.js';
 import { Job } from './job.js';
+import create_additional_jobs from './additional-checks.js';
 
 /**
  * @param {String} filename
@@ -174,6 +175,22 @@ function checks (config) {
     ];
 }
 
+const excludeJob = function (job, exclusion) {
+    let matches = 0;
+    Object.keys(job).forEach(function (jobKey) {
+        Object.keys(exclusion).forEach(function (excludeKey) {
+            if (excludeKey !== jobKey) {
+                return;
+            }
+
+            if (job[jobKey] === exclusion[excludeKey]) {
+                matches += 1;
+            }
+        });
+    });
+    return Object.keys(exclusion).length === matches;
+};
+
 /**
  * @param {Config} config
  * @return {Array}
@@ -185,31 +202,15 @@ export default function (config) {
     }
 
     /** @var {Array} jobs */
-    let jobs = checks(config).reduce(function (jobs, check) {
-        return jobs.concat(check.jobs(config));
-    }, []);
-
-    const exclude = function (job, exclusion) {
-        let matches = 0;
-        Object.keys(job).forEach(function (jobKey) {
-            Object.keys(exclusion).forEach(function (excludeKey) {
-                if (excludeKey !== jobKey) {
-                    return;
-                }
-
-                if (job[jobKey] === exclusion[excludeKey]) {
-                    matches += 1;
-                }
-            });
-        });
-        return Object.keys(exclusion).length === matches;
-    };
-
-    jobs = jobs.filter(
-        function (job) {
+    let jobs = checks(config)
+        .reduce(function (jobs, check) {
+            return jobs.concat(check.jobs(config));
+        }, [])
+        .concat(create_additional_jobs(config))
+        .filter(function (job) {
             let keep = true;
             config.exclude.forEach(function (exclusion) {
-                keep = keep && ! exclude(job, exclusion);
+                keep = keep && ! excludeJob(job, exclusion);
             });
 
             if (! keep) {
@@ -217,8 +218,7 @@ export default function (config) {
             }
 
             return keep;
-        }
-    );
+        });
 
     return jobs.length ? jobs : createNoOpJob(config);
 };
