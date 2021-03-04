@@ -10,25 +10,25 @@ import {Job} from "./job.js";
 const validateCheck = function (checkConfig) {
     if (typeof checkConfig !== 'object' || checkConfig === null) {
         // NOT AN OBJECT!
-        core.warning("Skipping additional check; not an object, or is null", checkConfig);
+        core.warning("Skipping additional check; not an object, or is null: " + JSON.stringify(checkConfig));
         return false;
     }
 
     if (! ("name" in checkConfig) || ! ("job" in checkConfig)) {
         // Missing one or more required elements
-        core.warning("Skipping additional check due to missing name or job keys", checkConfig);
+        core.warning("Skipping additional check due to missing name or job keys: " + JSON.stringify(checkConfig));
         return false;
     }
 
     if (typeof checkConfig.job !== 'object' || checkConfig.job === null) {
         // Job is malformed
-        core.warning("Invalid job provided for check; not an object, or is null", checkConfig.job);
+        core.warning("Invalid job provided for check; not an object, or is null: " + JSON.stringify(checkConfig.job));
         return false;
     }
 
     if (! ("command" in checkConfig.job)) {
         // Job is missing a command
-        core.warning("Invalid job provided for check; missing command property", checkConfig.job);
+        core.warning("Invalid job provided for check; missing command property: " + JSON.stringify(checkConfig.job));
         return false;
     }
 
@@ -53,7 +53,7 @@ const discoverPhpVersionsForCheck = function (job, config) {
         return config.versions;
     }
 
-    core.warning("Invalid PHP version specified for check job; must be a string version or '*'", job);
+    core.warning("Invalid PHP version specified for check job; must be a string version or '*': " + JSON.stringify(job));
     return false;
 };
 
@@ -101,7 +101,7 @@ const discoverDependencySetsForCheck = function (job, config) {
         return config.dependencies;
     }
 
-    core.warning("Invalid dependencies specified for check job; must be a string version or '*'", job);
+    core.warning("Invalid dependencies specified for check job; must be a string version or '*': " + JSON.stringify(job));
     return false;
 };
 
