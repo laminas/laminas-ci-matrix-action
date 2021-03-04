@@ -1,3 +1,4 @@
+import core from '@actions/core';
 import {Command} from "./command.js";
 import {Config, CURRENT_STABLE} from "./config.js";
 import {Job} from "./job.js";
@@ -9,25 +10,25 @@ import {Job} from "./job.js";
 const validateCheck = function (checkConfig) {
     if (typeof checkConfig !== 'object' || checkConfig === null) {
         // NOT AN OBJECT!
-        console.log("Skipping additional check; not an object, or is null", checkConfig);
+        core.warning("Skipping additional check; not an object, or is null", checkConfig);
         return false;
     }
 
     if (! ("name" in checkConfig) || ! ("job" in checkConfig)) {
         // Missing one or more required elements
-        console.log("Skipping additional check due to missing name or job keys", checkConfig);
+        core.warning("Skipping additional check due to missing name or job keys", checkConfig);
         return false;
     }
 
     if (typeof checkConfig.job !== 'object' || checkConfig.job === null) {
         // Job is malformed
-        console.log("Invalid job provided for check; not an object, or is null", checkConfig.job);
+        core.warning("Invalid job provided for check; not an object, or is null", checkConfig.job);
         return false;
     }
 
     if (! ("command" in checkConfig.job)) {
         // Job is missing a command
-        console.log("Invalid job provided for check; missing command property", checkConfig.job);
+        core.warning("Invalid job provided for check; missing command property", checkConfig.job);
         return false;
     }
 
@@ -52,7 +53,7 @@ const discoverPhpVersionsForCheck = function (job, config) {
         return config.versions;
     }
 
-    console.log("Invalid PHP version specified for check job; must be a string version or '*'", job);
+    core.warning("Invalid PHP version specified for check job; must be a string version or '*'", job);
     return false;
 };
 
@@ -100,7 +101,7 @@ const discoverDependencySetsForCheck = function (job, config) {
         return config.dependencies;
     }
 
-    console.log("Invalid dependencies specified for check job; must be a string version or '*'", job);
+    core.warning("Invalid dependencies specified for check job; must be a string version or '*'", job);
     return false;
 };
 
