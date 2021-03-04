@@ -5,6 +5,7 @@ import { Command } from './command.js';
 import { Config } from './config.js';
 import { Job } from './job.js';
 import create_additional_jobs from './additional-checks.js';
+import validateAndNormalizeChecks from './validate-and-normalize-checks-from-config.js';
 
 /**
  * @param {String} filename
@@ -198,7 +199,7 @@ const excludeJob = function (job, exclusion) {
 export default function (config) {
     if (config.checks.length) {
         core.info('Using checks found in configuration');
-        return config.checks;
+        return validateAndNormalizeChecks(config.checks);
     }
 
     /** @var {Array} jobs */

@@ -119,8 +119,42 @@ The package can include a configuration file in its root, `.laminas-ci.json`, wh
 }
 ```
 
-The "checks" array should be in the same format as listed above for the outputs.
-Please remember that the **job** element **MUST** be a JSON **string**
+### Providing specific checks to run
+
+If you do not want to autodiscover checks to run, you can provide the "checks" configuration.
+Each element in that array should be in the same format as listed above for the outputs:
+
+```json
+{
+  "name": "(string) Name of the check being run",
+  "operatingSystem": "(string) Name of the OS the job should be run on (generally ubuntu-latest)",
+  "action": "(string) GHA to run the step on; currently ignored, as GHA does not support dynamic action selection",
+  "job": "(string) JSON object detailing the job (more on this later)",
+}
+```
+
+The "job" element can either be a JSON string representing a job, or an object.
+In each case, it MUST have the structure as noted above:
+
+```json
+{
+  "php": "(string; REQUIRED) PHP minor version to run against",
+  "extensions": [
+    "OPTIONAL array of strings",
+    "Each element represents an extension to install",
+    "Names are from the Sury PHP repository, minus the php{VERSION}- prefix",
+  ],
+  "ini": [
+    "OPTIONAL array of strings",
+    "Each element respresents one php.ini directive",
+    "e.g. 'memory_limit=-1'",
+  ],
+  "dependencies": "dependencies to test against; one of lowest, locked, latest",
+  "command": "command to run to perform the check",
+}
+```
+
+The action validates each check and its job to ensure it is structured correctly, and will provide warnings if not, omitting any check that is malformed from the output.
 
 ### Providing additional checks
 
