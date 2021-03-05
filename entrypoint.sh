@@ -6,11 +6,21 @@ function checkout {
     local REF=
     local LOCAL_BRANCH=
     local BASE_BRANCH=
+
+    if [[ ! $GITHUB_EVENT_NAME || ! $GITHUB_REPOSITORY || ! $GITHUB_REF ]];then
+        return
+    fi
+
     case $GITHUB_EVENT_NAME in
         pull_request)
             REF=$GITHUB_REF
             LOCAL_BRANCH=$GITHUB_HEAD_REF
             BASE_BRANCH=$GITHUB_BASE_REF
+
+            if [[ ! $LOCAL_BRANCH || ! $BASE_BRANCH ]]; then
+                echo "Missing head or base ref env variables; aborting"
+                exit 1
+            fi
             ;;
         push)
             REF=${GITHUB_REF/refs\/heads\//}
@@ -25,8 +35,17 @@ function checkout {
             exit 1
     esac
 
-    echo "Cloning repository"
-    git clone https://github.com/"${GITHUB_REPOSITORY}" .
+    if [ -d ".git" ];then
+        echo "Updating and fetching from canonical repository"
+        if [[ $(git remote) =~ origin ]];then
+            git remote remove origin
+        fi
+        git remote add origin https://github.com/"${GITHUB_REPOSITORY}"
+        git fetch origin
+    else
+        echo "Cloning repository"
+        git clone https://github.com/"${GITHUB_REPOSITORY}" .
+    fi
 
     if [[ "$REF" == "$LOCAL_BRANCH" ]];then
         echo "Checking out ref ${REF}"

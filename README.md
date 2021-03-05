@@ -45,10 +45,10 @@ jobs:
 
 Generally, you will use this as a dependency of a job that uses [laminas/laminas-continuous-integration-action](https://github.com/laminas/laminas-continuous-integration-action), as demonstrated in the above configuration.
 
-> ### DO NOT use actions/checkout
+> ### actions/checkout not required
 >
-> **DO NOT** use the `actions/checkout` action in a step prior to using this action.
-> Doing so will lead to errors, as this action performs git checkouts into the WORKDIR, and a non-empty WORKDIR causes that operation to fail.
+> An actions/checkout step prior to this action is not required, as it will perform a checkout into the WORKDIR on its own if none has been performed previously.
+> We recommend using actions/checkout only if you need to access QA artifacts in a later step.
 
 ## Outputs
 
