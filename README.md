@@ -201,3 +201,13 @@ The easiest way to exclude a single job is via the `name` parameter:
   ]
 }
 ```
+
+## Testing matrix generation locally using Docker
+
+To test matrix generation in a local checkout on your own machine, you can do the following:
+
+```bash
+$ docker run -v $(realpath .):/github/workspace -w=/github/workspace ghcr.io/laminas/laminas-ci-matrix:1
+```
+
+This will run the action locally and detail what matrix will be produced; it can be particularly useful for debugging issues with your `.laminas-ci.json` configuration.
