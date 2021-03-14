@@ -126,7 +126,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('./vendor/bin/psalm --shepherd --stats --output-format=github', config);
+                return createQaJobs('./vendor/bin/psalm --shepherd --stats --output-format=github --no-cache', config);
             }
         ),
         new Check(
