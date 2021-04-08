@@ -65,7 +65,7 @@ const createNoOpJob = function (config) {
     return [new Job(
         'No checks',
         JSON.stringify(new Command(
-            "echo 'No checks discovered'",
+            "",
             config.stable_version,
             [],
             [],

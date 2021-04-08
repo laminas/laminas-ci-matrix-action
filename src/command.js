@@ -10,8 +10,8 @@ export class Command {
     /**
      * @param {String} command
      * @param {String} php
-     * @param {Array} extensions
-     * @param {Array} ini
+     * @param {Array<String>} extensions
+     * @param {Array<String>} ini
      * @param {String} dependencies
      */
     constructor(command, php, extensions, ini, dependencies) {
