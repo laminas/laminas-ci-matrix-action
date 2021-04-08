@@ -1,17 +1,17 @@
 import { CURRENT_STABLE } from './config.js';
 
 export class Command {
-    command      = '';
+    command      = null;
     php          = CURRENT_STABLE;
     extensions   = [];
     ini          = [];
     dependencies = 'locked';
 
     /**
-     * @param {String} command
+     * @param {String|null} command
      * @param {String} php
-     * @param {Array} extensions
-     * @param {Array} ini
+     * @param {Array<String>} extensions
+     * @param {Array<String>} ini
      * @param {String} dependencies
      */
     constructor(command, php, extensions, ini, dependencies) {
