@@ -67,8 +67,8 @@ const createNoOpJob = function (config) {
         JSON.stringify(new Command(
             "echo 'No checks discovered'",
             config.stable_version,
-            [],
-            [],
+            config.extensions,
+            config.php_ini,
             'locked',
         )),
     )];
