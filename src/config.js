@@ -56,16 +56,17 @@ function gatherVersions (composerJson) {
 }
 
 class Config {
-    code_checks       = true;
-    doc_linting       = true;
-    versions          = [];
-    stable_version    = CURRENT_STABLE;
-    extensions        = [];
-    php_ini           = ['memory_limit=-1'];
-    dependencies      = ['lowest', 'latest'];
-    checks            = [];
-    exclude           = [];
-    additional_checks = [];
+    code_checks            = true;
+    doc_linting            = true;
+    versions               = [];
+    stable_version         = CURRENT_STABLE;
+    extensions             = [];
+    php_ini                = ['memory_limit        = -1'];
+    dependencies           = ['lowest', 'latest'];
+    checks                 = [];
+    exclude                = [];
+    additional_checks      = [];
+    ignore_platform_reqs_8 = true;
 
     /**
      * @param {Requirements} requirements
@@ -104,6 +105,10 @@ class Config {
 
         if (configuration.additional_checks !== undefined && Array.isArray(configuration.additional_checks)) {
             this.additional_checks = configuration.additional_checks;
+        }
+
+        if (configuration.ignore_platform_reqs_8 !== undefined && typeof configuration.ignore_platform_reqs_8 === 'boolean') {
+            this.ignore_platform_reqs_8 = configuration.ignore_platform_reqs_8;
         }
     }
 }
