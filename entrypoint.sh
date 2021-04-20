@@ -5,11 +5,14 @@ set -e
 function checkout {
     local REF=
     local LOCAL_BRANCH=
+    local LOCAL_BRANCH_NAME=
     local BASE_BRANCH=
 
     if [[ ! $GITHUB_EVENT_NAME || ! $GITHUB_REPOSITORY || ! $GITHUB_REF ]];then
         return
     fi
+
+    LOCAL_BRANCH_NAME=$GITHUB_HEAD_REF
 
     case $GITHUB_EVENT_NAME in
         pull_request)
@@ -21,6 +24,8 @@ function checkout {
                 echo "Missing head or base ref env variables; aborting"
                 exit 1
             fi
+
+            LOCAL_BRANCH_NAME=pull/${LOCAL_BRANCH_NAME}
             ;;
         push)
             REF=${GITHUB_REF/refs\/heads\//}
@@ -54,9 +59,9 @@ function checkout {
         echo "Checking out branch ${BASE_BRANCH}"
         git checkout ${BASE_BRANCH}
         echo "Fetching target ref ${REF}"
-        git fetch origin ${REF}:${GITHUB_HEAD_REF}
-        echo "Checking out target ref to ${GITHUB_HEAD_REF}"
-        git checkout ${GITHUB_HEAD_REF}
+        git fetch origin ${REF}:${LOCAL_BRANCH_NAME}
+        echo "Checking out target ref to ${LOCAL_BRANCH_NAME}"
+        git checkout ${LOCAL_BRANCH_NAME}
     fi
 }
 
