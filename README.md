@@ -150,6 +150,7 @@ In each case, it MUST have the structure as noted above:
     "e.g. 'memory_limit=-1'"
   ],
   "dependencies": "dependencies to test against; one of lowest, locked, latest",
+  "ignore_platform_reqs_on_8": "(boolean; OPTIONAL) Whether or not to ignore platform requirements on PHP 8; defaults to true",
   "command": "command to run to perform the check"
 }
 ```
@@ -177,7 +178,8 @@ The syntax for the `additional_checks` key is as follows:
                 ],
                 "ini": [
                     "(array of strings; OPTIONAL) specific php.ini settings to use for this check only"
-                ]
+                ],
+                "ignore_platform_reqs_on_8": "(boolean; OPTIONAL) Whether or not to ignore platform reqs when installing dependencies on PHP 8.0; defaults to true"
             }
         }
     ]
