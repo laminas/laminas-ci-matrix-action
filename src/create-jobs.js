@@ -82,7 +82,34 @@ const createNoOpJob = function (config) {
  * @return {Array}
  */
 function checks (config) {
+    const xmlSchema = {
+        phpunit: 'https://schema.phpunit.de/9.3/phpunit.xsd',
+        phpcs: 'vendor/squizlabs/php_codesniffer/phpcs.xsd',
+        psalm: 'https://getpsalm.org/schema/config',
+    };
     return [
+        new Check(
+            config.code_checks,
+            [fileTest('phpunit.xml.dist')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs(`xmllint --noout --schema ${xmlSchema.phpunit} phpunit.xml.dist`, config);
+            }
+        ),
+        new Check(
+            config.code_checks,
+            [fileTest('phpunit.xml')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs(`xmllint --noout --schema ${xmlSchema.phpunit} phpunit.xml`, config);
+            }
+        ),
         new Check(
             config.code_checks,
             [fileTest('phpunit.xml.dist'), fileTest('phpunit.xml')],
@@ -112,6 +139,28 @@ function checks (config) {
         ),
         new Check(
             config.code_checks,
+            [fileTest('phpcs.xml.dist')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs(`xmllint --noout --schema ${xmlSchema.phpcs} phpcs.xml.dist`, config);
+            }
+        ),
+        new Check(
+            config.code_checks,
+            [fileTest('phpcs.xml')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs(`xmllint --noout --schema ${xmlSchema.phpcs} phpcs.xml`, config);
+            }
+        ),
+        new Check(
+            config.code_checks,
             [fileTest('phpcs.xml.dist'), fileTest('phpcs.xml')],
             /**
              * @param {Config} config
@@ -119,6 +168,28 @@ function checks (config) {
              */
             function (config) {
                 return createQaJobs('./vendor/bin/phpcs -q --report=checkstyle | cs2pr', config);
+            }
+        ),
+        new Check(
+            config.code_checks,
+            [fileTest('psalm.xml.dist')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs(`xmllint --noout --schema ${xmlSchema.psalm} psalm.xml.dist`, config);
+            }
+        ),
+        new Check(
+            config.code_checks,
+            [fileTest('psalm.xml')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs(`xmllint --noout --schema ${xmlSchema.psalm} psalm.xml`, config);
             }
         ),
         new Check(
