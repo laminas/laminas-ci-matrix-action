@@ -83,9 +83,9 @@ const createNoOpJob = function (config) {
  */
 function checks (config) {
     const xmlSchema = {
-        phpunit: 'https://schema.phpunit.de/9.3/phpunit.xsd',
+        phpunit: 'vendor/phpunit/phpunit/phpunit.xsd',
         phpcs: 'vendor/squizlabs/php_codesniffer/phpcs.xsd',
-        psalm: 'https://getpsalm.org/schema/config',
+        psalm: 'vendor/vimeo/psalm/config.xsd',
     };
     return [
         new Check(
