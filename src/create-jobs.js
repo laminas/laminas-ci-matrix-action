@@ -85,6 +85,17 @@ function checks (config) {
     return [
         new Check(
             config.code_checks,
+            [fileTest('composer.json')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs('composer-normalize --dry-run', config);
+            }
+        ),
+        new Check(
+            config.code_checks,
             [fileTest('phpunit.xml.dist'), fileTest('phpunit.xml')],
             /**
              * @param {Config} config
