@@ -1,8 +1,36 @@
 import core from '@actions/core';
+import fs from "fs";
 import process from 'process';
 import checkRequirements from './src/check-requirements.js';
 import configGatherer from './src/config.js';
 import createJobs from './src/create-jobs.js';
+import {Validator} from "@cfworker/json-schema";
+import {OutputUnit} from "@cfworker/json-schema/src/types";
+
+/**
+ * Do early composer.json schema validation to avoid unnecessary ramp-ups of jobs which may fail
+ * due to an incompatible composer.json.
+ */
+if (fs.existsSync('composer.json')) {
+    core.info(`Running composer.json linting.`);
+    const composerJsonContents = fs.readFileSync('composer.json');
+    const composerJsonSchemaString = fs.readFileSync('composer.schema.json');
+    const composerJsonSchema = JSON.parse(composerJsonSchemaString);
+    const jsonSchemaValidator = new Validator(composerJsonSchema);
+    const validationResult = jsonSchemaValidator.validate(JSON.parse(composerJsonContents));
+
+    if (!validationResult.valid) {
+        validationResult.errors.forEach(function (outputUnit) {
+           core.error("There is in error in the keyword located by {0}: {1}".format(
+               outputUnit.keywordLocation,
+               outputUnit.error
+           ));
+        });
+        core.setFailed('composer.json schema validation failed');
+        process.exit(1);
+    }
+    core.info(`composer.json schema validation passed.`);
+}
 
 const requirements = checkRequirements(process.argv.slice(2));
 const config       = configGatherer(
