@@ -176,6 +176,17 @@ function checks (config) {
                 return createQaJobs('markdownlint docs/book/**/*.md', config);
             }
         ),
+        new Check(
+            config.code_checks,
+            [fileTest('codeception.yml.dist'), fileTest('codeception.yml')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs('vendor/bin/codecept run', config);
+            }
+        )
     ];
 }
 
