@@ -27,10 +27,10 @@ const fileTest = function (filename) {
  */
 const createQaJobs = function (command, config) {
     return [new Job(
-        command + ' on PHP ' + config.stable_version,
+        command + ' on PHP ' + config.minimum_version,
         JSON.stringify(new Command(
             command,
-            config.stable_version,
+            config.minimum_version,
             config.extensions,
             config.php_ini,
             'locked',
