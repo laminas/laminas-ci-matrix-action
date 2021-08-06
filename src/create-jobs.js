@@ -40,6 +40,36 @@ const createQaJobs = function (command, config) {
 };
 
 /**
+ * @param {Config} config
+ * @return {Array}
+ */
+const createPHPUnitJobs = function (config) {
+    let jobs = [];
+    if (config.lockedDependencies) {
+        /** Locked dependencies are always used with the minimum PHP version supported by the project. */
+        jobs.push(createPHPUnitJob(config.minimum_version, 'locked', config));
+    }
+
+    config.versions.forEach(
+        /**
+         * @param {String} version
+         */
+        function (version) {
+            config.dependencies.forEach(
+                /**
+                 * @param {String} deps
+                 */
+                function (deps) {
+                    jobs.push(createPHPUnitJob(version, deps, config));
+                }
+            );
+        }
+    )
+
+    return jobs;
+}
+
+/**
  * @param {String} version
  * @param {String} deps
  * @param {Config} config
@@ -91,23 +121,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                let jobs = [];
-                config.versions.forEach(
-                    /**
-                     * @param {String} version
-                     */
-                    function (version) {
-                        config.dependencies.forEach(
-                            /**
-                             * @param {String} deps
-                             */
-                            function (deps) {
-                                jobs.push(createPHPUnitJob(version, deps, config));
-                            }
-                        );
-                    }
-                );
-                return jobs;
+                return createPHPUnitJobs(config);
             }
         ),
         new Check(
