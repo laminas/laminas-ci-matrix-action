@@ -3,6 +3,8 @@ import semver from 'semver';
 import { Requirements } from './check-requirements.js';
 
 const CURRENT_STABLE       = '7.4';
+
+/** NOTE: Please keep this list ordered as the ordering is used to detect the minimum supported version of a project */
 const INSTALLABLE_VERSIONS = [
     '5.6',
     '7.0',
@@ -60,6 +62,8 @@ class Config {
     doc_linting            = true;
     versions               = [];
     stable_version         = CURRENT_STABLE;
+    minimum_version        = CURRENT_STABLE;
+    locked_dependencies    = false;
     extensions             = [];
     php_ini                = ['memory_limit        = -1'];
     dependencies           = ['lowest', 'latest'];
@@ -81,6 +85,11 @@ class Config {
 
         if (configuration["stablePHP"] !== undefined) {
             this.stable_version = configuration["stablePHP"];
+            this.minimum_version = this.stable_version;
+        }
+
+        if (this.versions.length > 0) {
+            this.minimum_version = this.versions[0]
         }
 
         if (configuration.extensions !== undefined && Array.isArray(configuration.extensions)) {
@@ -92,7 +101,7 @@ class Config {
         }
 
         if (fs.existsSync(composerLockFile)) {
-            this.dependencies.push('locked');
+            this.locked_dependencies = true;
         }
 
         if (configuration.checks !== undefined && Array.isArray(configuration.checks)) {
