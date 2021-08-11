@@ -12,6 +12,7 @@ Currently, it identifies the following:
 - Psalm checks based on the presence of `psalm.xml.dist` or `psalm.xml` files.
 - phpbench benchmarks based on the presence of a `phpbench.json`.
 - Markdown documentation based on the presence of a `mkdocs.yml` and/or markdown files in the `doc/book/` or `doc/books/` trees.
+- Codeception checks based on the presence of `codeception.yml.dist` or `codeception.yml` files.
 
 Further, when triggered by a `pull_request` event, it determines what checks are necessary based on which files were affected.
 
