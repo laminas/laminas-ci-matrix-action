@@ -13,7 +13,7 @@ import {Validator} from "@cfworker/json-schema";
 if (fs.existsSync('composer.json')) {
     core.info(`Running composer.json linting.`);
     const composerJsonContents = fs.readFileSync('composer.json');
-    const composerJsonSchemaString = fs.readFileSync('composer.schema.json');
+    const composerJsonSchemaString = fs.readFileSync('/action/composer.schema.json');
     const composerJsonSchema = JSON.parse(composerJsonSchemaString);
     const jsonSchemaValidator = new Validator(composerJsonSchema);
     const validationResult = jsonSchemaValidator.validate(JSON.parse(composerJsonContents));
