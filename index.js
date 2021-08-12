@@ -20,7 +20,7 @@ if (fs.existsSync('composer.json')) {
 
     if (!validationResult.valid) {
         validationResult.errors.forEach(function (outputUnit) {
-           core.error("There is in error in the keyword located by {0}: {1}".format(
+           core.error("There is an error in the keyword located by {0}: {1}".format(
                outputUnit.keywordLocation,
                outputUnit.error
            ));
