@@ -5,7 +5,6 @@ import checkRequirements from './src/check-requirements.js';
 import configGatherer from './src/config.js';
 import createJobs from './src/create-jobs.js';
 import {Validator} from "@cfworker/json-schema";
-import {OutputUnit} from "@cfworker/json-schema/src/types";
 
 /**
  * Do early composer.json schema validation to avoid unnecessary ramp-ups of jobs which may fail
