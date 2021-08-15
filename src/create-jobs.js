@@ -45,7 +45,7 @@ const createQaJobs = function (command, config) {
  */
 const createPHPUnitJobs = function (config) {
     let jobs = [];
-    if (config.lockedDependencies) {
+    if (config.locked_dependencies) {
         /** Locked dependencies are always used with the minimum PHP version supported by the project. */
         jobs.push(createPHPUnitJob(config.minimum_version, 'locked', config));
     }
