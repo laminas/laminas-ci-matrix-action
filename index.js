@@ -45,7 +45,9 @@ core.info(`Using php extensions: ${JSON.stringify(config.extensions)}`);
 core.info(`Providing php.ini settings: ${JSON.stringify(config.php_ini)}`);
 core.info(`Dependency sets found: ${JSON.stringify(config.dependencies)}`);
 core.info(`Additional checks found: ${JSON.stringify(config.additional_checks)}`);
-core.info(`Ignore platform reqs on version 8: ${config.ignore_platform_reqs_8 ? "Yes" : "No"}`);
+for (const [IGNORE_PLATFORM_REQS_PHP_VERSION, IGNORE_PLATFORM_REQS] of Object.entries(config.ignore_php_platform_requirements)) {
+    core.info(`Ignoring php platform requirement for PHP ${IGNORE_PLATFORM_REQS_PHP_VERSION}: ${IGNORE_PLATFORM_REQS ? "Yes" : "No"}`);
+}
 
 let matrix = {include: createJobs(config)};
 
