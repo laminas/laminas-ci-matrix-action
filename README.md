@@ -146,7 +146,7 @@ the minor PHP version to run the check against.
 
 The action validates each check and its job to ensure it is structured correctly, and will provide warnings if not, omitting any check that is malformed from the output.
 
-**If specific checks are provided by a project, the matrix won't contain any auto-detected checks and will only output these checks.**
+**If the `checks` element is populated, the matrix will not include any auto-detected checks, and will only output the jobs listed in that element.**
 
 ### Providing additional checks
 
