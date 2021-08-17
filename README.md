@@ -76,20 +76,24 @@ The "exclude" element will only be present if the package using the action provi
 Each item in the "exclude" array will be an object, with one or more of the keys listed in the "include" objects; when a job matches all elements specified in the "exclude" array, it will be excluded from runs.
 
 The "job" element is a string JSON object detailing the job to run.
-Note: it is **not** an object; it is a JSON string.
-It will have the following elements, but is not restricted to them:
+Note: it is **not** an object; it is a JSON string but it MUST have the structure as shown [here](#job-element).
+
+### Job Element
+
+The "job" element will have the following elements, but is not restricted to them:
 
 ```json
 {
-  "php": "string PHP minor version to run against",
+  "php": "(optional) string PHP minor version to run against",
   "extensions": [
-    "extension names to install; names are from the ondrej PHP repository, minus the php{VERSION}- prefix",
+    "(optional) extension names to install; names are from the ondrej PHP repository, minus the php{VERSION}- prefix"
   ],
   "ini": [
-    "php.ini directives, one per element; e.g. 'memory_limit=-1'",
+    "(optional) php.ini directives, one per element; e.g. 'memory_limit=-1'"
   ],
-  "dependencies": "dependencies to test against; one of lowest, locked, latest",
-  "command": "command to run to perform the check"
+  "dependencies": "(optional) dependencies to test against; one of lowest, locked, latest. default: locked",
+  "command": "(required) command to run to perform the check",
+  "ignore_platform_reqs_8": "(optional) boolean; whether to add `--ignore-platform-req=php` to composer for PHP 8.0"
 }
 ```
 
@@ -116,7 +120,9 @@ The package can include a configuration file in its root, `.laminas-ci.json`, wh
   "exclude": [
     {
     }
-  ]
+  ],
+  "ignore_platform_reqs_8": true,
+  "stablePHP": "7.4"
 }
 ```
 
@@ -130,33 +136,17 @@ Each element in that array should be in the same format as listed above for the 
   "name": "(string) Name of the check being run",
   "operatingSystem": "(string) Name of the OS the job should be run on (generally ubuntu-latest)",
   "action": "(string) GHA to run the step on; currently ignored, as GHA does not support dynamic action selection",
-  "job": "(string) JSON object detailing the job (more on this later)",
+  "job": "(string) JSON object detailing the job"
 }
 ```
 
 The "job" element can either be a JSON string representing a job, or an object.
-In each case, it MUST have the structure as noted above:
-
-```json
-{
-  "php": "(string; REQUIRED) PHP minor version to run against",
-  "extensions": [
-    "OPTIONAL array of strings",
-    "Each element represents an extension to install",
-    "Names are from the Sury PHP repository, minus the php{VERSION}- prefix"
-  ],
-  "ini": [
-    "OPTIONAL array of strings",
-    "Each element respresents one php.ini directive",
-    "e.g. 'memory_limit=-1'"
-  ],
-  "dependencies": "dependencies to test against; one of lowest, locked, latest",
-  "ignore_platform_reqs_on_8": "(boolean; OPTIONAL) Whether or not to ignore platform requirements on PHP 8; defaults to true",
-  "command": "command to run to perform the check"
-}
-```
+In each case, it MUST have the structure as shown [here](#job-element) **but** the "php" element is mandatory in here and MUST contain
+the minor PHP version to run the check against.
 
 The action validates each check and its job to ensure it is structured correctly, and will provide warnings if not, omitting any check that is malformed from the output.
+
+**If specific checks are provided by a project, the matrix won't contain any auto-detected checks and will only output these checks.**
 
 ### Providing additional checks
 
@@ -170,24 +160,14 @@ The syntax for the `additional_checks` key is as follows:
     "additional_checks": [
         {
             "name": "(string; REQUIRED) name of the check to run",
-            "job": {
-                "command": "(string; REQUIRED) command to run",
-                "php": "(string; OPTIONAL) PHP version to run on (defaults to stable-php); * indicates all versions",
-                "dependencies": "(string; OPTIONAL) dependency set to run on (defaults to locked); * indicates all sets",
-                "extensions": [
-                    "(array of strings; OPTIONAL) specific extensions to install for this check only"
-                ],
-                "ini": [
-                    "(array of strings; OPTIONAL) specific php.ini settings to use for this check only"
-                ],
-                "ignore_platform_reqs_on_8": "(boolean; OPTIONAL) Whether or not to ignore platform reqs when installing dependencies on PHP 8.0; defaults to true"
-            }
+            "job": "(object) JSON object detailing the job"
         }
     ]
 }
 ```
 
 A job per PHP version per dependency set will be created, and the "name" will be appended with "on PHP {VERSION} with {DEPS} dependencies" during an actual run.
+The "job" element MUST have the structure as shown [here](#job-element) **but** the "php" element is mandatory in here and MUST contain either the minor PHP version to run the check against or a wildcard `*` to run the against **all** supported PHP versions.
 
 The tool discovers checks first, then appends any `additional_checks` are concatenated, and then any `exclude` rules are applied.
 
