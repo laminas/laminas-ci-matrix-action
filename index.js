@@ -20,10 +20,7 @@ if (fs.existsSync('composer.json') && fs.existsSync('/action/composer.schema.jso
 
     if (!validationResult.valid) {
         validationResult.errors.forEach(function (outputUnit) {
-           core.error("There is an error in the keyword located by {0}: {1}".format(
-               outputUnit.keywordLocation,
-               outputUnit.error
-           ));
+           core.error(`There is an error in the keyword located by ${outputUnit.keywordLocation}: ${outputUnit.error}`);
         });
         core.setFailed('composer.json schema validation failed');
         process.exit(1);
