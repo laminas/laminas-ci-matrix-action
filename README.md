@@ -93,7 +93,7 @@ The "job" element will have the following elements, but is not restricted to the
   ],
   "dependencies": "(optional) dependencies to test against; one of lowest, locked, latest. default: locked",
   "command": "(required) command to run to perform the check",
-  "ignore_platform_reqs_8": "(optional) boolean; whether to add `--ignore-platform-req=php` to composer for PHP 8.0"
+  "ignore_platform_reqs_8": "(optional) boolean; whether to add `--ignore-platform-req=php` to composer for PHP 8.0. default: true"
 }
 ```
 
