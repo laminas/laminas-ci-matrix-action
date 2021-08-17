@@ -1,3 +1,4 @@
+import core from '@actions/core';
 import fs from 'fs';
 import semver from 'semver';
 import { Requirements } from './check-requirements.js';
@@ -58,19 +59,21 @@ function gatherVersions (composerJson) {
 }
 
 class Config {
-    code_checks            = true;
-    doc_linting            = true;
-    versions               = [];
-    stable_version         = CURRENT_STABLE;
-    minimum_version        = CURRENT_STABLE;
-    locked_dependencies    = false;
-    extensions             = [];
-    php_ini                = ['memory_limit        = -1'];
-    dependencies           = ['lowest', 'latest'];
-    checks                 = [];
-    exclude                = [];
-    additional_checks      = [];
-    ignore_platform_reqs_8 = true;
+    code_checks                        = true;
+    doc_linting                        = true;
+    versions                           = [];
+    stable_version                     = CURRENT_STABLE;
+    minimum_version                    = CURRENT_STABLE;
+    locked_dependencies                = false;
+    extensions                         = [];
+    php_ini                            = ['memory_limit        = -1'];
+    dependencies                       = ['lowest', 'latest'];
+    checks                             = [];
+    exclude                            = [];
+    additional_checks                  = [];
+    ignore_php_platform_requirements   = {
+        '8.0': true
+    };
 
     /**
      * @param {Requirements} requirements
@@ -116,8 +119,18 @@ class Config {
             this.additional_checks = configuration.additional_checks;
         }
 
+        if (configuration.ignore_php_platform_requirements !== undefined && typeof configuration.ignore_php_platform_requirements === 'object') {
+            this.ignore_php_platform_requirements = Object.assign(
+                this.ignore_php_platform_requirements,
+                configuration.ignore_php_platform_requirements
+            );
+        }
+
         if (configuration.ignore_platform_reqs_8 !== undefined && typeof configuration.ignore_platform_reqs_8 === 'boolean') {
-            this.ignore_platform_reqs_8 = configuration.ignore_platform_reqs_8;
+            core.warning('WARNING: You are using `ignore_platform_reqs_8` in your projects configuration.');
+            core.warning('This is deprecated as of v1.9.0 of the matrix action and will be removed in future versions.');
+            core.warning('Please use `ignore_php_platform_requirements` instead.');
+            this.ignore_php_platform_requirements['8.0'] = configuration.ignore_platform_reqs_8;
         }
     }
 }

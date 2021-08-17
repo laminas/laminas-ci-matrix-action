@@ -106,15 +106,58 @@ const discoverDependencySetsForCheck = function (job, config) {
 };
 
 /**
+ * @param {Object} job
+ * @param {Object} ignore_php_platform_requirements
+ * @return {Object}
+ */
+const discoverIgnorePhpPlatformDetailsForCheck = function (job, ignore_php_platform_requirements) {
+    let ignore_php_platform_requirements_for_job = ignore_php_platform_requirements;
+
+    if (typeof job.php !== 'string') {
+        return ignore_php_platform_requirements_for_job;
+    }
+
+    if (job.php === '*') {
+        ignore_php_platform_requirements_for_job = Object.assign(
+            ignore_php_platform_requirements_for_job,
+            job.ignore_php_platform_requirements ?? {}
+        );
+
+        return ignore_php_platform_requirements_for_job;
+    }
+
+    if (job.ignore_php_platform_requirement !== undefined && typeof job.ignore_php_platform_requirement === 'boolean') {
+        ignore_php_platform_requirements_for_job[job.php] = job.ignore_php_platform_requirement;
+    } else if (job.ignore_platform_reqs_8 !== undefined && typeof job.ignore_platform_reqs_8 === 'boolean') {
+        core.warning('WARNING: You are using `ignore_platform_reqs_8` in your projects configuration.');
+        core.warning('This is deprecated as of v1.9.0 of the matrix action and will be removed in future versions.');
+        core.warning('Please use `ignore_php_platform_requirement` or `ignore_php_platform_requirements` in your additional check configuration instead.');
+
+        ignore_php_platform_requirements_for_job['8.0'] = job.ignore_platform_reqs_8;
+    }
+
+    return Object.assign(ignore_php_platform_requirements, ignore_php_platform_requirements_for_job);
+};
+
+/**
  * @param {String} name
  * @param {String} command
  * @param {Array} versions
  * @param {Array} dependencies
  * @param {Array} extensions
  * @param {Array} ini
+ * @param {Object} ignore_php_platform_requirements
  * @return {Array} Array of jobs
  */
-const createAdditionalJobList = function (name, command, versions, dependencies, extensions, ini) {
+const createAdditionalJobList = function (
+    name,
+    command,
+    versions,
+    dependencies,
+    extensions,
+    ini,
+    ignore_php_platform_requirements
+) {
     return versions.reduce(function (jobs, version) {
         return jobs.concat(dependencies.reduce(function (jobs, deps) {
             return jobs.concat(new Job(
@@ -124,7 +167,8 @@ const createAdditionalJobList = function (name, command, versions, dependencies,
                     version,
                     extensions,
                     ini,
-                    deps
+                    deps,
+                    ignore_php_platform_requirements[version] ?? false
                 ))
             ));
         }, []));
@@ -157,7 +201,8 @@ export default function (config) {
             versions,
             dependencies,
             discoverExtensionsForCheck(checkConfig.job, config),
-            discoverIniSettingsForCheck(checkConfig.job, config)
+            discoverIniSettingsForCheck(checkConfig.job, config),
+            discoverIgnorePhpPlatformDetailsForCheck(checkConfig.job, config.ignore_php_platform_requirements)
         ));
     }, []);
 };
