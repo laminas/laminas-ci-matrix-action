@@ -10,7 +10,7 @@ import {Validator} from "@cfworker/json-schema";
  * Do early composer.json schema validation to avoid unnecessary ramp-ups of jobs which may fail
  * due to an incompatible composer.json.
  */
-if (fs.existsSync('composer.json')) {
+if (fs.existsSync('composer.json') && fs.existsSync('/action/composer.schema.json')) {
     core.info(`Running composer.json linting.`);
     const composerJsonContents = fs.readFileSync('composer.json');
     const composerJsonSchemaString = fs.readFileSync('/action/composer.schema.json');
