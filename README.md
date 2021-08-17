@@ -171,7 +171,7 @@ The syntax for the `additional_checks` key is as follows:
 
 A job per PHP version per dependency set will be created, and the "name" will be appended with "on PHP {VERSION} with {DEPS} dependencies" during an actual run.
 The "job" element MUST have the structure as shown [here](#job-element) **but** the "php" element is mandatory in here and MUST contain either the minor PHP version to run the check against or a wildcard `*` to run the against **all** supported PHP versions.
-In case that the "php" version is passed as a wildcard `*`, the `ignore_php_platform_requirement` element will be ignored. It is possible to provide per-version flags by adding the `ignore_php_platform_requirements` element instead.
+You can pass the wildcard, "*", for the "php" element; when you do, the `ignore_php_platform_requirement` element will be ignored. It is possible to provide per-version flags by adding the `ignore_php_platform_requirements` element instead.
 
 The tool discovers checks first, then appends any `additional_checks` are concatenated, and then any `exclude` rules are applied.
 
