@@ -151,6 +151,25 @@ function checks (config) {
         ),
         new Check(
             config.code_checks,
+            [fileTest('composer-require-checker.json'), fileTest('composer.json')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                /**
+                 * The configuration file is fully optional.
+                 * @see https://github.com/maglnet/ComposerRequireChecker#configuration
+                 * @see https://github.com/maglnet/ComposerRequireChecker/blob/3.4.x/data/config.dist.json
+                 */
+                if (!fileTest('composer-require-checker.json')) {
+                    return createQaJobs('./vendor/bin/composer-require-checker check -n -v', config);
+                }
+                return createQaJobs('./vendor/bin/composer-require-checker check --config-file=./composer-require-checker.json -n -v', config);
+            }
+        ),
+        new Check(
+            config.code_checks,
             [fileTest('phpbench.json')],
             /**
              * @param {Config} config
