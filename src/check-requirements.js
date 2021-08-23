@@ -53,7 +53,7 @@ export default function (diff) {
                     require_code_checks = true;
                 }
 
-                if (! require_code_checks && filename.match(/composer-require-checker|composer\.(json|lock)$/)) {
+                if (! require_code_checks && filename.match(/composer-require-checker\.json|composer\.(json|lock)$/)) {
                     core.info('- Enabling code checks');
                     require_code_checks = true;
                 }
