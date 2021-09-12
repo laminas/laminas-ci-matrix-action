@@ -75,7 +75,8 @@ It spits out a single output, "matrix", which is a JSON string in the following 
 The "exclude" element will only be present if the package using the action provides it via configuration.
 Each item in the "exclude" array will be an object, with one or more of the keys listed in the "include" objects; when a job matches all elements specified in the "exclude" array, it will be excluded from runs.
 
-The "job" element is a JSON object detailing the job to run.
+The "job" element is a string JSON object detailing the job to run.
+Note: it is **not** an object; it is a JSON string but it MUST have the structure as shown [here](#job-element).
 
 ### Job Element
 
