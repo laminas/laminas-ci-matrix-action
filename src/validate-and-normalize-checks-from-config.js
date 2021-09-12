@@ -1,9 +1,10 @@
 import core from '@actions/core';
 import {INSTALLABLE_VERSIONS} from "./config.js";
+import create_additional_jobs from "./additional-checks.js";
 
 /**
  * @param {(Object|String)} job
- * @return {(String|Boolean)} Returns false if job is invalid; otherwise, returns JSON representation of job
+ * @return {(Object|Boolean)} Returns false if job is invalid; otherwise, returns normalized JSON object of job
  */
 const normalizeJob = function (job) {
     if (typeof job === 'string') {
@@ -22,32 +23,32 @@ const normalizeJob = function (job) {
         return false;
     }
 
-    if (! "php" in job || ! INSTALLABLE_VERSIONS.includes(job.php)) {
+    if (job.php === undefined || (job.php !== '*' && ! INSTALLABLE_VERSIONS.includes(job.php))) {
         core.warning("Invalid job provided; no PHP version or unknown PHP version specified: " + JSON.stringify(job));
         return false;
     }
 
-    if (! "command" in job) {
+    if (job.command === undefined) {
         core.warning("Invalid job provided; no command specified: " + JSON.stringify(job));
         return false;
     }
 
-    if ("extensions" in job && ! Array.isArray(job.extensions)) {
+    if (job.extensions !== undefined && ! Array.isArray(job.extensions)) {
         core.warning("Invalid job provided; extensions is not an Array: " + JSON.stringify(job));
         return false;
     }
 
-    if ("ini" in job && ! Array.isArray(job.ini)) {
+    if (job.ini !== undefined && ! Array.isArray(job.ini)) {
         core.warning("Invalid job provided; ini is not an Array: " + JSON.stringify(job));
         return false;
     }
 
-    if ("dependencies" in job && ! ["locked", "latest", "lowest"].includes(job.dependencies)) {
+    if (job.dependencies !== undefined && ! ["locked", "latest", "lowest", "*"].includes(job.dependencies)) {
         core.warning("Invalid job provided; invalid dependency set: " + JSON.stringify(job));
         return false;
     }
 
-    return JSON.stringify(job);
+    return job;
 };
 
 /**
@@ -55,12 +56,12 @@ const normalizeJob = function (job) {
  * @return {(null|Object)} null if invalid, object representing check otherwise
  */
 const validateAndNormalizeCheck = function (check) {
-    if (! "name" in check) {
+    if (check.name === undefined) {
         core.warning("Invalid check detected; missing name: " + JSON.stringify(check));
         return null;
     }
 
-    if (! "job" in check) {
+    if (check.job === undefined) {
         core.warning("Invalid check detected; missing job: " + JSON.stringify(check));
         return null;
     }
@@ -72,7 +73,7 @@ const validateAndNormalizeCheck = function (check) {
 
     check.job = job;
 
-    if (! "operatingSystem" in check) {
+    if (check.operatingSystem === undefined) {
         check.operatingSystem = 'ubuntu-latest';
     }
 
@@ -80,13 +81,20 @@ const validateAndNormalizeCheck = function (check) {
 };
 
 /**
- * @param {Array} checks
+ * @param {Array<Object>} checks
+ * @param {Config} config
  * @return {Array}
  */
-export default function (checks) {
+export default function (checks, config) {
     return checks
         .map(validateAndNormalizeCheck)
         .filter(function (check) {
             return typeof check === 'object' && check !== null;
+        }).reduce(function (jobs, check) {
+            return jobs.concat(create_additional_jobs([check], config));
+        }, [])
+        .map(function (check) {
+            check.job = JSON.stringify(check.job);
+            return check;
         });
 };

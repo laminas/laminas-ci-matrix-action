@@ -227,7 +227,7 @@ const excludeJob = function (job, exclusion) {
 export default function (config) {
     if (config.checks.length) {
         core.info('Using checks found in configuration');
-        return validateAndNormalizeChecks(config.checks);
+        return validateAndNormalizeChecks(config.checks, config);
     }
 
     /** @var {Array} jobs */
@@ -235,7 +235,7 @@ export default function (config) {
         .reduce(function (jobs, check) {
             return jobs.concat(check.jobs(config));
         }, [])
-        .concat(create_additional_jobs(config))
+        .concat(create_additional_jobs(config.additional_checks, config))
         .filter(function (job) {
             let keep = true;
             config.exclude.forEach(function (exclusion) {
