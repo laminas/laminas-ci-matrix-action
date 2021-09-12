@@ -44,6 +44,7 @@ class Config {
     versions                           = [];
     stable_version                     = CURRENT_STABLE;
     minimum_version                    = CURRENT_STABLE;
+    latest_version                     = CURRENT_STABLE;
     locked_dependencies                = false;
     extensions                         = [];
     php_ini                            = ['memory_limit        = -1'];
@@ -69,10 +70,12 @@ class Config {
         if (configuration["stablePHP"] !== undefined) {
             this.stable_version = configuration["stablePHP"];
             this.minimum_version = this.stable_version;
+            this.latest_version = this.stable_version;
         }
 
         if (this.versions.length > 0) {
             this.minimum_version = this.versions[0]
+            this.latest_version = this.versions[this.versions.length - 1]
         }
 
         if (configuration.extensions !== undefined && Array.isArray(configuration.extensions)) {

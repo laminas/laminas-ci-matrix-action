@@ -50,6 +50,14 @@ const discoverPhpVersionsForCheck = function (job, config) {
     }
 
     if (typeof job.php === 'string') {
+        if (job.php === '@lowest') {
+            return [config.minimum_version];
+        }
+
+        if (job.php === '@latest') {
+            return [config.latest_version];
+        }
+
         return [job.php];
     }
 
