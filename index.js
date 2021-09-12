@@ -9,7 +9,10 @@ import validateJsonSchema from "./src/json-schema-validation.js";
  * Do early json schema validation to avoid unnecessary ramp-ups of jobs
  */
 if (fs.existsSync('composer.json') && fs.existsSync('/action/composer.schema.json')) {
-    validateJsonSchema('composer.json', '/actionU/composer.schema.json');
+    validateJsonSchema('composer.json', '/action/composer.schema.json');
+}
+if (fs.existsSync('.laminas-ci.json') && fs.existsSync('/action/laminas-ci.schema.json')) {
+    validateJsonSchema('.laminas-ci.json', '/action/laminas-ci.schema.json');
 }
 
 const requirements = checkRequirements(process.argv.slice(2));
