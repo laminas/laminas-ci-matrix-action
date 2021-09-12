@@ -107,7 +107,12 @@ class Config {
         }
 
         if (configuration.extensions !== undefined && Array.isArray(configuration.extensions)) {
-            this.extensions = this.extensions.concat(configuration.extensions);
+            let extensions = new Set(this.extensions);
+            configuration.extensions.forEach(function (extension) {
+                extensions = extensions.add(extension);
+            });
+
+            this.extensions = Array.from(extensions);
         }
 
         if (configuration.ini !== undefined && Array.isArray(configuration.ini)) {
