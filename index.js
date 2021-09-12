@@ -1,6 +1,5 @@
 import core from "@actions/core";
 import fs from "fs";
-import process from "process";
 import checkRequirements from "./src/check-requirements.js";
 import configGatherer from "./src/config.js";
 import createJobs from "./src/create-jobs.js";

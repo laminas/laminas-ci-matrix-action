@@ -1,6 +1,6 @@
 import core from "@actions/core";
-import process from "process";
 import {Validator} from "@cfworker/json-schema";
+import parseJsonFile from "./json.js";
 
 /**
  * @param {String} pathToJsonToValidate
@@ -9,9 +9,10 @@ import {Validator} from "@cfworker/json-schema";
 export default function (pathToJsonToValidate, pathToSchemaJsonForValidation) {
     core.info(`Running ${pathToJsonToValidate} linting using ${pathToSchemaJsonForValidation}.`);
 
-    const jsonSchema = JSON.parse(fs.readFileSync(pathToSchemaJsonForValidation));
+    const jsonSchema = parseJsonFile(pathToSchemaJsonForValidation, false);
+    core.debug('JSON schema: ' + JSON.stringify(jsonSchema));
     const jsonSchemaValidator = new Validator(jsonSchema);
-    const validationResult = jsonSchemaValidator.validate(JSON.parse(fs.readFileSync(pathToJsonToValidate)));
+    const validationResult = jsonSchemaValidator.validate(parseJsonFile(pathToJsonToValidate, false));
 
     if (validationResult.valid) {
         core.info(`${pathToJsonToValidate} schema validation passed.`);

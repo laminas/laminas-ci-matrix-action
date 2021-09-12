@@ -1,8 +1,8 @@
 import core from "@actions/core";
 import fs from "fs";
-import process from 'process';
 import semver from "semver";
 import { Requirements } from "./check-requirements.js";
+import parseJsonFile from "./json.js";
 
 const CURRENT_STABLE       = '7.4';
 
@@ -17,39 +17,6 @@ const INSTALLABLE_VERSIONS = [
     '8.0',
     '8.1',
 ];
-
-/**
- * @param {String} configFile
- * @return {Object}
- */
-function parseConfig (configFile) {
-    if (! fs.existsSync(configFile)) {
-        return {};
-    }
-    try {
-        return JSON.parse(fs.readFileSync(configFile));
-    } catch (error) {
-        core.setFailed('Failed to parse ' + configFile + ': ' + error.message);
-        process.exit(1);
-    }
-}
-
-/**
- * @param {String} composerJsonFile
- * @return {Object}
- */
-function parseComposerJson (composerJsonFile) {
-    if (!fs.existsSync(composerJsonFile)) {
-        return {};
-    }
-
-    try {
-        return JSON.parse(fs.readFileSync(composerJsonFile));
-    } catch (error) {
-        core.setFailed('Failed to parse ' + composerJsonFile + ': ' + error.message);
-        process.exit(1);
-    }
-}
 
 /**
  * @param {Object} composerJson
@@ -156,7 +123,7 @@ class Config {
  * @return {Config}
  */
 const createConfig = function (requirements, configFile, composerJsonFile, composerLockFile) {
-    return new Config(requirements, parseConfig(configFile), parseComposerJson(composerJsonFile), composerLockFile);
+    return new Config(requirements, parseJsonFile(configFile), parseJsonFile(composerJsonFile, false), composerLockFile);
 }
 
 export {
