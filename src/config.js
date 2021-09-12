@@ -159,5 +159,6 @@ const createConfig = function (requirements, configFile, composerJsonFile, compo
 export {
     CURRENT_STABLE,
     Config,
+    INSTALLABLE_VERSIONS,
 };
 export default createConfig;

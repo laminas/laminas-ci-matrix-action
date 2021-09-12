@@ -1,14 +1,5 @@
 import core from '@actions/core';
-
-const KNOWN_PHP_VERSIONS = [
-    '5.6', 
-    '7.0', 
-    '7.1', 
-    '7.2', 
-    '7.3', 
-    '7.4', 
-    '8.0', 
-];
+import {INSTALLABLE_VERSIONS} from "./config.js";
 
 /**
  * @param {(Object|String)} job
@@ -31,7 +22,7 @@ const normalizeJob = function (job) {
         return false;
     }
 
-    if (! "php" in job || ! KNOWN_PHP_VERSIONS.includes(job.php)) {
+    if (! "php" in job || ! INSTALLABLE_VERSIONS.includes(job.php)) {
         core.warning("Invalid job provided; no PHP version or unknown PHP version specified: " + JSON.stringify(job));
         return false;
     }
