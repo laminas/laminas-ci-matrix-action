@@ -36,6 +36,18 @@ export default function (diff) {
                     return;
                 }
 
+                if (filename.match(/\.laminas-ci.json$/)) {
+                    if (! require_code_checks) {
+                        core.info('- Enabling code checks');
+                        require_code_checks = true;
+                    }
+
+                    if (! require_doc_linting) {
+                        core.info('- Enabling doc linting');
+                        require_doc_linting = true;
+                    }
+                }
+
                 if (! require_code_checks && filename.match(/\.php$/)) {
                     core.info('- Enabling code checks');
                     require_code_checks = true;
