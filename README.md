@@ -75,8 +75,7 @@ It spits out a single output, "matrix", which is a JSON string in the following 
 The "exclude" element will only be present if the package using the action provides it via configuration.
 Each item in the "exclude" array will be an object, with one or more of the keys listed in the "include" objects; when a job matches all elements specified in the "exclude" array, it will be excluded from runs.
 
-The "job" element is a string JSON object detailing the job to run.
-Note: it is **not** an object; it is a JSON string but it MUST have the structure as shown [here](#job-element).
+The "job" element is a JSON object detailing the job to run.
 
 ### Job Element
 
@@ -139,7 +138,7 @@ Each element in that array should be in the same format as listed above for the 
   "name": "(string) Name of the check being run",
   "operatingSystem": "(string) Name of the OS the job should be run on (generally ubuntu-latest)",
   "action": "(string) GHA to run the step on; currently ignored, as GHA does not support dynamic action selection",
-  "job": "(string) JSON object detailing the job"
+  "job": "(object|string) JSON object detailing the job"
 }
 ```
 

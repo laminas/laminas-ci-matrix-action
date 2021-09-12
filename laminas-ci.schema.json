@@ -110,9 +110,17 @@
                                 "description": "The name of the check. Will be displayed in the GHA list of executed actions."
                             },
                             "job": {
-                                "type": "object",
-                                "required": ["php"],
-                                "$ref": "#/definitions/job"
+                                "oneOf": [
+                                    {
+                                        "type": "object",
+                                        "required": ["php"],
+                                        "$ref": "#/definitions/job"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "minLength": 2
+                                    }
+                                ]
                             },
                             "operatingSystem": {
                                 "type": "string",
