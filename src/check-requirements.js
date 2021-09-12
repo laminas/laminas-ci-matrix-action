@@ -21,6 +21,7 @@ export class Requirements {
 export default function (diff) {
     let require_code_checks = true;
     let require_doc_linting = true;
+    let require_all = false;
 
     if (diff.length) {
         core.info('Performing selective checks based on pull request patch diff');
@@ -37,15 +38,9 @@ export default function (diff) {
                 }
 
                 if (filename.match(/\.laminas-ci.json$/)) {
-                    if (! require_code_checks) {
-                        core.info('- Enabling code checks');
-                        require_code_checks = true;
-                    }
-
-                    if (! require_doc_linting) {
-                        core.info('- Enabling doc linting');
-                        require_doc_linting = true;
-                    }
+                    core.info('- Enabling all checks as .laminas-ci.json has changed.');
+                    require_all = true;
+                    return;
                 }
 
                 if (! require_code_checks && filename.match(/\.php$/)) {
@@ -74,6 +69,10 @@ export default function (diff) {
                 }
             }
         );
+    }
+
+    if (require_all) {
+        return new Requirements(true, true);
     }
 
     return new Requirements(require_code_checks, require_doc_linting);
