@@ -12,17 +12,6 @@
                 "memory_limit=-1",
                 "maximum_execution_time=0"
             ],
-            "checks": [
-                {
-                    "name": "PHP Linting",
-                    "operatingSystem": "ubuntu-latest",
-                    "action": "laminas/laminas-continuous-integration-action@v1",
-                    "job": {
-                        "foo": "bar",
-                        "bar": true
-                    }
-                }
-            ],
             "additional_checks": [
                 {
                     "name": "Codeception on all supported PHP versions",
@@ -36,6 +25,33 @@
             "exclude": [
                 {
                     "name": "vendor/bin/codecept run on PHP 7.4"
+                }
+            ],
+            "ignore_php_platform_requirements": {
+                "8.0": true,
+                "7.4": false
+            },
+            "stablePHP": "8.0"
+        },
+        {
+            "extensions": [
+                "mbstring",
+                "pcntl",
+                "posix"
+            ],
+            "ini": [
+                "memory_limit=-1",
+                "maximum_execution_time=0"
+            ],
+            "checks": [
+                {
+                    "name": "PHP Linting",
+                    "operatingSystem": "ubuntu-latest",
+                    "action": "laminas/laminas-continuous-integration-action@v1",
+                    "job": {
+                        "php": "7.4",
+                        "command": "find src/ -type f -name \"*.php\" -exec php -l {} \\;"
+                    }
                 }
             ],
             "ignore_php_platform_requirements": {
@@ -70,18 +86,21 @@
                             {
                                 "name": "Single check to be executed",
                                 "operatingSystem": "ubuntu-latest",
-                                "job": "{}"
+                                "job": "{\"php\": \"8.1\", \"command\": \"php -v\"}"
                             }
                         ],
                         [
                             {
-                                "name": "Check #1 to be executed",
-                                "job": "{\"foo\": \"bar\"}"
+                                "name": "Stringified job",
+                                "job": "{\"php\": \"7.4\", \"command\": \"php -v\"}"
                             },
                             {
-                                "name": "Check #2 to be executed on debian",
+                                "name": "JSON object job",
                                 "operatingSystem": "debian-latest",
-                                "job": {}
+                                "job": {
+                                    "php": "7.4",
+                                    "command": "php -v"
+                                }
                             }
                         ]
                     ],
@@ -93,7 +112,10 @@
                             {
                                 "name": "Check #1 to be executed",
                                 "operatingSystem": "debian-latest",
-                                "job": {}
+                                "job": {
+                                    "php": "8.1",
+                                    "command": "php -v"
+                                }
                             }
                         ],
                         "required": [
