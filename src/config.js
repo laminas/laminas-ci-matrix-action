@@ -1,7 +1,8 @@
-import core from '@actions/core';
-import fs from 'fs';
-import semver from 'semver';
-import { Requirements } from './check-requirements.js';
+import core from "@actions/core";
+import fs from "fs";
+import process from 'process';
+import semver from "semver";
+import { Requirements } from "./check-requirements.js";
 
 const CURRENT_STABLE       = '7.4';
 
@@ -29,6 +30,7 @@ function parseConfig (configFile) {
         return JSON.parse(fs.readFileSync(configFile));
     } catch (error) {
         core.setFailed('Failed to parse ' + configFile + ': ' + error.message);
+        process.exit(1);
     }
 }
 
@@ -45,6 +47,7 @@ function parseComposerJson (composerJsonFile) {
         return JSON.parse(fs.readFileSync(composerJsonFile));
     } catch (error) {
         core.setFailed('Failed to parse ' + composerJsonFile + ': ' + error.message);
+        process.exit(1);
     }
 }
 
