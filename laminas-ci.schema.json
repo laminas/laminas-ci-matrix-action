@@ -56,9 +56,6 @@
                 "ini": {
                     "$ref": "#/definitions/ini"
                 },
-                "exclude": {
-                    "$ref": "#/definitions/exclude"
-                },
                 "ignore_php_platform_requirements": {
                     "$ref": "#/definitions/ignore_php_platform_requirements"
                 },
