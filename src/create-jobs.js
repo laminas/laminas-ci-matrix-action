@@ -158,6 +158,17 @@ function checks (config) {
             }
         ),
         new Check(
+            config.code_checks,
+            [fileTest('infection.json'), fileTest('infection.json.dist')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs('./vendor/bin/infection', config);
+            }
+        ),
+        new Check(
             config.doc_linting,
             [fileTest('mkdocs.yml')],
             /**
