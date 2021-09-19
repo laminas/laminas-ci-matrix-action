@@ -159,13 +159,44 @@ function checks (config) {
         ),
         new Check(
             config.code_checks,
-            [fileTest('infection.json'), fileTest('infection.json.dist')],
+            [
+                function () {
+                    const composerFile = JSON.parse(fs.readFileSync('composer.json'));
+
+                    return (
+                        fs.existsSync('infection.json') ||
+                        fs.existsSync('infection.json.dist')
+                    ) && ! (
+                        // Skip executing infection, if roave/infection-static-analysis-plugin (redundant task)
+                        composerFile.hasOwnProperty('require-dev') &&
+                        composerFile['require-dev'].hasOwnProperty('roave/infection-static-analysis-plugin')
+                    );
+                }
+            ],
             /**
              * @param {Config} config
              * @return {Array}
              */
             function (config) {
                 return createQaJobs('./vendor/bin/infection', config);
+            }
+        ),
+        new Check(
+            config.code_checks,
+            [
+                function () {
+                    const composerFile = JSON.parse(fs.readFileSync('composer.json'));
+
+                    return composerFile.hasOwnProperty('require-dev') &&
+                        composerFile['require-dev'].hasOwnProperty('roave/infection-static-analysis-plugin');
+                }
+            ],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs('./vendor/bin/roave-infection-static-analysis-plugin', config);
             }
         ),
         new Check(
