@@ -37,6 +37,10 @@ function parseConfig (configFile) {
  * @return {Object}
  */
 function parseComposerJson (composerJsonFile) {
+    if (!fs.existsSync(composerJsonFile)) {
+        return {};
+    }
+
     try {
         return JSON.parse(fs.readFileSync(composerJsonFile));
     } catch (error) {
@@ -49,7 +53,12 @@ function parseComposerJson (composerJsonFile) {
  * @return {Array}
  */
 function gatherVersions (composerJson) {
+    if (JSON.stringify(composerJson) === '{}') {
+        return [];
+    }
+
     let versions = [];
+
     INSTALLABLE_VERSIONS.forEach(function (version) {
         if (semver.satisfies(version + '.0', composerJson['require']['php'])) {
             versions.push(version);
