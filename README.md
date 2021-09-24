@@ -94,7 +94,10 @@ The "job" element will have the following elements, but is not restricted to the
   "dependencies": "(optional) dependencies to test against; one of lowest, locked, latest. default: locked",
   "command": "(required) command to run to perform the check", 
   "ignore_platform_reqs_8": "(optional; deprecated) boolean; whether to add `--ignore-platform-req=php` to composer for PHP 8.0. default: true",
-  "ignore_php_platform_requirement": "(optional) boolean; whether to add `--ignore-platform-req=php` to composer for this job."
+  "ignore_php_platform_requirement": "(optional) boolean; whether to add `--ignore-platform-req=php` to composer for this job.",
+  "additional_composer_arguments": [
+      "(optional) list of arguments to be passed to `composer install` and `composer update`"
+  ]
 }
 ```
 
@@ -125,7 +128,9 @@ The package can include a configuration file in its root, `.laminas-ci.json`, wh
   "ignore_php_platform_requirements": {
       "8.0": true
   },
-  "stablePHP": "7.4"
+  "stablePHP": "7.4",
+  "additional_composer_arguments": [
+  ]
 }
 ```
 
