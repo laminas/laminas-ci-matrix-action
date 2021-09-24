@@ -1,0 +1,10 @@
+{
+    "additional_checks": [
+        {
+            "name": "Run matrix on every test project",
+            "job": {
+                "command": "for directory tests/*; do cd $directory; node ../../index.js || exit 1; cd ../.."
+            }
+        }
+    ]
+}
