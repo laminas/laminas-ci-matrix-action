@@ -123,7 +123,7 @@ class Config {
  * @return {Config}
  */
 const createConfig = function (requirements, configFile, composerJsonFile, composerLockFile) {
-    return new Config(requirements, parseJsonFile(configFile), parseJsonFile(composerJsonFile, false), composerLockFile);
+    return new Config(requirements, parseJsonFile(configFile), parseJsonFile(composerJsonFile), composerLockFile);
 }
 
 export {
