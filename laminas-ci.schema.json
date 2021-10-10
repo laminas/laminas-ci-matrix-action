@@ -1,0 +1,374 @@
+{
+    "$id": "https://github.com/laminas/laminas-ci-matrix-action/blob/HEAD/laminas-ci.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "examples": [
+        {
+            "extensions": [
+                "mbstring",
+                "pcntl",
+                "posix"
+            ],
+            "ini": [
+                "memory_limit=-1",
+                "maximum_execution_time=0"
+            ],
+            "additional_checks": [
+                {
+                    "name": "Codeception on all supported PHP versions",
+                    "job": {
+                        "php": "*",
+                        "dependencies": "*",
+                        "command": "vendor/bin/codecept run"
+                    }
+                }
+            ],
+            "exclude": [
+                {
+                    "name": "vendor/bin/codecept run on PHP 7.4"
+                }
+            ],
+            "ignore_php_platform_requirements": {
+                "8.0": true,
+                "7.4": false
+            },
+            "stablePHP": "8.0"
+        },
+        {
+            "extensions": [
+                "mbstring",
+                "pcntl",
+                "posix"
+            ],
+            "ini": [
+                "memory_limit=-1",
+                "maximum_execution_time=0"
+            ],
+            "checks": [
+                {
+                    "name": "PHP Linting",
+                    "operatingSystem": "ubuntu-latest",
+                    "action": "laminas/laminas-continuous-integration-action@v1",
+                    "job": {
+                        "php": "7.4",
+                        "command": "find src/ -type f -name \"*.php\" -exec php -l {} \\;"
+                    }
+                }
+            ],
+            "ignore_php_platform_requirements": {
+                "8.0": true,
+                "7.4": false
+            },
+            "stablePHP": "8.0"
+        }
+    ],
+    "title": "Laminas CI configuration schema",
+    "type": "object",
+    "oneOf": [
+        {
+            "properties": {
+                "extensions": {
+                    "$ref": "#/definitions/extensions"
+                },
+                "ini": {
+                    "$ref": "#/definitions/ini"
+                },
+                "ignore_php_platform_requirements": {
+                    "$ref": "#/definitions/ignore_php_platform_requirements"
+                },
+                "stablePHP": {
+                    "$ref": "#/definitions/stablePHP"
+                },
+                "checks": {
+                    "type": "array",
+                    "title": "A list of checks to be executed",
+                    "examples": [
+                        [
+                            {
+                                "name": "Single check to be executed",
+                                "operatingSystem": "ubuntu-latest",
+                                "job": "{\"php\": \"8.1\", \"command\": \"php -v\"}"
+                            }
+                        ],
+                        [
+                            {
+                                "name": "Stringified job",
+                                "job": "{\"php\": \"7.4\", \"command\": \"php -v\"}"
+                            },
+                            {
+                                "name": "JSON object job",
+                                "operatingSystem": "debian-latest",
+                                "job": {
+                                    "php": "7.4",
+                                    "command": "php -v"
+                                }
+                            }
+                        ]
+                    ],
+                    "items": {
+                        "type": "object",
+                        "title": "The job to be executed",
+                        "description": "The job to be executed. Contains all information for the GHA.",
+                        "examples": [
+                            {
+                                "name": "Check #1 to be executed",
+                                "operatingSystem": "debian-latest",
+                                "job": {
+                                    "php": "8.1",
+                                    "command": "php -v"
+                                }
+                            }
+                        ],
+                        "required": [
+                            "name",
+                            "job"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "title": "The name of the check",
+                                "description": "The name of the check. Will be displayed in the GHA list of executed actions."
+                            },
+                            "job": {
+                                "oneOf": [
+                                    {
+                                        "type": "object",
+                                        "required": ["php"],
+                                        "$ref": "#/definitions/job"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "minLength": 2
+                                    }
+                                ]
+                            },
+                            "operatingSystem": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "The name of the OS",
+                                "description": "Name of the OS the job should be run on"
+                            },
+                            "action": {
+                                "type": "string",
+                                "title": "The github action name",
+                                "description": "GHA to run the step on; currently ignored, as GHA does not support dynamic action selection"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        {
+            "properties": {
+                "extensions": {
+                    "$ref": "#/definitions/extensions"
+                },
+                "ini": {
+                    "$ref": "#/definitions/ini"
+                },
+                "exclude": {
+                    "$ref": "#/definitions/exclude"
+                },
+                "ignore_php_platform_requirements": {
+                    "$ref": "#/definitions/ignore_php_platform_requirements"
+                },
+                "stablePHP": {
+                    "$ref": "#/definitions/stablePHP"
+                },
+                "additional_checks": {
+                    "type": "array",
+                    "title": "A list of additional checks to be executed",
+                    "description": "A list of additional checks to be executed. Will be appended to the list, the matrix detects by parsing the project files.",
+                    "examples": [
+                        [
+                            {
+                                "name": "Codeception on all supported PHP versions",
+                                "job": {
+                                    "php": "*",
+                                    "dependencies": "*",
+                                    "command": "vendor/bin/codecept run"
+                                }
+                            }
+                        ]
+                    ],
+                    "items": {
+                        "type": "object",
+                        "title": "Additional check to be executed",
+                        "examples": [
+                            {
+                                "name": "Codeception on all supported PHP versions",
+                                "job": {
+                                    "php": "*",
+                                    "dependencies": "*",
+                                    "command": "vendor/bin/codecept run"
+                                }
+                            }
+                        ],
+                        "required": [
+                            "name",
+                            "job"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "title": "The name of the additional check",
+                                "description": "The name of the additional check. Will be displayed in the github actions list of executed checks.",
+                                "examples": [
+                                    "Codeception on all supported PHP versions"
+                                ]
+                            },
+                            "job": {
+                                "$ref": "#/definitions/job"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    ],
+    "definitions": {
+        "extensions": {
+            "type": "array",
+            "title": "A list of PHP extensions",
+            "description": "A list of required PHP extensions which is verified before a job is being executed.",
+            "examples": [
+                [
+                    "mbstring",
+                    "pcntl",
+                    "posix"
+                ]
+            ],
+            "items": {
+                "type": "string",
+                "minLength": 1,
+                "title": "The name of the PHP extension",
+                "description": "The name of the PHP extension which would also be used in `composer.json` with `ext-`-prefix."
+            }
+        },
+        "ini": {
+            "type": "array",
+            "title": "php.ini settings",
+            "description": "A list of php.ini settings which will be passed to the PHP processes when the job is executed.",
+            "examples": [
+                [
+                    "memory_limit = -1",
+                    "maximum_execution_time=0"
+                ]
+            ],
+            "items": {
+                "type": "string",
+                "title": "The php.ini setting.",
+                "description": "The php.ini setting which is added to the php.ini as a single line. A list of php.ini settings can be found here: https://www.php.net/manual/en/info.configuration.php"
+            }
+        },
+        "exclude": {
+            "type": "array",
+            "title": "A list of objects to tell the matrix to exclude.",
+            "description": "With this list, it is possible to exclude jobs which are created by the matrix. So if the matrix creates a job which you don't want to be executed, just add the name of that job to the list.",
+            "examples": [
+                [
+                    {
+                        "name": "vendor/bin/codecept run on PHP 7.4"
+                    }
+                ]
+            ],
+            "items": {
+                "type": "object",
+                "title": "The job description to be excluded",
+                "examples": [
+                    {
+                        "name": "vendor/bin/codecept run on PHP 7.4"
+                    }
+                ],
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "The name of the job to be excluded",
+                        "description": "The name of the job to be excluded. Must be an exact match.",
+                        "minLength": 1,
+                        "examples": [
+                            "vendor/bin/codecept run on PHP 7.4"
+                        ]
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "ignore_php_platform_requirements": {
+            "type": "object",
+            "title": "Specifies PHP versions on which composer should ignore the platform requirement.",
+            "description": "Passing a PHP version in this object with `true` will tell the container action to ignore the PHP platform requirement by passing `--ignore-platform-req=false`.",
+            "default": {
+                "8.0": true
+            },
+            "examples": [
+                {
+                    "8.0": false,
+                    "8.1": true
+                }
+            ],
+            "additionalProperties": {
+                "type": "boolean"
+            }
+        },
+        "stablePHP": {
+                "type": "string",
+                "minLength": 1,
+                "title": "The PHP version to be used for stable checks",
+                "description": "This PHP version is used for all QA check jobs. The default depends on the `composer.json` of the project and usually reflects the minimum supported PHP version of that project.",
+                "examples": [
+                    "8.0"
+                ]
+            },
+        "job": {
+            "type": "object",
+            "title": "The job to be executed",
+            "description": "The job to be executed. Can specify dedicated information regarding PHP version(s), composer deps, e.g.",
+            "examples": [
+                {
+                    "php": "*",
+                    "dependencies": "*",
+                    "command": "vendor/bin/codecept run"
+                }
+            ],
+            "required": [
+                "command"
+            ],
+            "properties": {
+                "php": {
+                    "type": "string",
+                    "title": "The php schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "examples": [
+                        "7.4",
+                        "*"
+                    ],
+                    "minLength": 1
+                },
+                "dependencies": {
+                    "type": "string",
+                    "enum": ["latest", "lowest", "locked", "*"],
+                    "title": "The composer dependencies to be used",
+                    "description": "The composer dependencies to be used. If the wildcard `*` is passed, a list of checks is created containing each `lowest` and `latest` composer dependencies.",
+                    "default": "locked"
+                },
+                "command": {
+                    "type": "string",
+                    "title": "The command to be executed",
+                    "description": "The command to run to perform the check. The command MUST be executable.",
+                    "minLength": 1,
+                    "examples": [
+                        "vendor/bin/codecept run"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

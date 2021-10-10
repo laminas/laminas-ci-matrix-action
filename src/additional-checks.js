@@ -14,7 +14,7 @@ const validateCheck = function (checkConfig) {
         return false;
     }
 
-    if (! ("name" in checkConfig) || ! ("job" in checkConfig)) {
+    if (checkConfig.name === undefined || checkConfig.job === undefined) {
         // Missing one or more required elements
         core.warning("Skipping additional check due to missing name or job keys: " + JSON.stringify(checkConfig));
         return false;
@@ -26,7 +26,7 @@ const validateCheck = function (checkConfig) {
         return false;
     }
 
-    if (! ("command" in checkConfig.job)) {
+    if (checkConfig.job.command === undefined) {
         // Job is missing a command
         core.warning("Invalid job provided for check; missing command property: " + JSON.stringify(checkConfig.job));
         return false;
@@ -41,16 +41,16 @@ const validateCheck = function (checkConfig) {
  * @return {(Array|Boolean)} Array of PHP versions to run against, or boolean false if malformed
  */
 const discoverPhpVersionsForCheck = function (job, config) {
-    if (! ("php" in job)) {
+    if (job.php === undefined) {
         return [CURRENT_STABLE];
     }
 
-    if (typeof job.php === 'string' && job.php !== '*') {
-        return [job.php];
+    if (job.php === '*') {
+        return config.versions;
     }
 
-    if (typeof job.php === 'string' && job.php === '*') {
-        return config.versions;
+    if (typeof job.php === 'string') {
+        return [job.php];
     }
 
     core.warning("Invalid PHP version specified for check job; must be a string version or '*': " + JSON.stringify(job));
@@ -63,7 +63,7 @@ const discoverPhpVersionsForCheck = function (job, config) {
  * @return {Array}
  */
 const discoverExtensionsForCheck = function (job, config) {
-    if ("extensions" in job && Array.isArray(job.extensions)) {
+    if (job.extensions !== undefined && Array.isArray(job.extensions)) {
         return job.extensions;
     }
 
@@ -76,7 +76,7 @@ const discoverExtensionsForCheck = function (job, config) {
  * @return {Array}
  */
 const discoverIniSettingsForCheck = function (job, config) {
-    if ("ini" in job && Array.isArray(job.ini)) {
+    if (job.ini !== undefined && Array.isArray(job.ini)) {
         return job.ini;
     }
 
@@ -89,16 +89,16 @@ const discoverIniSettingsForCheck = function (job, config) {
  * @return {(Array|Boolean)} Array of dependency sets to run against, or boolean false if malformed
  */
 const discoverDependencySetsForCheck = function (job, config) {
-    if (! ("dependencies" in job)) {
+    if (job.dependencies === undefined) {
         return ['locked'];
     }
 
-    if (typeof job.dependencies === 'string' && job.dependencies !== '*') {
-        return [job.dependencies];
+    if (job.dependencies === '*') {
+        return config.dependencies;
     }
 
-    if (typeof job.dependencies === 'string' && job.dependencies === '*') {
-        return config.dependencies;
+    if (typeof job.dependencies === 'string') {
+        return [job.dependencies];
     }
 
     core.warning("Invalid dependencies specified for check job; must be a string version or '*': " + JSON.stringify(job));
@@ -176,11 +176,12 @@ const createAdditionalJobList = function (
 };
 
 /**
+ * @param {Array} checks
  * @param {Config} config
  * @return {Array} Array of jobs
  */
-export default function (config) {
-    return config.additional_checks.reduce(function (jobs, checkConfig) {
+export default function (checks, config) {
+    return checks.reduce(function (jobs, checkConfig) {
         if (! validateCheck(checkConfig)) {
             return jobs;
         }

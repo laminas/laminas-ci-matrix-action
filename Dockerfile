@@ -13,6 +13,7 @@ ADD src /action/src
 ADD package.json /action/package.json
 ADD package-lock.json /action/package-lock.json
 ADD composer.schema.json /action/
+ADD laminas-ci.schema.json /action/
 RUN (cd /action ; npm install)
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh

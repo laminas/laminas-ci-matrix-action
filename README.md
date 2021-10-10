@@ -139,7 +139,7 @@ Each element in that array should be in the same format as listed above for the 
   "name": "(string) Name of the check being run",
   "operatingSystem": "(string) Name of the OS the job should be run on (generally ubuntu-latest)",
   "action": "(string) GHA to run the step on; currently ignored, as GHA does not support dynamic action selection",
-  "job": "(string) JSON object detailing the job"
+  "job": "(object|string) JSON object detailing the job"
 }
 ```
 
