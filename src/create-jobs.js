@@ -151,6 +151,17 @@ function checks (config) {
         ),
         new Check(
             config.code_checks,
+            [fileTest('composer-require-checker.json')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                return createQaJobs('./vendor/bin/composer-require-checker check --config-file=composer-require-checker.json -n -v composer.json', config);
+            }
+        ),
+        new Check(
+            config.code_checks,
             [fileTest('phpbench.json')],
             /**
              * @param {Config} config

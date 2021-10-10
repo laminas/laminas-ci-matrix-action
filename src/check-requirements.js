@@ -58,6 +58,11 @@ export default function (diff) {
                     require_code_checks = true;
                 }
 
+                if (! require_code_checks && filename.match(/composer-require-checker\.json$/)) {
+                    core.info('- Enabling code checks');
+                    require_code_checks = true;
+                }
+
                 if (! require_code_checks && filename.match(/(^|[/\\])(\.github|src|lib|tests?|config|bin)[/\\]/)) {
                     core.info('- Enabling code checks');
                     require_code_checks = true;

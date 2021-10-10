@@ -10,6 +10,7 @@ Currently, it identifies the following:
 - PHPUnit tests based on the presence of `phpunit.xml.dist` or `phpunit.xml` files.
 - phpcs checks based on the presence of `phpcs.xml.dist` or `phpcs.xml` files.
 - Psalm checks based on the presence of `psalm.xml.dist` or `psalm.xml` files.
+- ComposerRequireChecker checks based on the presence of `composer-require-checker.json` file.
 - phpbench benchmarks based on the presence of a `phpbench.json`.
 - Markdown documentation based on the presence of a `mkdocs.yml` and/or markdown files in the `doc/book/` or `doc/books/` trees.
 - Codeception checks based on the presence of `codeception.yml.dist` or `codeception.yml` files.
