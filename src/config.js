@@ -20,9 +20,9 @@ const INSTALLABLE_VERSIONS = [
 
 /**
  * @param {Object} composerJson
- * @return {Array}
+ * @return {Array<string>}
  */
-function gatherVersions (composerJson) {
+function gatherVersions(composerJson) {
     if (JSON.stringify(composerJson) === '{}') {
         return [];
     }
@@ -36,6 +36,33 @@ function gatherVersions (composerJson) {
     });
 
     return versions;
+}
+
+/**
+ * @param {Object} composerJson
+ * @return {Array<string>}
+ */
+function gatherExtensions(composerJson) {
+    let extensions = new Set;
+    const EXTENSION_EXPRESSION = new RegExp(/^ext-/);
+
+    if (typeof composerJson.require === 'object') {
+        Object.keys(composerJson.require).forEach(function (requirement) {
+            if (requirement.match(EXTENSION_EXPRESSION)) {
+                extensions = extensions.add(requirement.replace(EXTENSION_EXPRESSION, ""));
+            }
+        })
+    }
+
+    if (typeof composerJson["require-dev"] === "object") {
+        Object.keys(composerJson["require-dev"]).forEach(function (requirement) {
+            if (requirement.match(EXTENSION_EXPRESSION)) {
+                extensions = extensions.add(requirement.replace(EXTENSION_EXPRESSION, ""));
+            }
+        })
+    }
+
+    return Array.from(extensions);
 }
 
 class Config {
@@ -66,6 +93,7 @@ class Config {
         this.code_checks = requirements.code_checks;
         this.doc_linting = requirements.doc_linting;
         this.versions    = gatherVersions(composerJson);
+        this.extensions  = gatherExtensions(composerJson);
 
         if (configuration["stablePHP"] !== undefined) {
             this.stable_version = configuration["stablePHP"];
@@ -79,7 +107,12 @@ class Config {
         }
 
         if (configuration.extensions !== undefined && Array.isArray(configuration.extensions)) {
-            this.extensions = configuration.extensions;
+            let extensions = new Set(this.extensions);
+            configuration.extensions.forEach(function (extension) {
+                extensions = extensions.add(extension);
+            });
+
+            this.extensions = Array.from(extensions);
         }
 
         if (configuration.ini !== undefined && Array.isArray(configuration.ini)) {
