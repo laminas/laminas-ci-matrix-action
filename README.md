@@ -84,7 +84,7 @@ The "job" element will have the following elements, but is not restricted to the
 
 ```json
 {
-  "php": "(optional) string PHP minor version to run against",
+  "php": "(optional) string PHP minor version to run against; @lowest and @latest aliases point to the minimum and maximum PHP versions which are supported by the project",
   "extensions": [
     "(optional) extension names to install; names are from the ondrej PHP repository, minus the php{VERSION}- prefix"
   ],
