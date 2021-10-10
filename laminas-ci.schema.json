@@ -31,7 +31,8 @@
                 "8.0": true,
                 "7.4": false
             },
-            "stablePHP": "8.0"
+            "stablePHP": "8.0",
+            "additional_composer_arguments": []
         },
         {
             "extensions": [
@@ -58,7 +59,8 @@
                 "8.0": true,
                 "7.4": false
             },
-            "stablePHP": "8.0"
+            "stablePHP": "8.0",
+            "additional_composer_arguments": []
         }
     ],
     "title": "Laminas CI configuration schema",
@@ -155,6 +157,9 @@
                         },
                         "additionalProperties": false
                     }
+                },
+                "additional_composer_arguments": {
+                    "$ref": "#/definitions/additional_composer_arguments"
                 }
             },
             "additionalProperties": false
@@ -224,6 +229,9 @@
                         },
                         "additionalProperties": false
                     }
+                },
+                "additional_composer_arguments": {
+                    "$ref": "#/definitions/additional_composer_arguments"
                 }
             },
             "additionalProperties": false
@@ -369,6 +377,23 @@
                 }
             },
             "additionalProperties": false
+        },
+        "additional_composer_arguments": {
+            "type": "array",
+            "title": "A list of composer arguments",
+            "description": "A list of required composer arguments which will be added to `composer install` and `composer update` commands.",
+            "examples": [
+                [
+                    "--no-scripts",
+                    "--no-plugins"
+                ]
+            ],
+            "items": {
+                "type": "string",
+                "minLength": 1,
+                "title": "An composer argument",
+                "description": "Can be either an argument or contain all arguments"
+            }
         }
     }
 }
