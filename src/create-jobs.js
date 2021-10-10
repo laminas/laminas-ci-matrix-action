@@ -157,9 +157,6 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                /**
-                 * @see https://github.com/maglnet/ComposerRequireChecker#configuration for config example
-                 */
                 return createQaJobs('./vendor/bin/composer-require-checker check --config-file=composer-require-checker.json -n -v composer.json', config);
             }
         ),
