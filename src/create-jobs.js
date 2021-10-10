@@ -167,10 +167,10 @@ function checks (config) {
              */
             function (config) {
                 const composerFile = parseJsonFile('composer.json', false);
-                let commandToExecute = 'vendor/bin/infection';
+                let commandToExecute = './vendor/bin/infection';
 
                 if (composerFile.hasOwnProperty('require-dev') && composerFile['require-dev'].hasOwnProperty('roave/infection-static-analysis-plugin')) {
-                    commandToExecute = 'vendor/bin/roave-infection-static-analysis-plugin';
+                    commandToExecute = './vendor/bin/roave-infection-static-analysis-plugin';
                 }
 
                 return createQaJobs(commandToExecute, config);
@@ -217,7 +217,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('vendor/bin/codecept run', config);
+                return createQaJobs('./vendor/bin/codecept run', config);
             }
         )
     ];
