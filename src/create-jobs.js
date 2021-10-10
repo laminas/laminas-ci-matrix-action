@@ -35,6 +35,7 @@ const createQaJobs = function (command, config) {
             config.php_ini,
             'locked',
             config.ignore_php_platform_requirements[config.minimum_version] ?? false,
+            config.additional_composer_arguments
         ))
     )];
 };
@@ -85,6 +86,7 @@ const createPHPUnitJob = function (version, deps, config) {
             config.php_ini,
             deps,
             config.ignore_php_platform_requirements[version] ?? false,
+            config.additional_composer_arguments
         )),
     );
 };
@@ -103,6 +105,7 @@ const createNoOpJob = function (config) {
             [],
             'locked',
             config.ignore_php_platform_requirements[config.stable_version] ?? false,
+            config.additional_composer_arguments
         )),
     )];
 };

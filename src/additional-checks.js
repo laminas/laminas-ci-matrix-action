@@ -148,6 +148,23 @@ const discoverIgnorePhpPlatformDetailsForCheck = function (job, ignore_php_platf
 };
 
 /**
+ * @param {Object} job
+ * @param {Array<String>} additional_composer_arguments
+ * @return {Array<String>}
+ */
+const discoverAdditionalComposerArgumentsForCheck = function (job, additional_composer_arguments) {
+    let unified_additional_composer_arguments = new Set(additional_composer_arguments);
+
+    if (typeof job.additional_composer_arguments !== undefined && Array.isArray(job.additional_composer_arguments)) {
+        job.additional_composer_arguments.forEach(
+            (argument) => unified_additional_composer_arguments = unified_additional_composer_arguments.add(argument)
+        );
+    }
+
+    return Array.from(unified_additional_composer_arguments);
+};
+
+/**
  * @param {String} name
  * @param {String} command
  * @param {Array} versions
@@ -155,6 +172,7 @@ const discoverIgnorePhpPlatformDetailsForCheck = function (job, ignore_php_platf
  * @param {Array} extensions
  * @param {Array} ini
  * @param {Object} ignore_php_platform_requirements
+ * @param {Array<String>} additional_composer_arguments
  * @return {Array} Array of jobs
  */
 const createAdditionalJobList = function (
@@ -164,7 +182,8 @@ const createAdditionalJobList = function (
     dependencies,
     extensions,
     ini,
-    ignore_php_platform_requirements
+    ignore_php_platform_requirements,
+    additional_composer_arguments
 ) {
     return versions.reduce(function (jobs, version) {
         return jobs.concat(dependencies.reduce(function (jobs, deps) {
@@ -176,7 +195,8 @@ const createAdditionalJobList = function (
                     extensions,
                     ini,
                     deps,
-                    ignore_php_platform_requirements[version] ?? false
+                    ignore_php_platform_requirements[version] ?? false,
+                    additional_composer_arguments
                 ))
             ));
         }, []));
@@ -211,7 +231,8 @@ export default function (checks, config) {
             dependencies,
             discoverExtensionsForCheck(checkConfig.job, config),
             discoverIniSettingsForCheck(checkConfig.job, config),
-            discoverIgnorePhpPlatformDetailsForCheck(checkConfig.job, config.ignore_php_platform_requirements)
+            discoverIgnorePhpPlatformDetailsForCheck(checkConfig.job, config.ignore_php_platform_requirements),
+            discoverAdditionalComposerArgumentsForCheck(checkConfig.job, config.additional_composer_arguments)
         ));
     }, []);
 };
