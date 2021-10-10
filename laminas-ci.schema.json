@@ -65,8 +65,9 @@
     ],
     "title": "Laminas CI configuration schema",
     "type": "object",
-    "oneOf": [
+    "anyOf": [
         {
+            "description": "Checks cannot be used in combination with additional checks",
             "properties": {
                 "extensions": {
                     "$ref": "#/definitions/extensions"
@@ -165,6 +166,7 @@
             "additionalProperties": false
         },
         {
+            "description": "Additional checks cannot be used in combination with checks",
             "properties": {
                 "extensions": {
                     "$ref": "#/definitions/extensions"
