@@ -6,6 +6,7 @@ import { Config } from './config.js';
 import { Job } from './job.js';
 import create_additional_jobs from './additional-checks.js';
 import validateAndNormalizeChecks from './validate-and-normalize-checks-from-config.js';
+import parseJsonFile from "./json.js";
 
 /**
  * @param {String} filename
@@ -172,6 +173,24 @@ function checks (config) {
             }
         ),
         new Check(
+            config.code_checks,
+            [fileTest('infection.json'), fileTest('infection.json.dist')],
+            /**
+             * @param {Config} config
+             * @return {Array}
+             */
+            function (config) {
+                const composerFile = parseJsonFile('composer.json', false);
+                let commandToExecute = './vendor/bin/infection';
+
+                if (composerFile.hasOwnProperty('require-dev') && composerFile['require-dev'].hasOwnProperty('roave/infection-static-analysis-plugin')) {
+                    commandToExecute = './vendor/bin/roave-infection-static-analysis-plugin';
+                }
+
+                return createQaJobs(commandToExecute, config);
+            }
+        ),
+        new Check(
             config.doc_linting,
             [fileTest('mkdocs.yml')],
             /**
@@ -212,7 +231,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('vendor/bin/codecept run', config);
+                return createQaJobs('./vendor/bin/codecept run', config);
             }
         )
     ];
