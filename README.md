@@ -11,6 +11,7 @@ Currently, it identifies the following:
 - phpcs checks based on the presence of `phpcs.xml.dist` or `phpcs.xml` files.
 - Psalm checks based on the presence of `psalm.xml.dist` or `psalm.xml` files.
 - phpbench benchmarks based on the presence of a `phpbench.json`.
+- Infection mutation tests based on the presence of `infection.json` or `infection.json.dist`. In case that `roave/infection-static-analysis-plugin` is installed, this will be used instead.
 - Markdown documentation based on the presence of a `mkdocs.yml` and/or markdown files in the `doc/book/` or `doc/books/` trees.
 - Codeception checks based on the presence of `codeception.yml.dist` or `codeception.yml` files.
 
