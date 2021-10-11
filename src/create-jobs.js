@@ -181,13 +181,12 @@ function checks (config) {
              */
             function (config) {
                 const composerFile = parseJsonFile('composer.json', false);
-                let commandToExecute = './vendor/bin/infection';
 
                 if (composerFile.hasOwnProperty('require-dev') && composerFile['require-dev'].hasOwnProperty('roave/infection-static-analysis-plugin')) {
-                    commandToExecute = './vendor/bin/roave-infection-static-analysis-plugin';
+                    return createQaJobs('phpdbg -qrr ./vendor/bin/roave-infection-static-analysis-plugin', config);
                 }
 
-                return createQaJobs(commandToExecute, config);
+                return createQaJobs('phpdbg -qrr ./vendor/bin/infection', config);
             }
         ),
         new Check(
