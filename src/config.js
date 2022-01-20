@@ -28,9 +28,10 @@ function gatherVersions(composerJson) {
     }
 
     let versions = [];
+    let composerPhpVersion = composerJson['require']['php'].replace(/,\s/i, ' ');
 
     INSTALLABLE_VERSIONS.forEach(function (version) {
-        if (semver.satisfies(version + '.0', composerJson['require']['php'])) {
+        if (semver.satisfies(version + '.0', composerPhpVersion)) {
             versions.push(version);
         }
     });
