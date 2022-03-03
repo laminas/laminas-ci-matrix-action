@@ -84,6 +84,7 @@ class Config {
         '8.0': true
     };
     additional_composer_arguments      = [];
+    exclude_strict_matching            = true;
 
     /**
      * @param {Requirements} requirements
@@ -154,6 +155,10 @@ class Config {
         if (configuration.additional_composer_arguments !== undefined && Array.isArray(configuration.additional_composer_arguments)) {
             const unified_additional_composer_arguments = new Set(configuration.additional_composer_arguments);
             this.additional_composer_arguments = Array.from(unified_additional_composer_arguments);
+        }
+
+        if (configuration.exclude_strict_matching !== undefined) {
+            this.exclude_strict_matching = configuration.exclude_strict_matching;
         }
     }
 }

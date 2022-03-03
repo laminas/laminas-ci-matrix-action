@@ -177,6 +177,9 @@
                 "exclude": {
                     "$ref": "#/definitions/exclude"
                 },
+                "exclude_strict_matching": {
+                    "$ref": "#/definitions/exclude_strict_matching"
+                },
                 "ignore_php_platform_requirements": {
                     "$ref": "#/definitions/ignore_php_platform_requirements"
                 },
@@ -309,6 +312,12 @@
                 },
                 "additionalProperties": false
             }
+        },
+        "exclude_strict_matching": {
+            "title": "Flag to toggle strict matching of exclude property values",
+            "type": "boolean",
+            "default": true,
+            "description": "When this flag is disabled, the property values for exclude do also check if the job values do start with the provided value. This becomes handy when one wants to exclude jobs based on their names. Every job gets the PHP version + composer dependency information appended and thus, exact matches are quite verbose."
         },
         "ignore_php_platform_requirements": {
             "type": "object",

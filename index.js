@@ -34,6 +34,7 @@ core.info(`Additional checks found: ${JSON.stringify(config.additional_checks)}`
 for (const [IGNORE_PLATFORM_REQS_PHP_VERSION, IGNORE_PLATFORM_REQS] of Object.entries(config.ignore_php_platform_requirements)) {
     core.info(`Ignoring php platform requirement for PHP ${IGNORE_PLATFORM_REQS_PHP_VERSION}: ${IGNORE_PLATFORM_REQS ? "Yes" : "No"}`);
 }
+core.info(`Strict exclusion policy: ${JSON.stringify(config.exclude_strict_matching)}`);
 
 let matrix = {include: createJobs(config)};
 

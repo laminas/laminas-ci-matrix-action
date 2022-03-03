@@ -236,7 +236,7 @@ function checks (config) {
     ];
 }
 
-const excludeJob = function (job, exclusion) {
+const excludeJob = function (job, exclusion, strict_comparison) {
     let matches = 0;
     Object.keys(job).forEach(function (jobKey) {
         Object.keys(exclusion).forEach(function (excludeKey) {
@@ -244,7 +244,18 @@ const excludeJob = function (job, exclusion) {
                 return;
             }
 
-            if (job[jobKey] === exclusion[excludeKey]) {
+            let jobValue = job[jobKey],
+                exclusionValue = exclusion[excludeKey];
+
+            if (jobValue === exclusionValue) {
+                matches += 1;
+            }
+
+            if (strict_comparison === true) {
+                return;
+            }
+
+            if (typeof jobValue === 'string' && typeof exclusionValue === 'string' && jobValue.startsWith(exclusionValue)) {
                 matches += 1;
             }
         });
@@ -271,7 +282,7 @@ export default function (config) {
         .filter(function (job) {
             let keep = true;
             config.exclude.forEach(function (exclusion) {
-                keep = keep && ! excludeJob(job, exclusion);
+                keep = keep && ! excludeJob(job, exclusion, config.exclude_strict_matching);
             });
 
             if (! keep) {
