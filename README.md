@@ -127,6 +127,7 @@ The package can include a configuration file in its root, `.laminas-ci.json`, wh
     {
     }
   ],
+  "exclude_strict_matching": true,
   "ignore_php_platform_requirements": {
       "8.0": true
   },
@@ -184,7 +185,7 @@ The tool discovers checks first, then appends any `additional_checks` are concat
 
 ### Excluding specific jobs
 
-The easiest way to exclude a single job is via the `name` parameter:
+One way to exclude a single job is via the `name` parameter:
 
 ```json
 {
@@ -195,6 +196,21 @@ The easiest way to exclude a single job is via the `name` parameter:
   ]
 }
 ```
+
+Starting with `1.12.0`, this can also be done via non-strict matching, e.g. like:
+
+```json
+{
+    "exclude": [
+        {
+            "name": "PHPUnit on PHP 8.0"
+        }
+    ],
+    "exclude_strict_matching": false
+}
+```
+
+This would exclude both `latest` and `lowest` PHPUnit checks on PHP 8.0, not just the one with `latest` dependencies as in the initial example.
 
 ## Testing matrix generation locally using Docker
 
