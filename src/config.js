@@ -137,21 +137,21 @@ class Config {
             this.additional_checks = configuration.additional_checks;
         }
 
-        if (configuration.ignore_php_platform_requirements !== undefined && typeof configuration.ignore_php_platform_requirements === 'object') {
+        if (configuration.ignore_php_platform_requirements !== undefined) {
             this.ignore_php_platform_requirements = Object.assign(
                 this.ignore_php_platform_requirements,
                 configuration.ignore_php_platform_requirements
             );
         }
 
-        if (configuration.ignore_platform_reqs_8 !== undefined && typeof configuration.ignore_platform_reqs_8 === 'boolean') {
+        if (configuration.ignore_platform_reqs_8 !== undefined) {
             core.warning('WARNING: You are using `ignore_platform_reqs_8` in your projects configuration.');
             core.warning('This is deprecated as of v1.9.0 of the matrix action and will be removed in future versions.');
             core.warning('Please use `ignore_php_platform_requirements` instead.');
             this.ignore_php_platform_requirements['8.0'] = configuration.ignore_platform_reqs_8;
         }
 
-        if (configuration.additional_composer_arguments !== undefined && Array.isArray(configuration.additional_composer_arguments)) {
+        if (configuration.additional_composer_arguments !== undefined) {
             const unified_additional_composer_arguments = new Set(configuration.additional_composer_arguments);
             this.additional_composer_arguments = Array.from(unified_additional_composer_arguments);
         }

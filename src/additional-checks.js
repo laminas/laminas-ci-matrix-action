@@ -8,24 +8,6 @@ import {Job} from "./job.js";
  * @return {Boolean}
  */
 const validateCheck = function (checkConfig) {
-    if (typeof checkConfig !== 'object' || checkConfig === null) {
-        // NOT AN OBJECT!
-        core.warning("Skipping additional check; not an object, or is null: " + JSON.stringify(checkConfig));
-        return false;
-    }
-
-    if (checkConfig.name === undefined || checkConfig.job === undefined) {
-        // Missing one or more required elements
-        core.warning("Skipping additional check due to missing name or job keys: " + JSON.stringify(checkConfig));
-        return false;
-    }
-
-    if (typeof checkConfig.job !== 'object' || checkConfig.job === null) {
-        // Job is malformed
-        core.warning("Invalid job provided for check; not an object, or is null: " + JSON.stringify(checkConfig.job));
-        return false;
-    }
-
     if (checkConfig.job.command === undefined) {
         // Job is missing a command
         core.warning("Invalid job provided for check; missing command property: " + JSON.stringify(checkConfig.job));
@@ -49,20 +31,15 @@ const discoverPhpVersionsForCheck = function (job, config) {
         return config.versions;
     }
 
-    if (typeof job.php === 'string') {
-        if (job.php === '@lowest') {
-            return [config.minimum_version];
-        }
-
-        if (job.php === '@latest') {
-            return [config.latest_version];
-        }
-
-        return [job.php];
+    if (job.php === '@lowest') {
+        return [config.minimum_version];
     }
 
-    core.warning("Invalid PHP version specified for check job; must be a string version or '*': " + JSON.stringify(job));
-    return false;
+    if (job.php === '@latest') {
+        return [config.latest_version];
+    }
+
+    return [job.php];
 };
 
 /**
@@ -105,12 +82,7 @@ const discoverDependencySetsForCheck = function (job, config) {
         return config.dependencies;
     }
 
-    if (typeof job.dependencies === 'string') {
-        return [job.dependencies];
-    }
-
-    core.warning("Invalid dependencies specified for check job; must be a string version or '*': " + JSON.stringify(job));
-    return false;
+    return [job.dependencies];
 };
 
 /**
@@ -121,7 +93,7 @@ const discoverDependencySetsForCheck = function (job, config) {
 const discoverIgnorePhpPlatformDetailsForCheck = function (job, ignore_php_platform_requirements) {
     let ignore_php_platform_requirements_for_job = ignore_php_platform_requirements;
 
-    if (typeof job.php !== 'string') {
+    if (job.php === undefined) {
         return ignore_php_platform_requirements_for_job;
     }
 
@@ -134,9 +106,9 @@ const discoverIgnorePhpPlatformDetailsForCheck = function (job, ignore_php_platf
         return ignore_php_platform_requirements_for_job;
     }
 
-    if (job.ignore_php_platform_requirement !== undefined && typeof job.ignore_php_platform_requirement === 'boolean') {
+    if (job.ignore_php_platform_requirement !== undefined) {
         ignore_php_platform_requirements_for_job[job.php] = job.ignore_php_platform_requirement;
-    } else if (job.ignore_platform_reqs_8 !== undefined && typeof job.ignore_platform_reqs_8 === 'boolean') {
+    } else if (job.ignore_platform_reqs_8 !== undefined) {
         core.warning('WARNING: You are using `ignore_platform_reqs_8` in your projects configuration.');
         core.warning('This is deprecated as of v1.9.0 of the matrix action and will be removed in future versions.');
         core.warning('Please use `ignore_php_platform_requirement` or `ignore_php_platform_requirements` in your additional check configuration instead.');
@@ -155,7 +127,7 @@ const discoverIgnorePhpPlatformDetailsForCheck = function (job, ignore_php_platf
 const discoverAdditionalComposerArgumentsForCheck = function (job, additional_composer_arguments) {
     let unified_additional_composer_arguments = new Set(additional_composer_arguments);
 
-    if (typeof job.additional_composer_arguments !== undefined && Array.isArray(job.additional_composer_arguments)) {
+    if (job.additional_composer_arguments !== undefined) {
         job.additional_composer_arguments.forEach(
             (argument) => unified_additional_composer_arguments = unified_additional_composer_arguments.add(argument)
         );

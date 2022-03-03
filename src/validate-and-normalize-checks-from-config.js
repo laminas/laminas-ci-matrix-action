@@ -3,6 +3,9 @@ import {INSTALLABLE_VERSIONS} from "./config.js";
 import create_additional_jobs from "./additional-checks.js";
 
 /**
+ * Normalizes provided job which can be passed as a string via `.laminas-ci.json`.
+ * Therefore, the type-checks here are not covered by the `laminas-ci.schema.json` and thus must not be removed.
+ *
  * @param {(Object|String)} job
  * @return {(Object|Boolean)} Returns false if job is invalid; otherwise, returns normalized JSON object of job
  */
