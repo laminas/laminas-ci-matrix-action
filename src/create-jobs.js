@@ -22,13 +22,14 @@ const fileTest = function (filename) {
 };
 
 /**
+ * @param {String} name
  * @param {String} command
  * @param {Config} config
  * @return {Array}
  */
-const createQaJobs = function (command, config) {
+const createQaCheck = function (name, command, config) {
     return [new Job(
-        command + ' on PHP ' + config.minimum_version,
+        name + ' on PHP ' + config.minimum_version,
         JSON.stringify(new Command(
             command,
             config.minimum_version,
@@ -37,7 +38,8 @@ const createQaJobs = function (command, config) {
             'locked',
             config.ignore_php_platform_requirements[config.minimum_version] ?? false,
             config.additional_composer_arguments
-        ))
+        )),
+        command + ' on PHP ' + config.minimum_version
     )];
 };
 
@@ -136,7 +138,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('./vendor/bin/phpcs -q --report=checkstyle | cs2pr', config);
+                return createQaCheck('Codestandard', './vendor/bin/phpcs -q --report=checkstyle | cs2pr', config);
             }
         ),
         new Check(
@@ -147,7 +149,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('./vendor/bin/psalm --shepherd --stats --output-format=github --no-cache', config);
+                return createQaCheck('Static Code Analysis', './vendor/bin/psalm --shepherd --stats --output-format=github --no-cache', config);
             }
         ),
         new Check(
@@ -158,7 +160,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('./vendor/bin/composer-require-checker check --config-file=composer-require-checker.json -n -v composer.json', config);
+                return createQaCheck('Composer Require Checker', './vendor/bin/composer-require-checker check --config-file=composer-require-checker.json -n -v composer.json', config);
             }
         ),
         new Check(
@@ -169,7 +171,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('./vendor/bin/phpbench run --revs=2 --iterations=2 --report=aggregate', config);
+                return createQaCheck('Benchmarks','./vendor/bin/phpbench run --revs=2 --iterations=2 --report=aggregate', config);
             }
         ),
         new Check(
@@ -183,10 +185,10 @@ function checks (config) {
                 const composerFile = parseJsonFile('composer.json', false);
 
                 if (composerFile.hasOwnProperty('require-dev') && composerFile['require-dev'].hasOwnProperty('roave/infection-static-analysis-plugin')) {
-                    return createQaJobs('phpdbg -qrr ./vendor/bin/roave-infection-static-analysis-plugin', config);
+                    return createQaCheck('Infection (via Roave static analysis plugin)', 'phpdbg -qrr ./vendor/bin/roave-infection-static-analysis-plugin', config);
                 }
 
-                return createQaJobs('phpdbg -qrr ./vendor/bin/infection', config);
+                return createQaCheck('Infection', 'phpdbg -qrr ./vendor/bin/infection', config);
             }
         ),
         new Check(
@@ -197,7 +199,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('yamllint -d relaxed --no-warnings mkdocs.yml', config);
+                return createQaCheck('YAML lint', 'yamllint -d relaxed --no-warnings mkdocs.yml', config);
             }
         ),
         new Check(
@@ -208,7 +210,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('markdownlint doc/book/**/*.md', config);
+                return createQaCheck('Markdown lint (doc/book/*)', 'markdownlint doc/book/**/*.md', config);
             }
         ),
         new Check(
@@ -219,7 +221,7 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('markdownlint docs/book/**/*.md', config);
+                return createQaCheck('Markdown lint (docs/book/*)', 'markdownlint docs/book/**/*.md', config);
             }
         ),
         new Check(
@@ -230,12 +232,13 @@ function checks (config) {
              * @return {Array}
              */
             function (config) {
-                return createQaJobs('./vendor/bin/codecept run', config);
+                return createQaCheck('Codeception', './vendor/bin/codecept run', config);
             }
         )
     ];
 }
 
+/** @var {Job} job */
 const excludeJob = function (job, exclusion) {
     let matches = 0;
     Object.keys(job).forEach(function (jobKey) {
@@ -244,7 +247,13 @@ const excludeJob = function (job, exclusion) {
                 return;
             }
 
-            if (job[jobKey] === exclusion[excludeKey]) {
+            let jobValue = job[jobKey],
+                exclusionValue = exclusion[excludeKey];
+
+            if (jobValue === exclusionValue) {
+                matches += 1;
+            } else if (excludeKey === 'name' && job.deprecatedName !== '' && exclusionValue === job.deprecatedName) {
+                // BC compatibility to ensure projects which are excluding jobs by name will continue to work
                 matches += 1;
             }
         });

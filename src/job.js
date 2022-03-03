@@ -6,10 +6,12 @@ export class Job {
     job = '';
     os = OS;
     action = ACTION;
+    deprecatedName = '';
 
-    constructor(name, job) {
+    constructor(name, job, deprecatedName = '') {
         this.name = name;
         this.job = job;
+        this.deprecatedName = deprecatedName;
     }
 
     toJSON() {
