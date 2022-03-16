@@ -1,4 +1,4 @@
-FROM node:current-alpine
+FROM node:17-alpine
 
 LABEL "repository"="http://github.com/laminas/laminas-ci-matrix-action"
 LABEL "homepage"="http://github.com/laminas/laminas-ci-matrix-action"

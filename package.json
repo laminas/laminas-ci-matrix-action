@@ -1,6 +1,6 @@
 {
   "engines": {
-    "node": ">=17.0.0"
+    "node": "^17"
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
