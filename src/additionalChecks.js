@@ -1,7 +1,7 @@
 import core from '@actions/core';
-import {Command} from "./command.js";
-import {Config, CURRENT_STABLE} from "./config.js";
-import {Job} from "./job.js";
+import { Command } from './command.js';
+import { CURRENT_STABLE } from './config.js';
+import { Job } from './job.js';
 
 /**
  * @param {Object} checkConfig
@@ -10,25 +10,29 @@ import {Job} from "./job.js";
 const validateCheck = function (checkConfig) {
     if (typeof checkConfig !== 'object' || checkConfig === null) {
         // NOT AN OBJECT!
-        core.warning("Skipping additional check; not an object, or is null: " + JSON.stringify(checkConfig));
+        core.warning(`Skipping additional check; not an object, or is null: ${  JSON.stringify(checkConfig)}`);
+
         return false;
     }
 
     if (checkConfig.name === undefined || checkConfig.job === undefined) {
         // Missing one or more required elements
-        core.warning("Skipping additional check due to missing name or job keys: " + JSON.stringify(checkConfig));
+        core.warning(`Skipping additional check due to missing name or job keys: ${  JSON.stringify(checkConfig)}`);
+
         return false;
     }
 
     if (typeof checkConfig.job !== 'object' || checkConfig.job === null) {
         // Job is malformed
-        core.warning("Invalid job provided for check; not an object, or is null: " + JSON.stringify(checkConfig.job));
+        core.warning(`Invalid job provided for check; not an object, or is null: ${  JSON.stringify(checkConfig.job)}`);
+
         return false;
     }
 
     if (checkConfig.job.command === undefined) {
         // Job is missing a command
-        core.warning("Invalid job provided for check; missing command property: " + JSON.stringify(checkConfig.job));
+        core.warning(`Invalid job provided for check; missing command property: ${  JSON.stringify(checkConfig.job)}`);
+
         return false;
     }
 
@@ -42,7 +46,7 @@ const validateCheck = function (checkConfig) {
  */
 const discoverPhpVersionsForCheck = function (job, config) {
     if (job.php === undefined) {
-        return [CURRENT_STABLE];
+        return [ CURRENT_STABLE ];
     }
 
     if (job.php === '*') {
@@ -51,17 +55,18 @@ const discoverPhpVersionsForCheck = function (job, config) {
 
     if (typeof job.php === 'string') {
         if (job.php === '@lowest') {
-            return [config.minimum_version];
+            return [ config.minimumVersion ];
         }
 
         if (job.php === '@latest') {
-            return [config.latest_version];
+            return [ config.latestVersion ];
         }
 
-        return [job.php];
+        return [ job.php ];
     }
 
-    core.warning("Invalid PHP version specified for check job; must be a string version or '*': " + JSON.stringify(job));
+    core.warning(`Invalid PHP version specified for check job; must be a string version or '*': ${  JSON.stringify(job)}`);
+
     return false;
 };
 
@@ -88,7 +93,7 @@ const discoverIniSettingsForCheck = function (job, config) {
         return job.ini;
     }
 
-    return config.php_ini;
+    return config.phpIni;
 };
 
 /**
@@ -98,7 +103,7 @@ const discoverIniSettingsForCheck = function (job, config) {
  */
 const discoverDependencySetsForCheck = function (job, config) {
     if (job.dependencies === undefined) {
-        return ['locked'];
+        return [ 'locked' ];
     }
 
     if (job.dependencies === '*') {
@@ -106,62 +111,63 @@ const discoverDependencySetsForCheck = function (job, config) {
     }
 
     if (typeof job.dependencies === 'string') {
-        return [job.dependencies];
+        return [ job.dependencies ];
     }
 
-    core.warning("Invalid dependencies specified for check job; must be a string version or '*': " + JSON.stringify(job));
+    core.warning(`Invalid dependencies specified for check job; must be a string version or '*': ${  JSON.stringify(job)}`);
+
     return false;
 };
 
 /**
  * @param {Object} job
- * @param {Object} ignore_php_platform_requirements
+ * @param {Object} ignorePhpPlatformRequirements
  * @return {Object}
  */
-const discoverIgnorePhpPlatformDetailsForCheck = function (job, ignore_php_platform_requirements) {
-    let ignore_php_platform_requirements_for_job = ignore_php_platform_requirements;
+const discoverIgnorePhpPlatformDetailsForCheck = function (job, ignorePhpPlatformRequirements) {
+    let ignorePhpPlatformRequirementsForJob = ignorePhpPlatformRequirements;
 
     if (typeof job.php !== 'string') {
-        return ignore_php_platform_requirements_for_job;
+        return ignorePhpPlatformRequirementsForJob;
     }
 
     if (job.php === '*') {
-        ignore_php_platform_requirements_for_job = Object.assign(
-            ignore_php_platform_requirements_for_job,
+        ignorePhpPlatformRequirementsForJob = Object.assign(
+            ignorePhpPlatformRequirementsForJob,
             job.ignore_php_platform_requirements ?? {}
         );
 
-        return ignore_php_platform_requirements_for_job;
+        return ignorePhpPlatformRequirementsForJob;
     }
 
     if (job.ignore_php_platform_requirement !== undefined && typeof job.ignore_php_platform_requirement === 'boolean') {
-        ignore_php_platform_requirements_for_job[job.php] = job.ignore_php_platform_requirement;
+        ignorePhpPlatformRequirementsForJob[job.php] = job.ignore_php_platform_requirement;
     } else if (job.ignore_platform_reqs_8 !== undefined && typeof job.ignore_platform_reqs_8 === 'boolean') {
         core.warning('WARNING: You are using `ignore_platform_reqs_8` in your projects configuration.');
         core.warning('This is deprecated as of v1.9.0 of the matrix action and will be removed in future versions.');
         core.warning('Please use `ignore_php_platform_requirement` or `ignore_php_platform_requirements` in your additional check configuration instead.');
 
-        ignore_php_platform_requirements_for_job['8.0'] = job.ignore_platform_reqs_8;
+        ignorePhpPlatformRequirementsForJob['8.0'] = job.ignore_platform_reqs_8;
     }
 
-    return Object.assign(ignore_php_platform_requirements, ignore_php_platform_requirements_for_job);
+    return Object.assign(ignorePhpPlatformRequirements, ignorePhpPlatformRequirementsForJob);
 };
 
 /**
  * @param {Object} job
- * @param {Array<String>} additional_composer_arguments
+ * @param {Array<String>} additionalComposerArguments
  * @return {Array<String>}
  */
-const discoverAdditionalComposerArgumentsForCheck = function (job, additional_composer_arguments) {
-    let unified_additional_composer_arguments = new Set(additional_composer_arguments);
+const discoverAdditionalComposerArgumentsForCheck = function (job, additionalComposerArguments) {
+    let unifiedAdditionalComposerArguments = new Set(additionalComposerArguments);
 
-    if (typeof job.additional_composer_arguments !== undefined && Array.isArray(job.additional_composer_arguments)) {
-        job.additional_composer_arguments.forEach(
-            (argument) => unified_additional_composer_arguments = unified_additional_composer_arguments.add(argument)
-        );
+    if (typeof job.additional_composer_arguments !== 'undefined' && Array.isArray(job.additional_composer_arguments)) {
+        job.additional_composer_arguments.forEach((argument) => {
+            unifiedAdditionalComposerArguments = unifiedAdditionalComposerArguments.add(argument);
+        });
     }
 
-    return Array.from(unified_additional_composer_arguments);
+    return [ ...unifiedAdditionalComposerArguments ];
 };
 
 /**
@@ -171,8 +177,8 @@ const discoverAdditionalComposerArgumentsForCheck = function (job, additional_co
  * @param {Array} dependencies
  * @param {Array} extensions
  * @param {Array} ini
- * @param {Object} ignore_php_platform_requirements
- * @param {Array<String>} additional_composer_arguments
+ * @param {Object} ignorePhpPlatformRequirements
+ * @param {Array<String>} additionalComposerArguments
  * @return {Array} Array of jobs
  */
 const createAdditionalJobList = function (
@@ -182,24 +188,24 @@ const createAdditionalJobList = function (
     dependencies,
     extensions,
     ini,
-    ignore_php_platform_requirements,
-    additional_composer_arguments
+    ignorePhpPlatformRequirements,
+    additionalComposerArguments
 ) {
-    return versions.reduce(function (jobs, version) {
-        return jobs.concat(dependencies.reduce(function (jobs, deps) {
-            return jobs.concat(new Job(
-                name + " on PHP " + version + " with " + deps + " dependencies",
+    return versions.reduce((jobs, version) => {
+        return [ ...jobs, dependencies.reduce((jobs, deps) => {
+            return [ ...jobs, new Job(
+                `${name  } on PHP ${  version  } with ${  deps  } dependencies`,
                 JSON.stringify(new Command(
                     command,
                     version,
                     extensions,
                     ini,
                     deps,
-                    ignore_php_platform_requirements[version] ?? false,
-                    additional_composer_arguments
+                    ignorePhpPlatformRequirements[version] ?? false,
+                    additionalComposerArguments
                 ))
-            ));
-        }, []));
+            ) ];
+        }) ];
     }, []);
 };
 
@@ -209,30 +215,32 @@ const createAdditionalJobList = function (
  * @return {Array} Array of jobs
  */
 export default function (checks, config) {
-    return checks.reduce(function (jobs, checkConfig) {
-        if (! validateCheck(checkConfig)) {
+    return checks.reduce((jobs, checkConfig) => {
+        if (!validateCheck(checkConfig)) {
             return jobs;
         }
 
-        let versions = discoverPhpVersionsForCheck(checkConfig.job, config);
+        const versions = discoverPhpVersionsForCheck(checkConfig.job, config);
+
         if (versions === false) {
             return jobs;
         }
 
-        let dependencies = discoverDependencySetsForCheck(checkConfig.job, config);
+        const dependencies = discoverDependencySetsForCheck(checkConfig.job, config);
+
         if (dependencies === false) {
             return jobs;
         }
 
-        return jobs.concat(createAdditionalJobList(
+        return [ ...jobs, ...createAdditionalJobList(
             checkConfig.name,
             checkConfig.job.command,
             versions,
             dependencies,
             discoverExtensionsForCheck(checkConfig.job, config),
             discoverIniSettingsForCheck(checkConfig.job, config),
-            discoverIgnorePhpPlatformDetailsForCheck(checkConfig.job, config.ignore_php_platform_requirements),
-            discoverAdditionalComposerArgumentsForCheck(checkConfig.job, config.additional_composer_arguments)
-        ));
+            discoverIgnorePhpPlatformDetailsForCheck(checkConfig.job, config.ignorePhpPlatformRequirements),
+            discoverAdditionalComposerArgumentsForCheck(checkConfig.job, config.additionalComposerArguments)
+        ) ];
     }, []);
-};
+}

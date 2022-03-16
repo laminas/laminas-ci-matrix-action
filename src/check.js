@@ -1,5 +1,3 @@
-import { Config } from './config.js';
-
 /**
  * @callback matchCallback
  * @return {Boolean}
@@ -20,19 +18,21 @@ const testCheck = function (matches, callback) {
 };
 
 export class Check {
-    run_check = true;
-    matchers  = [];
-    job_generator;
+    runCheck = true;
+
+    matchers = [];
+
+    jobGenerator;
 
     /**
-     * @param {Boolean} run_check
+     * @param {Boolean} runCheck
      * @param {Array} matchers
-     * @param {job_generator} job_generator
+     * @param {jobGenerator} jobGenerator
      */
-    constructor(run_check, matchers, job_generator) {
-        this.run_check     = run_check;
-        this.matchers      = matchers;
-        this.job_generator = job_generator;
+    constructor(runCheck, matchers, jobGenerator) {
+        this.runCheck = runCheck;
+        this.matchers = matchers;
+        this.jobGenerator = jobGenerator;
     }
 
     /**
@@ -40,11 +40,13 @@ export class Check {
      * @return {Array}
      */
     jobs(config) {
-        let job_generator = this.job_generator;
-        return  this.matches() ? job_generator(config) : [];
+        const jobGenerator = this.jobGenerator;
+
+
+        return this.matches() ? jobGenerator(config) : [];
     }
 
     matches() {
-        return this.run_check && this.matchers.reduce(testCheck, false);
+        return this.runCheck && this.matchers.reduce(testCheck, false);
     }
-};
+}

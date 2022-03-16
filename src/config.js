@@ -1,10 +1,9 @@
-import core from "@actions/core";
-import fs from "fs";
-import semver from "semver";
-import { Requirements } from "./check-requirements.js";
-import parseJsonFile from "./json.js";
+import fs from 'fs';
+import core from '@actions/core';
+import semver from 'semver';
+import parseJsonFile from './json.js';
 
-const CURRENT_STABLE       = '7.4';
+const CURRENT_STABLE = '7.4';
 
 /** NOTE: Please keep this list ordered as the ordering is used to detect the minimum supported version of a project */
 const INSTALLABLE_VERSIONS = [
@@ -15,7 +14,7 @@ const INSTALLABLE_VERSIONS = [
     '7.3',
     '7.4',
     '8.0',
-    '8.1',
+    '8.1'
 ];
 
 /**
@@ -27,11 +26,11 @@ function gatherVersions(composerJson) {
         return [];
     }
 
-    let versions = [];
-    let composerPhpVersion = composerJson['require']['php'].replace(/,\s/i, ' ');
+    const versions = [];
+    const composerPhpVersion = composerJson.require.php.replace(/,\s/, ' ');
 
-    INSTALLABLE_VERSIONS.forEach(function (version) {
-        if (semver.satisfies(version + '.0', composerPhpVersion)) {
+    INSTALLABLE_VERSIONS.forEach((version) => {
+        if (semver.satisfies(`${version  }.0`, composerPhpVersion)) {
             versions.push(version);
         }
     });
@@ -40,50 +39,73 @@ function gatherVersions(composerJson) {
 }
 
 /**
+ * @param {Object} requirements
+ * @return {Set<string>}
+ */
+function extractPhpExtensionsFromComposerRequirements(requirements) {
+    const EXTENSION_EXPRESSION = /^ext-/;
+
+    let extensions = new Set();
+
+    Object.keys(requirements).forEach((requirement) => {
+        if (EXTENSION_EXPRESSION.test(requirement)) {
+            extensions = extensions.add(requirement.replace(EXTENSION_EXPRESSION, ''));
+        }
+    });
+
+    return extensions;
+}
+
+/**
  * @param {Object} composerJson
  * @return {Array<string>}
  */
 function gatherExtensions(composerJson) {
-    let extensions = new Set;
-    const EXTENSION_EXPRESSION = new RegExp(/^ext-/);
+    let extensions = new Set();
 
     if (typeof composerJson.require === 'object') {
-        Object.keys(composerJson.require).forEach(function (requirement) {
-            if (requirement.match(EXTENSION_EXPRESSION)) {
-                extensions = extensions.add(requirement.replace(EXTENSION_EXPRESSION, ""));
-            }
-        })
+        extensions = new Set([ ...extensions, ...extractPhpExtensionsFromComposerRequirements(composerJson.require) ]);
     }
 
-    if (typeof composerJson["require-dev"] === "object") {
-        Object.keys(composerJson["require-dev"]).forEach(function (requirement) {
-            if (requirement.match(EXTENSION_EXPRESSION)) {
-                extensions = extensions.add(requirement.replace(EXTENSION_EXPRESSION, ""));
-            }
-        })
+    if (typeof composerJson['require-dev'] === 'object') {
+        extensions = new Set([ ...extensions, ...extractPhpExtensionsFromComposerRequirements(composerJson['require-dev']) ]);
     }
 
-    return Array.from(extensions);
+    return [ ...extensions ];
 }
 
 class Config {
-    code_checks                        = true;
-    doc_linting                        = true;
-    versions                           = [];
-    stable_version                     = CURRENT_STABLE;
-    minimum_version                    = CURRENT_STABLE;
-    latest_version                     = CURRENT_STABLE;
-    locked_dependencies                = false;
-    extensions                         = [];
-    php_ini                            = ['memory_limit        = -1'];
-    dependencies                       = ['lowest', 'latest'];
-    checks                             = [];
-    exclude                            = [];
-    additional_checks                  = [];
-    ignore_php_platform_requirements   = {
-        '8.0': true
+    codeChecks = true;
+
+    docLinting = true;
+
+    versions = [];
+
+    stableVersion = CURRENT_STABLE;
+
+    minimumVersion = CURRENT_STABLE;
+
+    latestVersion = CURRENT_STABLE;
+
+    lockedDependencies = false;
+
+    extensions = [];
+
+    phpIni = [ 'memory_limit        = -1' ];
+
+    dependencies = [ 'lowest', 'latest' ];
+
+    checks = [];
+
+    exclude = [];
+
+    additionalChecks = [];
+
+    ignorePhpPlatformRequirements = {
+        '8.0' : true
     };
-    additional_composer_arguments      = [];
+
+    additionalComposerArguments = [];
 
     /**
      * @param {Requirements} requirements
@@ -92,37 +114,38 @@ class Config {
      * @param {String} composerLockFile
      */
     constructor(requirements, configuration, composerJson, composerLockFile) {
-        this.code_checks = requirements.code_checks;
-        this.doc_linting = requirements.doc_linting;
-        this.versions    = gatherVersions(composerJson);
-        this.extensions  = gatherExtensions(composerJson);
+        this.codeChecks = requirements.codeChecks;
+        this.docLinting = requirements.docLinting;
+        this.versions = gatherVersions(composerJson);
+        this.extensions = gatherExtensions(composerJson);
 
-        if (configuration["stablePHP"] !== undefined) {
-            this.stable_version = configuration["stablePHP"];
-            this.minimum_version = this.stable_version;
-            this.latest_version = this.stable_version;
+        if (configuration.stablePHP !== undefined) {
+            this.stableVersion = configuration.stablePHP;
+            this.minimumVersion = this.stableVersion;
+            this.latestVersion = this.stableVersion;
         }
 
         if (this.versions.length > 0) {
-            this.minimum_version = this.versions[0]
-            this.latest_version = this.versions[this.versions.length - 1]
+            this.minimumVersion = this.versions[0];
+            this.latestVersion = this.versions[this.versions.length - 1];
         }
 
         if (configuration.extensions !== undefined && Array.isArray(configuration.extensions)) {
             let extensions = new Set(this.extensions);
-            configuration.extensions.forEach(function (extension) {
+
+            configuration.extensions.forEach((extension) => {
                 extensions = extensions.add(extension);
             });
 
-            this.extensions = Array.from(extensions);
+            this.extensions = [ ...extensions ];
         }
 
         if (configuration.ini !== undefined && Array.isArray(configuration.ini)) {
-            this.php_ini = this.php_ini.concat(configuration.ini);
+            this.phpIni = [ ...this.phpIni, ...configuration.ini ];
         }
 
         if (fs.existsSync(composerLockFile)) {
-            this.locked_dependencies = true;
+            this.lockedDependencies = true;
         }
 
         if (configuration.checks !== undefined && Array.isArray(configuration.checks)) {
@@ -134,12 +157,12 @@ class Config {
         }
 
         if (configuration.additional_checks !== undefined && Array.isArray(configuration.additional_checks)) {
-            this.additional_checks = configuration.additional_checks;
+            this.additionalChecks = configuration.additional_checks;
         }
 
         if (configuration.ignore_php_platform_requirements !== undefined && typeof configuration.ignore_php_platform_requirements === 'object') {
-            this.ignore_php_platform_requirements = Object.assign(
-                this.ignore_php_platform_requirements,
+            this.ignorePhpPlatformRequirements = Object.assign(
+                this.ignorePhpPlatformRequirements,
                 configuration.ignore_php_platform_requirements
             );
         }
@@ -148,12 +171,16 @@ class Config {
             core.warning('WARNING: You are using `ignore_platform_reqs_8` in your projects configuration.');
             core.warning('This is deprecated as of v1.9.0 of the matrix action and will be removed in future versions.');
             core.warning('Please use `ignore_php_platform_requirements` instead.');
-            this.ignore_php_platform_requirements['8.0'] = configuration.ignore_platform_reqs_8;
+            this.ignorePhpPlatformRequirements['8.0'] = configuration.ignore_platform_reqs_8;
         }
 
-        if (configuration.additional_composer_arguments !== undefined && Array.isArray(configuration.additional_composer_arguments)) {
-            const unified_additional_composer_arguments = new Set(configuration.additional_composer_arguments);
-            this.additional_composer_arguments = Array.from(unified_additional_composer_arguments);
+        if (
+            configuration.additional_composer_arguments !== undefined
+            && Array.isArray(configuration.additional_composer_arguments)
+        ) {
+            const unifiedAdditionalComposerArguments = new Set(configuration.additional_composer_arguments);
+
+            this.additionalComposerArguments = [ ...unifiedAdditionalComposerArguments ];
         }
     }
 }
@@ -167,11 +194,11 @@ class Config {
  */
 const createConfig = function (requirements, configFile, composerJsonFile, composerLockFile) {
     return new Config(requirements, parseJsonFile(configFile), parseJsonFile(composerJsonFile), composerLockFile);
-}
+};
 
 export {
     CURRENT_STABLE,
     Config,
-    INSTALLABLE_VERSIONS,
+    INSTALLABLE_VERSIONS
 };
 export default createConfig;
