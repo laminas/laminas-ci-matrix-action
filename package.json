@@ -9,7 +9,6 @@
   },
   "type": "module",
   "devDependencies": {
-    "@babel/eslint-parser": "^7.17.0",
     "eslint": "^8.11.0",
     "eslint-config-incredible": "^2.4.2",
     "eslint-config-standard": "^17.0.0-1",
