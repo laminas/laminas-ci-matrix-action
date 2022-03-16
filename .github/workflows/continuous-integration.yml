@@ -17,6 +17,6 @@ jobs:
         with:
           check-latest: true
       - name: "Install node modules"
-        run: "npm install --no-save"
+        run: "npm ci"
       - name: Run ESLint
         run: "node_modules/.bin/eslint index.js src"
