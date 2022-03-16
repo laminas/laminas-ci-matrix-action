@@ -1,5 +1,4 @@
 name: "Continuous Integration"
-
 on:
   pull_request: {}
   push:
@@ -103,10 +102,14 @@ jobs:
         run: diff --color <(echo '${{ steps.expected_matrix.outputs.value }}') <(echo '${{ steps.matrix_generation.outputs.matrix }}')
 
   linting:
-    runs-on: "node:current-alpine"
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v2
-      - name: Install node modules
-        run: npm install --no-save
-      - name: Run
-        run: node_modules/.bin/eslint index.js src
+      - uses: "actions/checkout@v2"
+      - uses: "actions/setup-node@v2"
+        with:
+          node-version: '17'
+          check-latest: true
+      - name: "Install node modules"
+        run: "npm install --no-save"
+      - name: Run ESLint
+        run: "node_modules/.bin/eslint index.js src"
