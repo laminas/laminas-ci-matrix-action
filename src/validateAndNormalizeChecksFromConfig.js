@@ -15,7 +15,7 @@ const normalizeJob = function (job) {
         try {
             parsedJob = JSON.parse(job);
         } catch {
-            core.warning(`Unparseable JSON job provided: ${  job}`);
+            core.warning(`Unparseable JSON job provided: ${job}`);
 
             return false;
         }
@@ -24,37 +24,37 @@ const normalizeJob = function (job) {
     }
 
     if (typeof normalizedJob !== 'object' || normalizedJob === null) {
-        core.warning(`Invalid job provided; must be a JSON string or an object: ${  JSON.stringify(job)}`);
+        core.warning(`Invalid job provided; must be a JSON string or an object: ${JSON.stringify(job)}`);
 
         return false;
     }
 
     if (typeof normalizedJob.php === 'undefined' || (normalizedJob.php !== '*' && !INSTALLABLE_VERSIONS.includes(normalizedJob.php))) {
-        core.warning(`Invalid job provided; no PHP version or unknown PHP version specified: ${  JSON.stringify(normalizedJob)}`);
+        core.warning(`Invalid job provided; no PHP version or unknown PHP version specified: ${JSON.stringify(normalizedJob)}`);
 
         return false;
     }
 
     if (typeof normalizedJob.command === 'undefined') {
-        core.warning(`Invalid job provided; no command specified: ${  JSON.stringify(job)}`);
+        core.warning(`Invalid job provided; no command specified: ${JSON.stringify(job)}`);
 
         return false;
     }
 
     if (typeof normalizedJob.extensions !== 'undefined' && !Array.isArray(normalizedJob.extensions)) {
-        core.warning(`Invalid job provided; extensions is not an Array: ${  JSON.stringify(normalizedJob)}`);
+        core.warning(`Invalid job provided; extensions is not an Array: ${JSON.stringify(normalizedJob)}`);
 
         return false;
     }
 
     if (typeof normalizedJob.ini !== 'undefined' && !Array.isArray(normalizedJob.ini)) {
-        core.warning(`Invalid job provided; ini is not an Array: ${  JSON.stringify(normalizedJob)}`);
+        core.warning(`Invalid job provided; ini is not an Array: ${JSON.stringify(normalizedJob)}`);
 
         return false;
     }
 
     if (typeof normalizedJob.dependencies !== 'undefined' && ![ 'locked', 'latest', 'lowest', '*' ].includes(normalizedJob.dependencies)) {
-        core.warning(`Invalid job provided; invalid dependency set: ${  JSON.stringify(normalizedJob)}`);
+        core.warning(`Invalid job provided; invalid dependency set: ${JSON.stringify(normalizedJob)}`);
 
         return false;
     }
@@ -68,13 +68,13 @@ const normalizeJob = function (job) {
  */
 const validateAndNormalizeCheck = function (check) {
     if (check.name === undefined) {
-        core.warning(`Invalid check detected; missing name: ${  JSON.stringify(check)}`);
+        core.warning(`Invalid check detected; missing name: ${JSON.stringify(check)}`);
 
         return null;
     }
 
     if (check.job === undefined) {
-        core.warning(`Invalid check detected; missing job: ${  JSON.stringify(check)}`);
+        core.warning(`Invalid check detected; missing job: ${JSON.stringify(check)}`);
 
         return null;
     }

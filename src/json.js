@@ -14,7 +14,7 @@ const parseJsonFile = function (configFile, allowMissing = true) {
     try {
         return JSON.parse(fs.readFileSync(configFile));
     } catch (error) {
-        core.setFailed(`Failed to parse ${  configFile  }: ${  error.message}`);
+        core.setFailed(`Failed to parse ${configFile}: ${error.message}`);
         process.exit(1);
     }
 };

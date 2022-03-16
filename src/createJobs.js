@@ -24,7 +24,7 @@ const fileTest = function (filename) {
  */
 const createQaJobs = function (command, config) {
     return [ new Job(
-        `${command  } on PHP ${  config.minimumVersion}`,
+        `${command} on PHP ${config.minimumVersion}`,
         JSON.stringify(new Command(
             command,
             config.minimumVersion,
@@ -76,7 +76,7 @@ const createPHPUnitJobs = function (config) {
  */
 const createPHPUnitJob = function (version, deps, config) {
     return new Job(
-        `PHPUnit on PHP ${  version  } with ${  deps  } dependencies`,
+        `PHPUnit on PHP ${version} with ${deps} dependencies`,
         JSON.stringify(new Command(
             './vendor/bin/phpunit',
             version,
