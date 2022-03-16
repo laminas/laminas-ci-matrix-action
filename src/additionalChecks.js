@@ -10,28 +10,28 @@ import { Job } from './job.js';
 const validateCheck = function (checkConfig) {
     if (typeof checkConfig !== 'object' || checkConfig === null) {
         // NOT AN OBJECT!
-        core.warning(`Skipping additional check; not an object, or is null: ${  JSON.stringify(checkConfig)}`);
+        core.warning(`Skipping additional check; not an object, or is null: ${JSON.stringify(checkConfig)}`);
 
         return false;
     }
 
     if (checkConfig.name === undefined || checkConfig.job === undefined) {
         // Missing one or more required elements
-        core.warning(`Skipping additional check due to missing name or job keys: ${  JSON.stringify(checkConfig)}`);
+        core.warning(`Skipping additional check due to missing name or job keys: ${JSON.stringify(checkConfig)}`);
 
         return false;
     }
 
     if (typeof checkConfig.job !== 'object' || checkConfig.job === null) {
         // Job is malformed
-        core.warning(`Invalid job provided for check; not an object, or is null: ${  JSON.stringify(checkConfig.job)}`);
+        core.warning(`Invalid job provided for check; not an object, or is null: ${JSON.stringify(checkConfig.job)}`);
 
         return false;
     }
 
     if (checkConfig.job.command === undefined) {
         // Job is missing a command
-        core.warning(`Invalid job provided for check; missing command property: ${  JSON.stringify(checkConfig.job)}`);
+        core.warning(`Invalid job provided for check; missing command property: ${JSON.stringify(checkConfig.job)}`);
 
         return false;
     }
@@ -65,7 +65,7 @@ const discoverPhpVersionsForCheck = function (job, config) {
         return [ job.php ];
     }
 
-    core.warning(`Invalid PHP version specified for check job; must be a string version or '*': ${  JSON.stringify(job)}`);
+    core.warning(`Invalid PHP version specified for check job; must be a string version or '*': ${JSON.stringify(job)}`);
 
     return false;
 };
@@ -114,7 +114,7 @@ const discoverDependencySetsForCheck = function (job, config) {
         return [ job.dependencies ];
     }
 
-    core.warning(`Invalid dependencies specified for check job; must be a string version or '*': ${  JSON.stringify(job)}`);
+    core.warning(`Invalid dependencies specified for check job; must be a string version or '*': ${JSON.stringify(job)}`);
 
     return false;
 };
@@ -194,7 +194,7 @@ const createAdditionalJobList = function (
     return versions.reduce((jobs, version) => {
         return [ ...jobs, dependencies.reduce((jobs, deps) => {
             return [ ...jobs, new Job(
-                `${name  } on PHP ${  version  } with ${  deps  } dependencies`,
+                `${name} on PHP ${version} with ${deps} dependencies`,
                 JSON.stringify(new Command(
                     command,
                     version,

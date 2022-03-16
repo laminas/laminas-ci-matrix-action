@@ -30,7 +30,7 @@ function gatherVersions(composerJson) {
     const composerPhpVersion = composerJson.require.php.replace(/,\s/, ' ');
 
     INSTALLABLE_VERSIONS.forEach((version) => {
-        if (semver.satisfies(`${version  }.0`, composerPhpVersion)) {
+        if (semver.satisfies(`${version}.0`, composerPhpVersion)) {
             versions.push(version);
         }
     });

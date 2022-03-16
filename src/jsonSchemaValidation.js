@@ -11,7 +11,7 @@ export default function (pathToJsonToValidate, pathToSchemaJsonForValidation) {
 
     const jsonSchema = parseJsonFile(pathToSchemaJsonForValidation, false);
 
-    core.debug(`JSON schema: ${  JSON.stringify(jsonSchema)}`);
+    core.debug(`JSON schema: ${JSON.stringify(jsonSchema)}`);
     const jsonSchemaValidator = new Validator(jsonSchema);
     const validationResult = jsonSchemaValidator.validate(parseJsonFile(pathToJsonToValidate, false));
 
