@@ -1,42 +1,57 @@
-#!/usr/bin/env node
-import core from "@actions/core";
-import fs from "fs";
-import checkRequirements from "./src/check-requirements.js";
-import configGatherer from "./src/config.js";
-import createJobs from "./src/create-jobs.js";
-import validateJsonSchema from "./src/json-schema-validation.js";
+import fs from 'fs';
+import core from '@actions/core';
+import checkRequirements from './src/checkRequirements.js';
+import createConfiguration from './src/config.js';
+import createJobs from './src/createJobs.js';
+import validateJsonSchema from './src/jsonSchemaValidation.js';
 
 /**
  * Do early json schema validation to avoid unnecessary ramp-ups of jobs
  */
-if (fs.existsSync('composer.json') && fs.existsSync('/action/composer.schema.json')) {
-    validateJsonSchema('composer.json', '/action/composer.schema.json');
-}
-if (fs.existsSync('.laminas-ci.json') && fs.existsSync('/action/laminas-ci.schema.json')) {
-    validateJsonSchema('.laminas-ci.json', '/action/laminas-ci.schema.json');
+const composerJsonSchemaPath = '/action/composer.schema.json';
+
+const composerJsonPath = 'composer.json';
+
+if (fs.existsSync(composerJsonPath) && fs.existsSync(composerJsonSchemaPath)) {
+    validateJsonSchema(composerJsonPath, composerJsonSchemaPath);
 }
 
+const continuousIntegrationConfigurationSchemaPath = '/action/laminas-ci.schema.json';
+
+const continuousIntegrationConfigurationJsonPath = '.laminas-ci.json';
+
+if (
+    fs.existsSync(continuousIntegrationConfigurationJsonPath)
+    && fs.existsSync(continuousIntegrationConfigurationSchemaPath)
+) {
+    validateJsonSchema(continuousIntegrationConfigurationJsonPath, continuousIntegrationConfigurationSchemaPath);
+}
+
+/* eslint-disable-next-line no-magic-numbers */
 const requirements = checkRequirements(process.argv.slice(2));
-const config       = configGatherer(
+const config = createConfiguration(
     requirements,
-    '.laminas-ci.json',
-    'composer.json',
-    'composer.lock',
+    continuousIntegrationConfigurationJsonPath,
+    composerJsonPath,
+    'composer.lock'
 );
 
-core.info(`Running code checks: ${config.code_checks ? "Yes" : "No"}`);
-core.info(`Running doc linting: ${config.doc_linting ? "Yes" : "No"}`);
+core.info(`Running code checks: ${config.codeChecks ? 'Yes' : 'No'}`);
+core.info(`Running doc linting: ${config.docLinting ? 'Yes' : 'No'}`);
 core.info(`Versions found: ${JSON.stringify(config.versions)}`);
-core.info(`Using stable PHP version: ${config.stable_version}`);
-core.info(`Using minimum PHP version: ${config.minimum_version}`);
+core.info(`Using stable PHP version: ${config.stableVersion}`);
+core.info(`Using minimum PHP version: ${config.minimumVersion}`);
 core.info(`Using php extensions: ${JSON.stringify(config.extensions)}`);
-core.info(`Providing php.ini settings: ${JSON.stringify(config.php_ini)}`);
-core.info(`Additional checks found: ${JSON.stringify(config.additional_checks)}`);
-for (const [IGNORE_PLATFORM_REQS_PHP_VERSION, IGNORE_PLATFORM_REQS] of Object.entries(config.ignore_php_platform_requirements)) {
-    core.info(`Ignoring php platform requirement for PHP ${IGNORE_PLATFORM_REQS_PHP_VERSION}: ${IGNORE_PLATFORM_REQS ? "Yes" : "No"}`);
+core.info(`Providing php.ini settings: ${JSON.stringify(config.phpIni)}`);
+core.info(`Additional checks found: ${JSON.stringify(config.additionalChecks)}`);
+for (
+    const [ IGNORE_PLATFORM_REQS_PHP_VERSION, IGNORE_PLATFORM_REQS ]
+    of Object.entries(config.ignorePhpPlatformRequirements)
+) {
+    core.info(`Ignoring php platform requirement for PHP ${IGNORE_PLATFORM_REQS_PHP_VERSION}: ${IGNORE_PLATFORM_REQS ? 'Yes' : 'No'}`);
 }
 
-let matrix = {include: createJobs(config)};
+const matrix = { include: createJobs(config) };
 
 core.info(`Matrix: ${JSON.stringify(matrix)}`);
 core.setOutput('matrix', JSON.stringify(matrix));

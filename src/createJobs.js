@@ -1,12 +1,11 @@
-import core from '@actions/core';
 import fs from 'fs';
+import core from '@actions/core';
 import { Check } from './check.js';
 import { Command } from './command.js';
-import { Config } from './config.js';
 import { Job } from './job.js';
-import create_additional_jobs from './additional-checks.js';
-import validateAndNormalizeChecks from './validate-and-normalize-checks-from-config.js';
-import parseJsonFile from "./json.js";
+import createAdditionalJobs from './additionalChecks.js';
+import validateAndNormalizeChecks from './validateAndNormalizeChecksFromConfig.js';
+import parseJsonFile from './json.js';
 
 /**
  * @param {String} filename
@@ -14,10 +13,7 @@ import parseJsonFile from "./json.js";
  */
 const fileTest = function (filename) {
     return function () {
-        if (fs.existsSync(filename)) {
-            return true;
-        }
-        return false;
+        return fs.existsSync(filename);
     };
 };
 
@@ -27,18 +23,18 @@ const fileTest = function (filename) {
  * @return {Array}
  */
 const createQaJobs = function (command, config) {
-    return [new Job(
-        command + ' on PHP ' + config.minimum_version,
+    return [ new Job(
+        `${command  } on PHP ${  config.minimumVersion}`,
         JSON.stringify(new Command(
             command,
-            config.minimum_version,
+            config.minimumVersion,
             config.extensions,
-            config.php_ini,
+            config.phpIni,
             'locked',
-            config.ignore_php_platform_requirements[config.minimum_version] ?? false,
-            config.additional_composer_arguments
+            config.ignorePhpPlatformRequirements[config.minimumVersion] ?? false,
+            config.additionalComposerArguments
         ))
-    )];
+    ) ];
 };
 
 /**
@@ -46,30 +42,31 @@ const createQaJobs = function (command, config) {
  * @return {Array}
  */
 const createPHPUnitJobs = function (config) {
-    let jobs = [];
-    if (config.locked_dependencies) {
-        /** Locked dependencies are always used with the minimum PHP version supported by the project. */
-        jobs.push(createPHPUnitJob(config.minimum_version, 'locked', config));
+    const jobs = [];
+
+    if (config.lockedDependencies) {
+    /** Locked dependencies are always used with the minimum PHP version supported by the project. */
+        jobs.push(createPHPUnitJob(config.minimumVersion, 'locked', config));
     }
 
     config.versions.forEach(
-        /**
+    /**
          * @param {String} version
          */
-        function (version) {
+        (version) => {
             config.dependencies.forEach(
                 /**
                  * @param {String} deps
                  */
-                function (deps) {
+                (deps) => {
                     jobs.push(createPHPUnitJob(version, deps, config));
                 }
             );
         }
-    )
+    );
 
     return jobs;
-}
+};
 
 /**
  * @param {String} version
@@ -79,16 +76,16 @@ const createPHPUnitJobs = function (config) {
  */
 const createPHPUnitJob = function (version, deps, config) {
     return new Job(
-        'PHPUnit on PHP ' + version + ' with ' + deps + ' dependencies',
+        `PHPUnit on PHP ${  version  } with ${  deps  } dependencies`,
         JSON.stringify(new Command(
             './vendor/bin/phpunit',
             version,
             config.extensions,
-            config.php_ini,
+            config.phpIni,
             deps,
-            config.ignore_php_platform_requirements[version] ?? false,
-            config.additional_composer_arguments
-        )),
+            config.ignorePhpPlatformRequirements[version] ?? false,
+            config.additionalComposerArguments
+        ))
     );
 };
 
@@ -97,92 +94,92 @@ const createPHPUnitJob = function (version, deps, config) {
  * @return {Array}
  */
 const createNoOpJob = function (config) {
-    return [new Job(
+    return [ new Job(
         'No checks',
         JSON.stringify(new Command(
-            "",
-            config.stable_version,
+            '',
+            config.stableVersion,
             [],
             [],
             'locked',
-            config.ignore_php_platform_requirements[config.stable_version] ?? false,
-            config.additional_composer_arguments
-        )),
-    )];
+            config.ignorePhpPlatformRequirements[config.stableVersion] ?? false,
+            config.additionalComposerArguments
+        ))
+    ) ];
 };
 
 /**
  * @param {Config} config
  * @return {Array}
  */
-function checks (config) {
+function checks(config) {
     return [
         new Check(
-            config.code_checks,
-            [fileTest('phpunit.xml.dist'), fileTest('phpunit.xml')],
+            config.codeChecks,
+            [ fileTest('phpunit.xml.dist'), fileTest('phpunit.xml') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 return createPHPUnitJobs(config);
             }
         ),
         new Check(
-            config.code_checks,
-            [fileTest('phpcs.xml.dist'), fileTest('phpcs.xml')],
+            config.codeChecks,
+            [ fileTest('phpcs.xml.dist'), fileTest('phpcs.xml') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 return createQaJobs('./vendor/bin/phpcs -q --report=checkstyle | cs2pr', config);
             }
         ),
         new Check(
-            config.code_checks,
-            [fileTest('psalm.xml.dist'), fileTest('psalm.xml')],
+            config.codeChecks,
+            [ fileTest('psalm.xml.dist'), fileTest('psalm.xml') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 return createQaJobs('./vendor/bin/psalm --shepherd --stats --output-format=github --no-cache', config);
             }
         ),
         new Check(
-            config.code_checks,
-            [fileTest('composer-require-checker.json')],
+            config.codeChecks,
+            [ fileTest('composer-require-checker.json') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 return createQaJobs('./vendor/bin/composer-require-checker check --config-file=composer-require-checker.json -n -v composer.json', config);
             }
         ),
         new Check(
-            config.code_checks,
-            [fileTest('phpbench.json')],
+            config.codeChecks,
+            [ fileTest('phpbench.json') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 return createQaJobs('./vendor/bin/phpbench run --revs=2 --iterations=2 --report=aggregate', config);
             }
         ),
         new Check(
-            config.code_checks,
-            [fileTest('infection.json'), fileTest('infection.json.dist')],
+            config.codeChecks,
+            [ fileTest('infection.json'), fileTest('infection.json.dist') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 const composerFile = parseJsonFile('composer.json', false);
 
-                if (composerFile.hasOwnProperty('require-dev') && composerFile['require-dev'].hasOwnProperty('roave/infection-static-analysis-plugin')) {
+                if (composerFile.hasOwnProperty.call('require-dev') && composerFile['require-dev'].hasOwnProperty.call('roave/infection-static-analysis-plugin')) {
                     return createQaJobs('phpdbg -qrr ./vendor/bin/roave-infection-static-analysis-plugin', config);
                 }
 
@@ -190,46 +187,46 @@ function checks (config) {
             }
         ),
         new Check(
-            config.doc_linting,
-            [fileTest('mkdocs.yml')],
+            config.docLinting,
+            [ fileTest('mkdocs.yml') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 return createQaJobs('yamllint -d relaxed --no-warnings mkdocs.yml', config);
             }
         ),
         new Check(
-            config.doc_linting,
-            [fileTest('doc/book/')],
+            config.docLinting,
+            [ fileTest('doc/book/') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 return createQaJobs('markdownlint doc/book/**/*.md', config);
             }
         ),
         new Check(
-            config.doc_linting,
-            [fileTest('docs/book/')],
+            config.docLinting,
+            [ fileTest('docs/book/') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 return createQaJobs('markdownlint docs/book/**/*.md', config);
             }
         ),
         new Check(
-            config.code_checks,
-            [fileTest('codeception.yml.dist'), fileTest('codeception.yml')],
+            config.codeChecks,
+            [ fileTest('codeception.yml.dist'), fileTest('codeception.yml') ],
             /**
              * @param {Config} config
              * @return {Array}
              */
-            function (config) {
+            (config) => {
                 return createQaJobs('./vendor/bin/codecept run', config);
             }
         )
@@ -238,8 +235,9 @@ function checks (config) {
 
 const excludeJob = function (job, exclusion) {
     let matches = 0;
-    Object.keys(job).forEach(function (jobKey) {
-        Object.keys(exclusion).forEach(function (excludeKey) {
+
+    Object.keys(job).forEach((jobKey) => {
+        Object.keys(exclusion).forEach((excludeKey) => {
             if (excludeKey !== jobKey) {
                 return;
             }
@@ -249,6 +247,7 @@ const excludeJob = function (job, exclusion) {
             }
         });
     });
+
     return Object.keys(exclusion).length === matches;
 };
 
@@ -257,29 +256,32 @@ const excludeJob = function (job, exclusion) {
  * @return {Array}
  */
 export default function (config) {
-    if (config.checks.length) {
+    if (config.checks.length > 0) {
         core.info('Using checks found in configuration');
+
         return validateAndNormalizeChecks(config.checks, config);
     }
 
     /** @var {Array} jobs */
-    let jobs = checks(config)
-        .reduce(function (jobs, check) {
-            return jobs.concat(check.jobs(config));
+    const jobs = checks(config)
+        .reduce((jobs, check) => {
+            return [ ...jobs, ...check.jobs(config) ];
         }, [])
-        .concat(create_additional_jobs(config.additional_checks, config))
-        .filter(function (job) {
+        /* eslint-disable-next-line unicorn/prefer-spread */
+        .concat(createAdditionalJobs(config.additionalChecks, config))
+        .filter((job) => {
             let keep = true;
-            config.exclude.forEach(function (exclusion) {
-                keep = keep && ! excludeJob(job, exclusion);
+
+            config.exclude.forEach((exclusion) => {
+                keep = keep && !excludeJob(job, exclusion);
             });
 
-            if (! keep) {
+            if (!keep) {
                 console.log('Excluding job', job.toJSON());
             }
 
             return keep;
         });
 
-    return jobs.length ? jobs : createNoOpJob(config);
-};
+    return jobs.length > 0 ? jobs : createNoOpJob(config);
+}
