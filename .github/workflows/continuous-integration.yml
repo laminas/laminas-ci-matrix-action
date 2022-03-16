@@ -103,7 +103,7 @@ jobs:
         run: diff --color <(echo '${{ steps.expected_matrix.outputs.value }}') <(echo '${{ steps.matrix_generation.outputs.matrix }}')
 
   linting:
-    runs-on: node:current-alpine
+    runs-on: "node:current-alpine"
     steps:
       - uses: actions/checkout@v2
       - name: Install node modules
