@@ -13,19 +13,44 @@ jobs:
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
-      - name: Gather CI configuration
+      - name: Gather integration test directory names
         id: matrix
-        uses: laminas/laminas-ci-matrix-action@v1
+        run: cd tests; echo "::set-output matrix=\\[\"$(ls -d * | tr '\n' ' ' | sed 's/ $//' | sed 's/ /\",\"/g')\"\\]"
 
   qa:
     name: QA Checks
     needs: [matrix]
-    runs-on: ${{ matrix.operatingSystem }}
+    runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
+      matrix:
+        projectName: ${{ fromJSON(needs.matrix.outputs.matrix) }}
     steps:
-      - name: ${{ matrix.name }}
-        uses: laminas/laminas-continuous-integration-action@v1
+      - name: Setting up nodeJS
+        uses: actions/setup-node@v2
         with:
-          job: ${{ matrix.job }}
+          node-version: 17
+      - name: Checkout sourcecode
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Prepare action files
+        run: mkdir /action; cp composer.schema.json /action; cp laminas-ci.schema.json /action
+      - name: "Generating matrix for project: ${{ matrix.projectName }}"
+        id: matrix_generation
+        env:
+          PROJECT_NAME_TO_TEST: ${{ matrix.projectName }}
+        run: cd tests/${PROJECT_NAME_TO_TEST} && node ../../index.js $(test -r diff && cat diff || echo -n "")
+      - name: Minify matrix from test directory
+        uses: sergeysova/jq-action@v2
+        id: expected_matrix
+        env:
+          PROJECT_NAME_TO_TEST: ${{ matrix.projectName }}
+        with:
+          cmd: 'jq -c . < tests/${PROJECT_NAME_TO_TEST}/matrix.json'
+      - name: "verify output of generated matrix for project: empty-project"
+        env:
+          GENERATED_MATRIX: ${{ steps.matrix_generation.outputs.matrix }}
+          EXPECTED_MATRIX: ${{ steps.expected_matrix.outputs.value }}
+          PROJECT_NAME_TO_TEST: "empty-project"
+        run: diff --color <(echo ${EXPECTED_MATRIX}) <(echo ${GENERATED_MATRIX})
