@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Gather integration test directory names
         id: matrix
-        run: cd tests; echo "::set-output matrix=[\"$(ls -d * | tr '\n' ' ' | sed 's/ $//' | sed 's/ /\",\"/g')\"]"
+        run: cd tests; echo "::set-output:: matrix=[\"$(ls -d * | tr '\n' ' ' | sed 's/ $//' | sed 's/ /\",\"/g')\"]"
 
   qa:
     name: QA Checks
@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        projectName: ${{ needs.matrix.outputs.matrix }}
+        projectName: ${{ fromJSON(needs.matrix.outputs.matrix) }}
     steps:
       - name: Setting up nodeJS
         uses: actions/setup-node@v2
