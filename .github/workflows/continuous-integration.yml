@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        projectName: ${{ fromJSON(needs.matrix.outputs.matrix) }}
+        projectName: ${{ needs.matrix.outputs.matrix }}
     steps:
       - name: Setting up nodeJS
         uses: actions/setup-node@v2
