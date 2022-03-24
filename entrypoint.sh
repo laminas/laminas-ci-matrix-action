@@ -74,9 +74,10 @@ if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]];then
     DIFF=$(git diff --name-only $GITHUB_BASE_REF...HEAD)
 fi
 
+REQUIRE_CHECKS=true
 if [[ "$DIFF" != "" ]];then
     echo "Found changes in the following files:"
     echo ${DIFF}
 fi
 
-/action/index.js ${DIFF}
+node /action/main.js ${DIFF}
