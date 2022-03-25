@@ -112,4 +112,4 @@ jobs:
       - name: "Install node modules"
         run: "npm ci"
       - name: Run ESLint
-        run: "node_modules/.bin/eslint index.js src"
+        run: "npm run lint"
