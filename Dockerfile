@@ -15,7 +15,8 @@ RUN mkdir -p /usr/local/source
 COPY . /usr/local/source
 ADD package.json /usr/local/source/package.json
 ADD package-lock.json /usr/local/source/package-lock.json
-ADD package.json /usr/local/source/tsconfig.json
+ADD tsconfig.json /usr/local/source/tsconfig.json
+
 RUN (cd /usr/local/source; npm ci && npm run build)
 RUN mv /usr/local/source/dist/main.js /action/
 RUN (rm -r /usr/local/source)
