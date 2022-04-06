@@ -1,19 +1,19 @@
-import {PathLike} from "fs";
-import {Action} from "../action";
-import core from "@actions/core";
-import {Output} from "../config/output";
+import {PathLike} from 'fs';
+import core from '@actions/core';
+import {Action} from '../action';
+import {Output} from '../config/output';
 
 export class Github implements Action {
     debug(message: string): void {
-        core.debug(message)
+        core.debug(message);
     }
 
     info(message: string): void {
-        core.info(message)
+        core.info(message);
     }
 
     error(message: string): void {
-        core.error(message)
+        core.error(message);
     }
 
     publish(variable: string, output: Output): void {

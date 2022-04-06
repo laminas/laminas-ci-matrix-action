@@ -1,6 +1,7 @@
-import {PathLike} from "fs";
-import {Action} from "../action";
-import {Output} from "../config/output";
+import {PathLike} from 'fs';
+import {Action} from '../action';
+import {Output} from '../config/output';
+import {SPACES_TO_INDENT_JSON} from '../json';
 
 export class Local implements Action {
     debug(message: string): void {
@@ -12,11 +13,11 @@ export class Local implements Action {
     }
 
     error(message: string): void {
-        console.error(`error: ${message}`)
+        console.error(`error: ${message}`);
     }
 
     publish(variable: string, output: Output): void {
-        console.log(`publish [${variable}]: ${JSON.stringify(output, null, 2)}`);
+        console.log(`publish [${variable}]: ${JSON.stringify(output, null, SPACES_TO_INDENT_JSON)}`);
     }
 
     markFailed(reason: string): void {

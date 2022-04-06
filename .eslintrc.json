@@ -26,7 +26,10 @@
         }],
         "no-process-exit": "off",
         "no-sync": "off",
-        "no-shadow": "off"
+        "no-shadow": "off",
+        "object-curly-spacing": "off",
+        "comma-dangle": "off",
+        "censor/no-swear": "off"
     },
     "settings": {
         "import/resolver": {

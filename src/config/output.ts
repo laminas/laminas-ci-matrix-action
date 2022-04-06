@@ -1,5 +1,5 @@
-import {InstallablePhpVersionType} from "./php";
-import {ComposerDependency, Job} from "./app";
+import {InstallablePhpVersionType} from './php';
+import {ComposerDependency, Job} from './app';
 
 export interface JobDefinitionForMatrix
 {
@@ -33,18 +33,21 @@ interface JobForOutput {
 
 export function createJobForMatrixFromJob(job: Job): JobForMatrix {
     return {
-        name: job.name,
-        operatingSystem: job.operatingSystem,
-        action: job.action,
-        job: {
-            command: job.job.command,
-            php: job.job.php,
-            extensions: job.job.phpExtensions,
-            ini: job.job.phpIni,
-            dependencies: job.job.composerDependency,
-            ignore_platform_reqs_8: job.job.ignorePhpPlatformRequirement,
-            ignore_php_platform_requirement: job.job.ignorePhpPlatformRequirement,
-            additional_composer_arguments: job.job.additionalComposerArguments
+        name            : job.name,
+        operatingSystem : job.operatingSystem,
+        action          : job.action,
+        job             : {
+            command                         : job.job.command,
+            php                             : job.job.php,
+            extensions                      : job.job.phpExtensions,
+            ini                             : job.job.phpIni,
+            dependencies                    : job.job.composerDependency,
+            /* eslint-disable-next-line camelcase */
+            ignore_platform_reqs_8          : job.job.ignorePhpPlatformRequirement,
+            /* eslint-disable-next-line camelcase */
+            ignore_php_platform_requirement : job.job.ignorePhpPlatformRequirement,
+            /* eslint-disable-next-line camelcase */
+            additional_composer_arguments   : job.job.additionalComposerArguments
         }
     };
-};
+}

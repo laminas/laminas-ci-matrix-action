@@ -1,10 +1,10 @@
-import {CURRENT_STABLE, INSTALLABLE_VERSIONS, InstallablePhpVersionType, isInstallableVersion} from "./php";
-import {ComposerJson} from "./composer";
-import fs, {PathLike} from "fs";
-import parseJsonFile from "../json";
-import {ConfigurationFromFile, isAdditionalChecksConfiguration, isAnyComposerDependency, isAnyPhpVersionType, isConfigurationContainingJobExclusions, isExplicitChecksConfiguration, isLatestPhpVersionType, isLowestPhpVersionType, JobDefinitionFromFile, JobFromFile, JobToExcludeFromFile, WILDCARD_ALIAS} from "./input";
-import semver from "semver";
-import {Tool, ToolExecutionType} from "../tools";
+import fs, {PathLike} from 'fs';
+import semver from 'semver';
+import parseJsonFile from '../json';
+import {Tool, ToolExecutionType} from '../tools';
+import {CURRENT_STABLE, INSTALLABLE_VERSIONS, InstallablePhpVersionType, isInstallableVersion} from './php';
+import {ComposerJson} from './composer';
+import {ConfigurationFromFile, isAdditionalChecksConfiguration, isAnyComposerDependency, isAnyPhpVersionType, isConfigurationContainingJobExclusions, isExplicitChecksConfiguration, isLatestPhpVersionType, isLowestPhpVersionType, JobDefinitionFromFile, JobFromFile, JobToExcludeFromFile, WILDCARD_ALIAS} from './input';
 
 export const OPERATING_SYSTEM = 'ubuntu-latest';
 export const ACTION = 'laminas/laminas-continuous-integration-action@v1';
@@ -20,32 +20,27 @@ function gatherVersions(composerJson: ComposerJson): InstallablePhpVersionType[]
         return [];
     }
 
-    let versions: InstallablePhpVersionType[] = [];
-    let composerPhpVersion: string = (composerJson.require?.php ?? '').replace(/,\s/i, ' ');
+    const composerPhpVersion: string = (composerJson.require?.php ?? '').replace(/,\s/, ' ');
 
     if (composerPhpVersion === '') {
-        return versions;
+        return [];
     }
 
     return INSTALLABLE_VERSIONS
-        .filter((version) => semver.satisfies(version + '.0', composerPhpVersion));
+        .filter((version) => semver.satisfies(`${version}.0`, composerPhpVersion));
 }
 
 function gatherExtensions(composerJson: ComposerJson): Set<string> {
-    let extensions: Set<string> = new Set;
+    let extensions: Set<string> = new Set();
     const EXTENSION_EXPRESSION = new RegExp(/^ext-/);
 
-    Object.keys(composerJson.require ?? {}).forEach(function (requirement) {
-        if (requirement.match(EXTENSION_EXPRESSION)) {
-            extensions = extensions.add(requirement.replace(EXTENSION_EXPRESSION, ""));
-        }
-    })
+    Object.keys(composerJson.require ?? {})
+        .filter((requirement) => EXTENSION_EXPRESSION.test(requirement))
+        .forEach((requirement) => extensions = extensions.add(requirement.replace(EXTENSION_EXPRESSION, '')));
 
-    Object.keys(composerJson["require-dev"] ?? {}).forEach(function (requirement) {
-        if (requirement.match(EXTENSION_EXPRESSION)) {
-            extensions = extensions.add(requirement.replace(EXTENSION_EXPRESSION, ""));
-        }
-    })
+    Object.keys(composerJson['require-dev'] ?? {})
+        .filter((requirement) => EXTENSION_EXPRESSION.test(requirement))
+        .forEach((requirement) => extensions = extensions.add(requirement.replace(EXTENSION_EXPRESSION, '')));
 
     return extensions;
 }
@@ -101,9 +96,10 @@ function gatherJobExclusions(config: ConfigurationFromFile): JobToExclude[] {
 
     return [];
 }
+
 function discoverPhpVersionsForJob(job: JobDefinitionFromFile, appConfig: Config): InstallablePhpVersionType[] {
     if (!isInstallableVersion(job.php ?? '')) {
-        return [appConfig.stablePhpVersion];
+        return [ appConfig.stablePhpVersion ];
     }
 
     const phpFromJob = job.php as InstallablePhpVersionType;
@@ -113,11 +109,11 @@ function discoverPhpVersionsForJob(job: JobDefinitionFromFile, appConfig: Config
     }
 
     if (isLowestPhpVersionType(phpFromJob)) {
-        return [appConfig.minimumPhpVersion];
+        return [ appConfig.minimumPhpVersion ];
     }
 
     if (isLatestPhpVersionType(phpFromJob)) {
-        return [appConfig.latestPhpVersion];
+        return [ appConfig.latestPhpVersion ];
     }
 
     return [ phpFromJob ];
@@ -127,13 +123,17 @@ function discoverComposerDependenciesForJob(job: JobDefinitionFromFile): Compose
     const dependencyFromConfig = job.dependencies ?? WILDCARD_ALIAS;
 
     if (isAnyComposerDependency(dependencyFromConfig)) {
-        return [ComposerDependency.LOWEST, ComposerDependency.LATEST];
+        return [ ComposerDependency.LOWEST, ComposerDependency.LATEST ];
     }
 
-    return [dependencyFromConfig];
+    return [ dependencyFromConfig ];
 }
 
-function discoverIgnorePhpPlatformRequirementForJobByVersion(job: JobDefinitionFromFile, phpVersion: InstallablePhpVersionType, appConfig: Config): boolean {
+function discoverIgnorePhpPlatformRequirementForJobByVersion(
+    job: JobDefinitionFromFile,
+    phpVersion: InstallablePhpVersionType,
+    appConfig: Config
+): boolean {
     if (job.ignore_php_platform_requirement ?? false) {
         return true;
     }
@@ -142,22 +142,26 @@ function discoverIgnorePhpPlatformRequirementForJobByVersion(job: JobDefinitionF
 }
 
 function discoverAdditionalComposerArgumentsForCheck(job: JobDefinitionFromFile, appConfig: Config): string[] {
-    return [... new Set([
+    return [ ... new Set([
         ... appConfig.additionalComposerArguments ?? [],
         ... job.additional_composer_arguments ?? []
-    ])];
+    ]) ];
 }
 
-function convertJobDefinitionFromFileToJobDefinition(phpVersion: InstallablePhpVersionType, composerDependency: ComposerDependency, job: JobDefinitionFromFile, appConfig: Config): JobDefinition {
-
+function convertJobDefinitionFromFileToJobDefinition(
+    phpVersion: InstallablePhpVersionType,
+    composerDependency: ComposerDependency,
+    job: JobDefinitionFromFile,
+    appConfig: Config
+): JobDefinition {
     return {
-        php: phpVersion,
-        phpExtensions: job.extensions ?? appConfig.phpExtensions,
-        command: job.command,
-        phpIni: job.ini ?? appConfig.phpIni,
-        composerDependency: composerDependency,
-        ignorePhpPlatformRequirement: discoverIgnorePhpPlatformRequirementForJobByVersion(job, phpVersion, appConfig),
-        additionalComposerArguments: discoverAdditionalComposerArgumentsForCheck(job, appConfig)
+        php                          : phpVersion,
+        phpExtensions                : job.extensions ?? appConfig.phpExtensions,
+        command                      : job.command,
+        phpIni                       : job.ini ?? appConfig.phpIni,
+        composerDependency,
+        ignorePhpPlatformRequirement : discoverIgnorePhpPlatformRequirementForJobByVersion(job, phpVersion, appConfig),
+        additionalComposerArguments  : discoverAdditionalComposerArgumentsForCheck(job, appConfig)
     };
 }
 
@@ -167,53 +171,70 @@ function convertJobFromFileToJobs(job: JobFromFile, appConfig: Config): Job[] {
     const phpVersionsToRunTheChecksWith = discoverPhpVersionsForJob(jobDefinition, appConfig);
     const jobs: Job[] = [];
 
-    phpVersionsToRunTheChecksWith.forEach(function (version) {
-        composerDependencies.forEach(function (dependency) {
-            jobs.push({
-                operatingSystem: OPERATING_SYSTEM,
-                action: ACTION,
-                job: convertJobDefinitionFromFileToJobDefinition(version, dependency, jobDefinition, appConfig),
-                name: job.name
-            });
-        })
-    });
+    phpVersionsToRunTheChecksWith.forEach(
+        (version) => composerDependencies.forEach(
+            (dependency) => jobs.push({
+                operatingSystem : OPERATING_SYSTEM,
+                action          : ACTION,
+                job             : convertJobDefinitionFromFileToJobDefinition(
+                    version,
+                    dependency,
+                    jobDefinition,
+                    appConfig
+                ),
+                name : job.name
+            })
+        )
+    );
 
     return jobs;
 }
+
 function isJobExcluded(job: Job, exclusions: JobToExcludeFromFile[]) {
     if (exclusions.length === 0) {
         return false;
     }
 
     return exclusions
-        .filter((exclude) => job.name === exclude.name)
-        .length > 0;
+        .some((exclude) => job.name === exclude.name);
 }
 
-function createJob(name: string, command: string, phpVersion: InstallablePhpVersionType, composerDependency: ComposerDependency, config: Config): Job
-{
+function createJob(
+    name: string,
+    command: string,
+    phpVersion: InstallablePhpVersionType,
+    composerDependency: ComposerDependency,
+    config: Config
+): Job {
     return {
-        name: name,
-        action: ACTION,
-        operatingSystem: OPERATING_SYSTEM,
-        job: {
-            command: command,
-            php: phpVersion,
-            phpExtensions: config.phpExtensions,
-            phpIni: config.phpIni,
-            composerDependency: composerDependency,
-            ignorePhpPlatformRequirement: config.ignorePhpPlatformRequirements[phpVersion] ?? false,
-            additionalComposerArguments: config.additionalComposerArguments
+        name,
+        action          : ACTION,
+        operatingSystem : OPERATING_SYSTEM,
+        job             : {
+            command,
+            php                          : phpVersion,
+            phpExtensions                : config.phpExtensions,
+            phpIni                       : config.phpIni,
+            composerDependency,
+            ignorePhpPlatformRequirement : config.ignorePhpPlatformRequirements[phpVersion] ?? false,
+            additionalComposerArguments  : config.additionalComposerArguments
         }
     };
 }
 
-function createJobs(config: Config, tool: Tool): Job[] {
+function createJobs(
+    config: Config,
+    tool: Tool
+): Job[] {
     const jobs: Job[] = [];
 
     if (tool.executionType === ToolExecutionType.STATIC) {
-        const lockedOrLatestDependency: ComposerDependency = config.lockedDependenciesExists ? ComposerDependency.LOCKED : ComposerDependency.LATEST;
-        return [createJob(tool.name, tool.command, config.minimumPhpVersion, lockedOrLatestDependency, config)];
+        const lockedOrLatestDependency: ComposerDependency = config.lockedDependenciesExists
+            ? ComposerDependency.LOCKED
+            : ComposerDependency.LATEST;
+
+
+        return [ createJob(tool.name, tool.command, config.minimumPhpVersion, lockedOrLatestDependency, config) ];
     }
 
     if (tool.executionType === ToolExecutionType.MATRIX) {
@@ -221,10 +242,10 @@ function createJobs(config: Config, tool: Tool): Job[] {
             jobs.push(createJob(tool.name, tool.command, config.minimumPhpVersion, ComposerDependency.LOCKED, config));
         }
 
-        config.versions.forEach(function (version): void {
-            jobs.push(createJob(tool.name, tool.command, version, ComposerDependency.LOWEST, config))
-            jobs.push(createJob(tool.name, tool.command, version, ComposerDependency.LATEST, config))
-        })
+        config.versions.forEach((version) => jobs.push(
+            createJob(tool.name, tool.command, version, ComposerDependency.LOWEST, config),
+            createJob(tool.name, tool.command, version, ComposerDependency.LATEST, config),
+        ));
     }
 
     return jobs;
@@ -232,23 +253,22 @@ function createJobs(config: Config, tool: Tool): Job[] {
 
 export function createChecksForKnownTools(config: Config, tools: Tool[]): Job[] {
     return tools
-        .map((tool) => createJobs(config, tool))
-        .flat(1);
+        .flatMap((tool) => createJobs(config, tool));
 }
 
 function createNoOpCheck(appConfig: Config): Job {
     return {
-        name: 'No checks',
-        operatingSystem: OPERATING_SYSTEM,
-        action: ACTION,
-        job: {
-            php: appConfig.stablePhpVersion,
-            phpExtensions: [],
-            command: "",
-            composerDependency: ComposerDependency.LOCKED,
-            phpIni: [],
-            ignorePhpPlatformRequirement: appConfig.ignorePhpPlatformRequirements[appConfig.stablePhpVersion] ?? false,
-            additionalComposerArguments: appConfig.additionalComposerArguments,
+        name            : 'No checks',
+        operatingSystem : OPERATING_SYSTEM,
+        action          : ACTION,
+        job             : {
+            php                          : appConfig.stablePhpVersion,
+            phpExtensions                : [],
+            command                      : '',
+            composerDependency           : ComposerDependency.LOCKED,
+            phpIni                       : [],
+            ignorePhpPlatformRequirement : appConfig.ignorePhpPlatformRequirements[appConfig.stablePhpVersion] ?? false,
+            additionalComposerArguments  : appConfig.additionalComposerArguments,
         }
     };
 }
@@ -256,8 +276,9 @@ function createNoOpCheck(appConfig: Config): Job {
 export function gatherChecks(config: ConfigurationFromFile, appConfig: Config, tools: Tool[]): [Job, ...Job[]] {
     if (isExplicitChecksConfiguration(config)) {
         const checks = (config.checks?.map((job) => convertJobFromFileToJobs(job, appConfig)) ?? []).flat(1);
+
         if (checks.length === 0) {
-            return [createNoOpCheck(appConfig)];
+            return [ createNoOpCheck(appConfig) ];
         }
 
         return checks as [Job, ...Job[]];
@@ -269,7 +290,8 @@ export function gatherChecks(config: ConfigurationFromFile, appConfig: Config, t
         const generatedChecksFromAdditionalChecksConfiguration = (
             config.additional_checks?.map((job) => convertJobFromFileToJobs(job, appConfig)) ?? []
         ).flat(1).filter((check, index, carry) => carry.indexOf(check) === index);
-        checks = checks.concat(generatedChecksFromAdditionalChecksConfiguration);
+
+        checks = [ ...checks, ...generatedChecksFromAdditionalChecksConfiguration ];
     }
 
     const exclusions = isConfigurationContainingJobExclusions(config) ? config.exclude ?? [] : [];
@@ -278,20 +300,21 @@ export function gatherChecks(config: ConfigurationFromFile, appConfig: Config, t
     if (checks.length === 0) {
         return [
             createNoOpCheck(appConfig)
-        ]
+        ];
     }
 
     return checks as [Job, ...Job[]];
 }
 
-export default function createConfig (
+export default function createConfig(
     requirements: Requirements,
     composerJsonFileName: PathLike,
     composerLockJsonFileName: PathLike,
     continousIntegrationConfigurationJsonFileName: PathLike
 ): Config {
     const composerJson: ComposerJson = parseJsonFile(composerJsonFileName) as ComposerJson;
-    const configurationFromFile: ConfigurationFromFile = parseJsonFile(continousIntegrationConfigurationJsonFileName) as ConfigurationFromFile;
+    const configurationFromFile: ConfigurationFromFile =
+        parseJsonFile(continousIntegrationConfigurationJsonFileName) as ConfigurationFromFile;
     const phpVersionsSupportedByProject: InstallablePhpVersionType[] = gatherVersions(composerJson);
     let phpExtensions: Set<string> = gatherExtensions(composerJson);
     let stablePHPVersion: InstallablePhpVersionType = CURRENT_STABLE;
@@ -305,26 +328,25 @@ export default function createConfig (
 
     if (phpVersionsSupportedByProject.length > 0) {
         minimumPHPVersion = phpVersionsSupportedByProject[0] as InstallablePhpVersionType;
-        maximumPHPVersion = phpVersionsSupportedByProject[phpVersionsSupportedByProject.length - 1] as InstallablePhpVersionType;
+        maximumPHPVersion =
+            phpVersionsSupportedByProject[phpVersionsSupportedByProject.length - 1] as InstallablePhpVersionType;
     }
 
-    configurationFromFile.extensions?.forEach(function (extension) {
-        phpExtensions = phpExtensions.add(extension);
-    });
+    configurationFromFile.extensions?.forEach((extension) => phpExtensions = phpExtensions.add(extension));
 
     return {
-        codeChecks: requirements.codeChecks,
-        docLinting: requirements.docLinting,
-        versions: phpVersionsSupportedByProject,
-        phpExtensions: [...phpExtensions],
-        stablePhpVersion: stablePHPVersion,
-        minimumPhpVersion: minimumPHPVersion,
-        latestPhpVersion: maximumPHPVersion,
-        phpIni: configurationFromFile.ini ?? [],
-        lockedDependenciesExists: fs.existsSync(composerLockJsonFileName),
-        exclude: gatherJobExclusions(configurationFromFile),
-        ignorePhpPlatformRequirements: configurationFromFile.ignore_php_platform_requirements ?? {},
-        additionalComposerArguments: [... new Set(configurationFromFile.additional_composer_arguments ?? [])],
+        codeChecks                    : requirements.codeChecks,
+        docLinting                    : requirements.docLinting,
+        versions                      : phpVersionsSupportedByProject,
+        phpExtensions                 : [ ...phpExtensions ],
+        stablePhpVersion              : stablePHPVersion,
+        minimumPhpVersion             : minimumPHPVersion,
+        latestPhpVersion              : maximumPHPVersion,
+        phpIni                        : configurationFromFile.ini ?? [],
+        lockedDependenciesExists      : fs.existsSync(composerLockJsonFileName),
+        exclude                       : gatherJobExclusions(configurationFromFile),
+        ignorePhpPlatformRequirements : configurationFromFile.ignore_php_platform_requirements ?? {},
+        additionalComposerArguments   : [ ... new Set(configurationFromFile.additional_composer_arguments ?? []) ],
     };
 }
 

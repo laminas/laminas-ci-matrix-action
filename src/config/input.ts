@@ -1,5 +1,5 @@
-import {InstallablePhpVersionType} from "./php";
-import {ComposerDependency, IgnorePhpPlatformRequirements} from "./app";
+import {InstallablePhpVersionType} from './php';
+import {ComposerDependency, IgnorePhpPlatformRequirements} from './app';
 
 export interface JobToExcludeFromFile {
     name: string;
@@ -25,15 +25,21 @@ export interface ExplicitChecksConfigurationFromFile extends ConfigurationFromFi
     checks?: [JobFromFile, ...JobFromFile[]];
 }
 
-export function isAdditionalChecksConfiguration(config: ConfigurationFromFile): config is AdditionalChecksConfigurationFromFile {
+export function isAdditionalChecksConfiguration(
+    config: ConfigurationFromFile
+): config is AdditionalChecksConfigurationFromFile {
     return ((config as AdditionalChecksConfigurationFromFile).additional_checks ?? []).length > 0;
 }
 
-export function isExplicitChecksConfiguration(config: ConfigurationFromFile): config is ExplicitChecksConfigurationFromFile {
+export function isExplicitChecksConfiguration(
+    config: ConfigurationFromFile
+): config is ExplicitChecksConfigurationFromFile {
     return ((config as ExplicitChecksConfigurationFromFile).checks ?? []).length > 0;
 }
 
-export function isConfigurationContainingJobExclusions(config: ConfigurationFromFile): config is JobExclusionsFromFile&ConfigurationFromFile {
+export function isConfigurationContainingJobExclusions(
+    config: ConfigurationFromFile
+): config is JobExclusionsFromFile&ConfigurationFromFile {
     return ((config as JobExclusionsFromFile).exclude ?? []).length > 0;
 }
 
@@ -45,10 +51,12 @@ export type AnyPhpVersionType = typeof WILDCARD_ALIAS;
 export function isAnyPhpVersionType(version: string): version is AnyPhpVersionType {
     return version === WILDCARD_ALIAS;
 }
+
 export type LowestPhpVersionType = typeof LOWEST_ALIAS;
 export function isLowestPhpVersionType(version: string): version is LowestPhpVersionType {
     return version === LOWEST_ALIAS;
 }
+
 export type LatestPhpVersionType = typeof LATEST_ALIAS;
 export function isLatestPhpVersionType(version: string): version is LatestPhpVersionType {
     return version === LATEST_ALIAS;
