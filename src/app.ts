@@ -1,7 +1,7 @@
 import fs, { PathLike } from 'fs';
 import { ValidationResult, Validator } from '@cfworker/json-schema';
 import parseJsonFile, { SPACES_TO_INDENT_JSON } from './json';
-import createConfig, { Config, Job, Requirements } from './config/app';
+import createConfigObject, { Config, Job, Requirements } from './config/app';
 import { createJobForMatrixFromJob, JobForMatrix } from './config/output';
 import { ConfigurationFromFile } from './config/input';
 import createTools from './tools';
@@ -77,7 +77,7 @@ export class App {
     }
 
     createConfiguration(filesFromDiff: string[]): Config {
-        return createConfig(
+        return createConfigObject(
             this.checkRequirements(filesFromDiff),
             this.composerJsonFileName,
             this.composerLockJsonFileName,
