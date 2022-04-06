@@ -359,7 +359,8 @@
                         "7.4",
                         "*"
                     ],
-                    "minLength": 1
+                    "minLength": 1,
+                    "pattern": "[\\d]+\\.[\\d]+"
                 },
                 "dependencies": {
                     "type": "string",
