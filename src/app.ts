@@ -7,6 +7,7 @@ import { ConfigurationFromFile } from './config/input';
 import createTools from './tools';
 import { Action } from './action';
 import { DefaultJobCreator } from './jobs';
+import {Logger} from './logging';
 
 export class App {
     private readonly composerJsonFileName: PathLike = 'composer.json';
@@ -16,7 +17,8 @@ export class App {
     private readonly continousIntegrationConfigurationJsonFileName: PathLike = '.laminas-ci.json';
 
     public constructor(
-        private readonly action: Action
+        private readonly action: Action,
+        private readonly logger: Logger
     ) {}
 
     public sanityChecksPassing(): boolean {
@@ -48,14 +50,14 @@ export class App {
         pathToJsonToValidate: PathLike,
         pathToSchemaJsonForValidation: PathLike
     ): ValidationResult {
-        this.action.debug(`Running ${pathToJsonToValidate} linting using ${pathToSchemaJsonForValidation}.`);
+        this.logger.debug(`Running ${pathToJsonToValidate} linting using ${pathToSchemaJsonForValidation}.`);
 
         const jsonSchema = parseJsonFile(pathToSchemaJsonForValidation, false);
         const jsonSchemaValidator = new Validator(jsonSchema);
         const validationResult = jsonSchemaValidator.validate(parseJsonFile(pathToJsonToValidate, false));
 
         if (validationResult.valid) {
-            this.action.debug(`${pathToJsonToValidate} schema validation passed.`);
+            this.logger.debug(`${pathToJsonToValidate} schema validation passed.`);
         }
 
         return validationResult;
@@ -67,11 +69,11 @@ export class App {
         const config = parseJsonFile(this.continousIntegrationConfigurationJsonFileName, true) as ConfigurationFromFile;
         const tools = createTools(appConfig);
 
-        this.action.debug(`Tools detected: ${JSON.stringify(tools, null, SPACES_TO_INDENT_JSON)}`);
+        this.logger.debug(`Tools detected: ${JSON.stringify(tools, null, SPACES_TO_INDENT_JSON)}`);
         const jobs: [Job, ...Job[]] = (new DefaultJobCreator(tools))
             .createJobs(config, appConfig);
 
-        this.action.debug(`Jobs created: ${JSON.stringify(jobs, null, SPACES_TO_INDENT_JSON)}`);
+        this.logger.debug(`Jobs created: ${JSON.stringify(jobs, null, SPACES_TO_INDENT_JSON)}`);
 
         return jobs.map((job) => createJobForMatrixFromJob(job)) as [JobForMatrix, ...JobForMatrix[]];
     }
@@ -102,7 +104,7 @@ export class App {
         this.action.markFailed(`${filePath} schema validation failed.`);
 
         schemaValidationResult.errors.forEach((outputUnit) => {
-            this.action.error(`There is an error in the keyword located by ${outputUnit.keywordLocation}: ${outputUnit.error}`);
+            this.logger.error(`There is an error in the keyword located by ${outputUnit.keywordLocation}: ${outputUnit.error}`);
         });
 
         return false;
@@ -119,7 +121,7 @@ export class App {
         }
 
         if (diff.includes('.laminas-ci.json')) {
-            this.action.info('Performing all checks as CI configuration has changed.');
+            this.logger.info('Performing all checks as CI configuration has changed.');
 
             return {
                 codeChecks : true,
@@ -127,7 +129,7 @@ export class App {
             };
         }
 
-        this.action.info('Performing selective checks based on pull request patch diff');
+        this.logger.info('Performing selective checks based on pull request patch diff');
         let requireCodeChecks = false;
         let requireDocLinting = false;
 
@@ -160,11 +162,11 @@ export class App {
         );
 
         if (requireCodeChecks) {
-            this.action.info(CODE_CHECKS_ENABLED_MESSAGE);
+            this.logger.info(CODE_CHECKS_ENABLED_MESSAGE);
         }
 
         if (requireDocLinting) {
-            this.action.info('- Enabling doc linting');
+            this.logger.info('- Enabling doc linting');
         }
 
         return {

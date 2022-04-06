@@ -3,6 +3,7 @@ import { Action } from './action';
 import { Local } from './action/local';
 import { Github } from './action/github';
 import { SPACES_TO_INDENT_JSON } from './json';
+import {Logger} from './logging';
 
 let action: Action = new Local();
 
@@ -10,7 +11,8 @@ if (process.env.GITHUB_ACTION !== undefined) {
     action = new Github();
 }
 
-const app = new App(action);
+const logger: Logger = action.getLogger();
+const app = new App(action, logger);
 
 if (!app.sanityChecksPassing()) {
     process.exit(1);
@@ -28,26 +30,26 @@ const filesWithChanges: string[] = process.argv.slice(2);
 
 const config = app.createConfiguration(filesWithChanges);
 
-action.debug(`Generated configuration: ${JSON.stringify(config, null, SPACES_TO_INDENT_JSON)}`);
+logger.debug(`Generated configuration: ${JSON.stringify(config, null, SPACES_TO_INDENT_JSON)}`);
 const checks = app.createJobs(config);
 
-action.info(`Running code checks: ${config.codeChecks ? 'Yes' : 'No'}`);
-action.info(`Running doc linting: ${config.docLinting ? 'Yes' : 'No'}`);
-action.info(`Versions found: ${JSON.stringify(config.versions)}`);
-action.info(`Using stable PHP version: ${config.stablePhpVersion}`);
-action.info(`Using minimum PHP version: ${config.minimumPhpVersion}`);
-action.info(`Using php extensions: ${JSON.stringify(config.phpExtensions)}`);
-action.info(`Providing php.ini settings: ${JSON.stringify(config.phpIni)}`);
-action.info(`Additional composer arguments: ${JSON.stringify(config.additionalComposerArguments)}`);
+logger.info(`Running code checks: ${config.codeChecks ? 'Yes' : 'No'}`);
+logger.info(`Running doc linting: ${config.docLinting ? 'Yes' : 'No'}`);
+logger.info(`Versions found: ${JSON.stringify(config.versions)}`);
+logger.info(`Using stable PHP version: ${config.stablePhpVersion}`);
+logger.info(`Using minimum PHP version: ${config.minimumPhpVersion}`);
+logger.info(`Using php extensions: ${JSON.stringify(config.phpExtensions)}`);
+logger.info(`Providing php.ini settings: ${JSON.stringify(config.phpIni)}`);
+logger.info(`Additional composer arguments: ${JSON.stringify(config.additionalComposerArguments)}`);
 
 for (
     const [ IGNORE_PLATFORM_REQS_PHP_VERSION, IGNORE_PLATFORM_REQS ]
     of Object.entries(config.ignorePhpPlatformRequirements)
 ) {
-    action.info(`Ignoring php platform requirement for PHP ${IGNORE_PLATFORM_REQS_PHP_VERSION}: ${IGNORE_PLATFORM_REQS ? 'Yes' : 'No'}`);
+    logger.info(`Ignoring php platform requirement for PHP ${IGNORE_PLATFORM_REQS_PHP_VERSION}: ${IGNORE_PLATFORM_REQS ? 'Yes' : 'No'}`);
 }
 
-action.info(`Matrix: ${JSON.stringify(checks, null, SPACES_TO_INDENT_JSON)}`);
+logger.info(`Matrix: ${JSON.stringify(checks, null, SPACES_TO_INDENT_JSON)}`);
 action.publish('matrix', ({
     include : checks.map((job) => ({
         name            : job.name,
