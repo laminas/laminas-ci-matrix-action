@@ -79,7 +79,7 @@ jobs:
         id: matrix_generation
         env:
           PROJECT_NAME_TO_TEST: ${{ matrix.projectName }}
-        run: cd tests/${PROJECT_NAME_TO_TEST} && docker run -v $(realpath .):/github/workspace -w=/github/workspace --it $(docker image ls --quiet) node ../../index.js $(test -r diff && cat diff || echo -n "")
+        run: cd tests/${PROJECT_NAME_TO_TEST} && docker run -v $(realpath .):/github/workspace -w=/github/workspace -it $(docker image ls --quiet) node ../../index.js $(test -r diff && cat diff || echo -n "")
 
       - name: Minify matrix from test directory
         uses: sergeysova/jq-action@v2
