@@ -19,7 +19,7 @@ RUN apk update \
     && apk add --no-cache bash git
 
 RUN mkdir /action
-ADD composer.schema.json /action/
+ADD https://getcomposer.org/schema.json /action/composer.schema.json
 ADD laminas-ci.schema.json /action/
 
 COPY --from=compiler /usr/local/source/dist/main.js /action/
