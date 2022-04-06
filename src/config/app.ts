@@ -266,7 +266,10 @@ export function gatherChecks(config: ConfigurationFromFile, appConfig: Config, t
     let checks = createChecksForKnownTools(appConfig, tools);
 
     if (isAdditionalChecksConfiguration(config)) {
-        checks = checks.concat((config.additional_checks?.map((job) => convertJobFromFileToJobs(job, appConfig)) ?? []).flat(1));
+        const generatedChecksFromAdditionalChecksConfiguration = (
+            config.additional_checks?.map((job) => convertJobFromFileToJobs(job, appConfig)) ?? []
+        ).flat(1).filter((check, index, carry) => carry.indexOf(check) === index);
+        checks = checks.concat(generatedChecksFromAdditionalChecksConfiguration);
     }
 
     const exclusions = isConfigurationContainingJobExclusions(config) ? config.exclude ?? [] : [];
