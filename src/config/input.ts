@@ -1,5 +1,5 @@
 import {InstallablePhpVersionType} from './php';
-import {ComposerDependency, IgnorePhpPlatformRequirements} from './app';
+import {ComposerDependencySet, IgnorePhpPlatformRequirements} from './app';
 
 export interface JobToExcludeFromFile {
     name: string;
@@ -73,14 +73,14 @@ export interface JobDefinitionFromFile {
     php?: InstallablePhpVersionType | AnyPhpVersionType | LowestPhpVersionType | LatestPhpVersionType;
     extensions?: string[];
     ini?: string[];
-    dependencies?: AnyComposerDependency | ComposerDependency;
+    dependencies?: AnyComposerDependencySet | ComposerDependencySet;
     ignore_php_platform_requirement?: boolean;
     additional_composer_arguments: string[];
     command: string;
 }
 
-export type AnyComposerDependency = typeof WILDCARD_ALIAS;
-export function isAnyComposerDependency(dependency: string): dependency is AnyComposerDependency {
+export type AnyComposerDependencySet = typeof WILDCARD_ALIAS;
+export function isAnyComposerDependencySet(dependency: string): dependency is AnyComposerDependencySet {
     return dependency === WILDCARD_ALIAS;
 }
 

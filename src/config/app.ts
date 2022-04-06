@@ -4,12 +4,12 @@ import parseJsonFile from '../json';
 import {Tool, ToolExecutionType} from '../tools';
 import {CURRENT_STABLE, INSTALLABLE_VERSIONS, InstallablePhpVersionType, isInstallableVersion} from './php';
 import {ComposerJson} from './composer';
-import {ConfigurationFromFile, isAdditionalChecksConfiguration, isAnyComposerDependency, isAnyPhpVersionType, isConfigurationContainingJobExclusions, isExplicitChecksConfiguration, isLatestPhpVersionType, isLowestPhpVersionType, JobDefinitionFromFile, JobFromFile, JobToExcludeFromFile, WILDCARD_ALIAS} from './input';
+import {ConfigurationFromFile, isAdditionalChecksConfiguration, isAnyComposerDependencySet, isAnyPhpVersionType, isConfigurationContainingJobExclusions, isExplicitChecksConfiguration, isLatestPhpVersionType, isLowestPhpVersionType, JobDefinitionFromFile, JobFromFile, JobToExcludeFromFile, WILDCARD_ALIAS} from './input';
 
 export const OPERATING_SYSTEM = 'ubuntu-latest';
 export const ACTION = 'laminas/laminas-continuous-integration-action@v1';
 
-export enum ComposerDependency {
+export enum ComposerDependencySet {
     LOWEST = 'lowest',
     LOCKED = 'locked',
     LATEST = 'latest',
@@ -50,7 +50,7 @@ export interface JobDefinition {
     php: InstallablePhpVersionType;
     phpExtensions: string[];
     phpIni: string[];
-    composerDependency: ComposerDependency;
+    composerDependencySet: ComposerDependencySet;
     ignorePhpPlatformRequirement: boolean;
     additionalComposerArguments: string[];
 }
@@ -119,14 +119,14 @@ function discoverPhpVersionsForJob(job: JobDefinitionFromFile, appConfig: Config
     return [ phpFromJob ];
 }
 
-function discoverComposerDependenciesForJob(job: JobDefinitionFromFile): ComposerDependency[] {
-    const dependencyFromConfig = job.dependencies ?? WILDCARD_ALIAS;
+function discoverComposerDependencySetsForJob(job: JobDefinitionFromFile): ComposerDependencySet[] {
+    const dependencySetFromConfig = job.dependencies ?? WILDCARD_ALIAS;
 
-    if (isAnyComposerDependency(dependencyFromConfig)) {
-        return [ ComposerDependency.LOWEST, ComposerDependency.LATEST ];
+    if (isAnyComposerDependencySet(dependencySetFromConfig)) {
+        return [ ComposerDependencySet.LOWEST, ComposerDependencySet.LATEST ];
     }
 
-    return [ dependencyFromConfig ];
+    return [ dependencySetFromConfig ];
 }
 
 function discoverIgnorePhpPlatformRequirementForJobByVersion(
@@ -150,7 +150,7 @@ function discoverAdditionalComposerArgumentsForCheck(job: JobDefinitionFromFile,
 
 function convertJobDefinitionFromFileToJobDefinition(
     phpVersion: InstallablePhpVersionType,
-    composerDependency: ComposerDependency,
+    composerDependencySet: ComposerDependencySet,
     job: JobDefinitionFromFile,
     appConfig: Config
 ): JobDefinition {
@@ -159,7 +159,7 @@ function convertJobDefinitionFromFileToJobDefinition(
         phpExtensions                : job.extensions ?? appConfig.phpExtensions,
         command                      : job.command,
         phpIni                       : job.ini ?? appConfig.phpIni,
-        composerDependency,
+        composerDependencySet: composerDependencySet,
         ignorePhpPlatformRequirement : discoverIgnorePhpPlatformRequirementForJobByVersion(job, phpVersion, appConfig),
         additionalComposerArguments  : discoverAdditionalComposerArgumentsForCheck(job, appConfig)
     };
@@ -167,18 +167,18 @@ function convertJobDefinitionFromFileToJobDefinition(
 
 function convertJobFromFileToJobs(job: JobFromFile, appConfig: Config): Job[] {
     const jobDefinition: JobDefinitionFromFile = job.job;
-    const composerDependencies = discoverComposerDependenciesForJob(jobDefinition);
+    const composerDependencySets = discoverComposerDependencySetsForJob(jobDefinition);
     const phpVersionsToRunTheChecksWith = discoverPhpVersionsForJob(jobDefinition, appConfig);
     const jobs: Job[] = [];
 
     phpVersionsToRunTheChecksWith.forEach(
-        (version) => composerDependencies.forEach(
-            (dependency) => jobs.push({
+        (version) => composerDependencySets.forEach(
+            (dependencySet) => jobs.push({
                 operatingSystem : OPERATING_SYSTEM,
                 action          : ACTION,
                 job             : convertJobDefinitionFromFileToJobDefinition(
                     version,
-                    dependency,
+                    dependencySet,
                     jobDefinition,
                     appConfig
                 ),
@@ -203,7 +203,7 @@ function createJob(
     name: string,
     command: string,
     phpVersion: InstallablePhpVersionType,
-    composerDependency: ComposerDependency,
+    composerDependencySet: ComposerDependencySet,
     config: Config
 ): Job {
     return {
@@ -215,7 +215,7 @@ function createJob(
             php                          : phpVersion,
             phpExtensions                : config.phpExtensions,
             phpIni                       : config.phpIni,
-            composerDependency,
+            composerDependencySet: composerDependencySet,
             ignorePhpPlatformRequirement : config.ignorePhpPlatformRequirements[phpVersion] ?? false,
             additionalComposerArguments  : config.additionalComposerArguments
         }
@@ -229,22 +229,22 @@ function createJobs(
     const jobs: Job[] = [];
 
     if (tool.executionType === ToolExecutionType.STATIC) {
-        const lockedOrLatestDependency: ComposerDependency = config.lockedDependenciesExists
-            ? ComposerDependency.LOCKED
-            : ComposerDependency.LATEST;
+        const lockedOrLatestDependencySet: ComposerDependencySet = config.lockedDependenciesExists
+            ? ComposerDependencySet.LOCKED
+            : ComposerDependencySet.LATEST;
 
 
-        return [ createJob(tool.name, tool.command, config.minimumPhpVersion, lockedOrLatestDependency, config) ];
+        return [ createJob(tool.name, tool.command, config.minimumPhpVersion, lockedOrLatestDependencySet, config) ];
     }
 
     if (tool.executionType === ToolExecutionType.MATRIX) {
         if (config.lockedDependenciesExists) {
-            jobs.push(createJob(tool.name, tool.command, config.minimumPhpVersion, ComposerDependency.LOCKED, config));
+            jobs.push(createJob(tool.name, tool.command, config.minimumPhpVersion, ComposerDependencySet.LOCKED, config));
         }
 
         config.versions.forEach((version) => jobs.push(
-            createJob(tool.name, tool.command, version, ComposerDependency.LOWEST, config),
-            createJob(tool.name, tool.command, version, ComposerDependency.LATEST, config),
+            createJob(tool.name, tool.command, version, ComposerDependencySet.LOWEST, config),
+            createJob(tool.name, tool.command, version, ComposerDependencySet.LATEST, config),
         ));
     }
 
@@ -265,7 +265,7 @@ function createNoOpCheck(appConfig: Config): Job {
             php                          : appConfig.stablePhpVersion,
             phpExtensions                : [],
             command                      : '',
-            composerDependency           : ComposerDependency.LOCKED,
+            composerDependencySet           : ComposerDependencySet.LOCKED,
             phpIni                       : [],
             ignorePhpPlatformRequirement : appConfig.ignorePhpPlatformRequirements[appConfig.stablePhpVersion] ?? false,
             additionalComposerArguments  : appConfig.additionalComposerArguments,
