@@ -1,0 +1,8 @@
+{
+    "require": {
+        "php": "~8.1.0"
+    },
+    "require-dev": {
+        "roave/infection-static-analysis-plugin": "*"
+    }
+}

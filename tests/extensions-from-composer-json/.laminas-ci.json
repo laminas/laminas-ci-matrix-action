@@ -1,0 +1,11 @@
+{
+    "checks": [
+        {
+            "name": "Some Job",
+            "job": {
+                "php": "7.4",
+                "command": "test"
+            }
+        }
+    ]
+}
