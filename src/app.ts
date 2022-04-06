@@ -111,8 +111,6 @@ export class App {
     }
 
     private checkRequirements(diff: string[]): Requirements {
-        const CODE_CHECKS_ENABLED_MESSAGE = '- Enabling code checks';
-
         if (diff.length === 0) {
             return {
                 codeChecks : true,
@@ -162,7 +160,7 @@ export class App {
         );
 
         if (requireCodeChecks) {
-            this.logger.info(CODE_CHECKS_ENABLED_MESSAGE);
+            this.logger.info('- Enabling code checks');
         }
 
         if (requireDocLinting) {
