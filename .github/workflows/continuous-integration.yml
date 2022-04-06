@@ -6,6 +6,9 @@ on:
     branches:
       - 'refs/pull/*'
 
+env:
+  TEST_TAG: laminas/ci-matrix-action:test
+
 jobs:
   matrix:
     name: Generate job matrix
@@ -19,30 +22,59 @@ jobs:
         id: matrix
         run: cd tests; echo "::set-output name=matrix::[\"$(ls -d * | tr '\n' ' ' | sed 's/ $//' | sed 's/ /\",\"/g')\"]"
 
+  container:
+    name: Prepare docker container
+    runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: true
+    steps:
+      - name: Checkout sourcecode
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build container for CI pipeline
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          load: true
+          push: false
+          tags: ${{ env.TEST_TAG }}
+          outputs: type=docker,dest=/tmp/container.tar
+      - name: Upload container artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: container
+          path: /tmp/container.tar
+
   qa:
     name: QA Checks
-    needs: [matrix]
+    needs: [matrix, container]
     runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
       matrix:
         projectName: ${{ fromJSON(needs.matrix.outputs.matrix) }}
     steps:
-      - name: Setting up nodeJS
-        uses: actions/setup-node@v2
+      - name: Download container artifact
+        uses: actions/download-artifact@v2
         with:
-          node-version: 17
-      - name: Checkout sourcecode
-        uses: actions/checkout@v3
-      - name: Install dependencies
-        run: npm ci
-      - name: Prepare action files
-        run: mkdir /action; cp composer.schema.json /action; cp laminas-ci.schema.json /action
+          name: container
+          path: /tmp
+
+      - name: Load image
+        run: docker load --input /tmp/myimage.tar
+
       - name: "Generating matrix for project: ${{ matrix.projectName }}"
         id: matrix_generation
         env:
           PROJECT_NAME_TO_TEST: ${{ matrix.projectName }}
-        run: cd tests/${PROJECT_NAME_TO_TEST} && node ../../index.js $(test -r diff && cat diff || echo -n "")
+        run: cd tests/${PROJECT_NAME_TO_TEST} && docker run -v $(realpath .):/github/workspace -w=/github/workspace --it $(docker image ls --quite) node ../../index.js $(test -r diff && cat diff || echo -n "")
+
       - name: Minify matrix from test directory
         uses: sergeysova/jq-action@v2
         id: expected_matrix
@@ -50,6 +82,7 @@ jobs:
           PROJECT_NAME_TO_TEST: ${{ matrix.projectName }}
         with:
           cmd: 'jq -c . < tests/${PROJECT_NAME_TO_TEST}/matrix.json'
+
       - name: "verify output of generated matrix for project: empty-project"
         env:
           GENERATED_MATRIX: ${{ steps.matrix_generation.outputs.matrix }}
