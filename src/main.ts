@@ -16,9 +16,17 @@ if (!app.sanityChecksPassing()) {
     process.exit(1);
 }
 
+/**
+ * Remove the first two arguments from this process.
+ *  - first index contains the binary which is used to execute JS (nodejs)
+ *  - second argument contains the filename which is being executed
+ * After the first two arguments, all remaining arguments should contain filenames from a `diff`. Can be empty in case
+ * the action is not run from a pull-request.
+ */
 /* eslint-disable-next-line no-magic-numbers */
-const FIRST_TWO_ARGUMENTS = 2;
-const config = app.createConfiguration(process.argv.slice(FIRST_TWO_ARGUMENTS));
+const filesWithChanges: string[] = process.argv.slice(2);
+
+const config = app.createConfiguration(filesWithChanges);
 
 action.debug(`Generated configuration: ${JSON.stringify(config, null, SPACES_TO_INDENT_JSON)}`);
 const checks = app.createJobs(config);
