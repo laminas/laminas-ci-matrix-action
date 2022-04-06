@@ -21,7 +21,7 @@
   },
   "scripts": {
     "lint": "eslint src/**.ts",
-    "build": "tsc --build --clean && webpack --mode=production"
+    "build": "tsc --build && webpack --mode=production"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",
