@@ -84,7 +84,7 @@ jobs:
       - name: "Output generated matrix"
         uses: sergeysova/jq-action@v2
         with:
-            cmd: 'echo ${{ steps.matrix_generation.outputs.matrix }} | jq'
+            cmd: "jq . < <(echo '${{ steps.matrix_generation.outputs.matrix }}')"
 
       - name: Minify matrix from test directory
         uses: sergeysova/jq-action@v2
@@ -99,4 +99,4 @@ jobs:
           GENERATED_MATRIX: ${{ steps.matrix_generation.outputs.matrix }}
           EXPECTED_MATRIX: ${{ steps.expected_matrix.outputs.value }}
           PROJECT_NAME_TO_TEST: "empty-project"
-        run: diff --color <(echo ${EXPECTED_MATRIX}) <(echo ${GENERATED_MATRIX})
+        run: diff --color <(echo '${EXPECTED_MATRIX}') <(echo '${GENERATED_MATRIX}')
