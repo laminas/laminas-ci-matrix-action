@@ -95,8 +95,4 @@ jobs:
           cmd: 'jq -c . < tests/${PROJECT_NAME_TO_TEST}/matrix.json'
 
       - name: "verify output of generated matrix for project: empty-project"
-        env:
-          GENERATED_MATRIX: ${{ steps.matrix_generation.outputs.matrix }}
-          EXPECTED_MATRIX: ${{ steps.expected_matrix.outputs.value }}
-          PROJECT_NAME_TO_TEST: "empty-project"
-        run: diff --color <(echo '${EXPECTED_MATRIX}') <(echo '${GENERATED_MATRIX}')
+        run: diff --color <(echo '${{ steps.expected_matrix.outputs.value }}') <(echo '${{ steps.matrix_generation.outputs.matrix }}')
