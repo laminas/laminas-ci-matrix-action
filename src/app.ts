@@ -86,7 +86,7 @@ export class App {
     }
 
     private projectContainsValidJsonConfiguration(schemaName: PathLike, fileName: PathLike): ValidationResult {
-        const schemaPath = `${this.action.getApplicationDirectory()  }/${  schemaName}`;
+        const schemaPath = `${this.action.getApplicationDirectory()}/${schemaName}`;
 
         if (!fs.existsSync(schemaPath) || !fs.existsSync(fileName)) {
             return { valid: true, errors: [] };
