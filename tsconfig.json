@@ -5,6 +5,7 @@
         "lib": ["es2015", "es2017"],
         "strict": true,
         "alwaysStrict": true,
+        "noUncheckedIndexedAccess": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "noUnusedLocals": true,
