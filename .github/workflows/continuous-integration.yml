@@ -45,6 +45,9 @@ jobs:
           push: false
           tags: ${{ env.TEST_TAG }}
           outputs: type=docker,dest=/tmp/container.tar
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
       - name: Upload container artifact
         uses: actions/upload-artifact@v2
         with:
