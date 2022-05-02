@@ -31,6 +31,10 @@ function checkout {
             REF=${GITHUB_REF/refs\/heads\//}
             LOCAL_BRANCH=${REF}
             ;;
+        schedule)
+            REF=${GITHUB_REF/refs\/heads\//}
+            LOCAL_BRANCH=${REF}
+            ;;
         tag)
             REF=${GITHUB_REF/refs\/tags\//}
             LOCAL_BRANCH=${REF}
@@ -49,6 +53,7 @@ function checkout {
         git fetch origin
     else
         echo "Cloning repository"
+        git config --global --add safe.directory "${PWD}"
         git clone https://github.com/"${GITHUB_REPOSITORY}" .
     fi
 
