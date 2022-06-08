@@ -9,7 +9,10 @@ export const PHP_81 = '8.1';
 
 export const CURRENT_STABLE = PHP_74;
 
-/** NOTE: Please keep this list ordered as the ordering is used to detect the minimum supported version of a project */
+/**
+ * NOTE: Please keep this list ordered as the ordering is used to detect the minimum supported version of a project
+ *       If this list is being extended, please also update the `laminas-ci.schema.json` file as well.
+ */
 export const INSTALLABLE_VERSIONS = [
     PHP_56,
     PHP_70,
