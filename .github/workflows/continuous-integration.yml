@@ -100,7 +100,7 @@ jobs:
           cmd: 'jq -c . < tests/${PROJECT_NAME_TO_TEST}/matrix.json'
 
       - name: "verify output of generated matrix for project: empty-project"
-        run: cmp  <(echo '${{ steps.expected_matrix.outputs.value }}' | jq --sort-keys) <(echo '${{ steps.matrix_generation.outputs.matrix }}' | jq --sort-keys) ||
+        run: diff  <(echo '${{ steps.expected_matrix.outputs.value }}' | jq --sort-keys) <(echo '${{ steps.matrix_generation.outputs.matrix }}' | jq --sort-keys) ||
 
   docker-build:
     runs-on: "ubuntu-latest"
