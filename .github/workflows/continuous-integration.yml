@@ -84,8 +84,7 @@ jobs:
         id: matrix_generation
         env:
           PROJECT_NAME_TO_TEST: ${{ matrix.projectName }}
-          GITHUB_ACTION: "yes"
-        run: cd tests/${PROJECT_NAME_TO_TEST} && docker run -v $(realpath .):/github/workspace --env-file <(env) -w=/github/workspace ${TEST_TAG} node ../../index.js $(test -r diff && cat diff || echo -n "")
+        run: cd tests/${PROJECT_NAME_TO_TEST} && docker run -v $(realpath .):/github/workspace --env GITHUB_ACTIONS=true -w=/github/workspace ${TEST_TAG} node ../../index.js $(test -r diff && cat diff || echo -n "")
 
       - name: "Output generated matrix"
         uses: sergeysova/jq-action@v2

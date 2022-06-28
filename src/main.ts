@@ -5,10 +5,10 @@ import { Github } from './action/github';
 import { SPACES_TO_INDENT_JSON } from './json';
 import {Logger} from './logging';
 
-let action: Action = new Local();
+let action: Action = new Github();
 
-if (process.env.GITHUB_ACTION !== undefined) {
-    action = new Github();
+if (process.env.GITHUB_ACTIONS !== 'true') {
+    action = new Local();
 }
 
 const logger: Logger = action.getLogger();
