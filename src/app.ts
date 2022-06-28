@@ -21,7 +21,7 @@ export class App {
         private readonly logger: Logger
     ) {}
 
-    public sanityChecksPassing(): boolean {
+    public assertSanityChecksArePassing(): void {
         let schemaValidationResult = this.projectContainsValidJsonConfiguration(
             'composer.json.schema',
             this.composerJsonFileName
@@ -42,8 +42,6 @@ export class App {
                 schemaValidationResult
             );
         }
-
-        return true;
     }
 
     private validateJsonSchema(

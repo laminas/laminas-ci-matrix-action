@@ -18,9 +18,7 @@ if (process.env.GITHUB_ACTIONS !== 'true') {
 const logger: Logger = action.getLogger();
 const app = new App(action, logger);
 
-if (!app.sanityChecksPassing()) {
-    process.exit(1);
-}
+app.assertSanityChecksArePassing()
 
 /**
  * Remove the first two arguments from this process.
