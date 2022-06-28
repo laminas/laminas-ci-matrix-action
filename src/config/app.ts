@@ -207,7 +207,7 @@ function createJob(
     config: Config
 ): Job {
     return {
-        name,
+        name            : `${ name } [${ phpVersion }, ${ composerDependencySet }]`,
         action          : ACTION,
         operatingSystem : OPERATING_SYSTEM,
         job             : {

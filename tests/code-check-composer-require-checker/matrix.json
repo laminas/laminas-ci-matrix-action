@@ -1,7 +1,7 @@
 {
     "include": [
         {
-            "name": "./vendor/bin/composer-require-checker check --config-file=composer-require-checker.json -n -v composer.json on PHP 7.4",
+            "name": "Composer Require Checker [7.4, latest]",
             "job": "{\"command\":\"./vendor/bin/composer-require-checker check --config-file=composer-require-checker.json -n -v composer.json\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
