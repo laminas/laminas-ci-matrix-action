@@ -159,7 +159,7 @@ function convertJobDefinitionFromFileToJobDefinition(
         phpExtensions                : job.extensions ?? appConfig.phpExtensions,
         command                      : job.command,
         phpIni                       : job.ini ?? appConfig.phpIni,
-        composerDependencySet: composerDependencySet,
+        composerDependencySet        : composerDependencySet,
         ignorePhpPlatformRequirement : discoverIgnorePhpPlatformRequirementForJobByVersion(job, phpVersion, appConfig),
         additionalComposerArguments  : discoverAdditionalComposerArgumentsForCheck(job, appConfig)
     };
@@ -215,7 +215,7 @@ function createJob(
             php                          : phpVersion,
             phpExtensions                : config.phpExtensions,
             phpIni                       : config.phpIni,
-            composerDependencySet: composerDependencySet,
+            composerDependencySet        : composerDependencySet,
             ignorePhpPlatformRequirement : config.ignorePhpPlatformRequirements[phpVersion] ?? false,
             additionalComposerArguments  : config.additionalComposerArguments
         }
@@ -239,7 +239,13 @@ function createJobs(
 
     if (tool.executionType === ToolExecutionType.MATRIX) {
         if (config.lockedDependenciesExists) {
-            jobs.push(createJob(tool.name, tool.command, config.minimumPhpVersion, ComposerDependencySet.LOCKED, config));
+            jobs.push(createJob(
+                tool.name,
+                tool.command,
+                config.minimumPhpVersion,
+                ComposerDependencySet.LOCKED,
+                config
+            ));
         }
 
         config.versions.forEach((version) => jobs.push(
@@ -265,7 +271,7 @@ function createNoOpCheck(appConfig: Config): Job {
             php                          : appConfig.stablePhpVersion,
             phpExtensions                : [],
             command                      : '',
-            composerDependencySet           : ComposerDependencySet.LOCKED,
+            composerDependencySet        : ComposerDependencySet.LOCKED,
             phpIni                       : [],
             ignorePhpPlatformRequirement : appConfig.ignorePhpPlatformRequirements[appConfig.stablePhpVersion] ?? false,
             additionalComposerArguments  : appConfig.additionalComposerArguments,

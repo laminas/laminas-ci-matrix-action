@@ -20,7 +20,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
-    "lint": "eslint src/**.ts",
+    "lint": "eslint src/ --ext .ts",
     "build": "tsc --build && webpack --mode=production"
   },
   "dependencies": {
