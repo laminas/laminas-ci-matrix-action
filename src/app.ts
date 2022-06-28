@@ -37,7 +37,7 @@ export class App {
         );
 
         if (!schemaValidationResult.valid) {
-            return this.failWithLoggedJsonSchemaValidationErrors(
+            this.failWithLoggedJsonSchemaValidationErrors(
                 this.continousIntegrationConfigurationJsonFileName,
                 schemaValidationResult
             );
@@ -100,14 +100,12 @@ export class App {
     private failWithLoggedJsonSchemaValidationErrors(
         filePath: PathLike,
         schemaValidationResult: ValidationResult
-    ): boolean {
-        this.action.markFailed(`${filePath} schema validation failed.`);
-
+    ): never {
         schemaValidationResult.errors.forEach((outputUnit) => {
             this.logger.error(`There is an error in the keyword located by ${outputUnit.keywordLocation}: ${outputUnit.error}`);
         });
 
-        return false;
+        this.action.markFailed(`${filePath} schema validation failed.`);
     }
 
     private checkRequirements(diff: string[]): Requirements {

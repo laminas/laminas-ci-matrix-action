@@ -9,8 +9,9 @@ export class Github implements Action {
         core.setOutput(variable, JSON.stringify(output));
     }
 
-    markFailed(reason: string): void {
+    markFailed(reason: string): never {
         core.setFailed(reason);
+        process.exit(1);
     }
 
     getApplicationDirectory(): PathLike {
