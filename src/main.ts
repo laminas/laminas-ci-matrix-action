@@ -7,6 +7,10 @@ import {Logger} from './logging';
 
 let action: Action = new Github();
 
+/**
+ * Default environment variable provided by GHA to each run
+ * https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+ */
 if (process.env.GITHUB_ACTIONS !== 'true') {
     action = new Local();
 }
