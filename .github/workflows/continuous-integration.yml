@@ -20,6 +20,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Gather integration test directory names
         id: matrix
+        # This provides a dedicated "check" to asynchronously test all integration tests within the tests/ directory
+        # The project name from the tests/ directory is then re-used within the "qa" job to run the generated "container"
+        # within that directory.
         run: cd tests; echo "::set-output name=matrix::[\"$(ls -d * | tr '\n' ' ' | sed 's/ $//' | sed 's/ /\",\"/g')\"]"
 
   container:
