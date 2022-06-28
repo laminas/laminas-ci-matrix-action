@@ -1,0 +1,11 @@
+{
+    "additional_checks": [
+        {
+            "name": "Whatever Check",
+            "job": {
+                "php": "@latest",
+                "command": "test"
+            }
+        }
+    ]
+}
