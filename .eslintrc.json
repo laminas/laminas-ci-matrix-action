@@ -29,7 +29,8 @@
         "no-shadow": "off",
         "object-curly-spacing": "off",
         "comma-dangle": "off",
-        "censor/no-swear": "off"
+        "censor/no-swear": "off",
+        "@typescript-eslint/no-inferrable-types": "off"
     },
     "settings": {
         "import/resolver": {
