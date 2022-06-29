@@ -3,6 +3,15 @@
     "exclude": [
         {
             "name": "./vendor/bin/codecept run on PHP 7.4"
+        },
+        {
+            "name": "PHPUnit on PHP 7.4 with lowest dependencies"
+        },
+        {
+            "name": "PHPUnit on PHP 7.4 with locked dependencies"
+        },
+        {
+            "name": "PHPUnit on PHP 7.4 with latest dependencies"
         }
     ]
 }
