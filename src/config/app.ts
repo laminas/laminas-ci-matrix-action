@@ -191,6 +191,8 @@ function convertJobFromFileToJobs(job: JobFromFile, appConfig: Config): Job[] {
     const composerDependencySets = discoverComposerDependencySetsForJob(jobDefinitionFromFile);
     const phpVersionsToRunTheChecksWith = discoverPhpVersionsForJob(jobDefinitionFromFile, appConfig);
 
+    const jobs: Job[] = [];
+
     phpVersionsToRunTheChecksWith.forEach(
         (version) => composerDependencySets.forEach((dependencySet) => {
             const jobDefinition = convertJobDefinitionFromFileToJobDefinition(
@@ -203,8 +205,6 @@ function convertJobFromFileToJobs(job: JobFromFile, appConfig: Config): Job[] {
             jobs.push(createJob(job.name, jobDefinition));
         })
     );
-
-    const jobs: Job[] = [];
 
     return jobs;
 }
