@@ -99,7 +99,7 @@ jobs:
         with:
           cmd: 'jq -c . < tests/${PROJECT_NAME_TO_TEST}/matrix.json'
 
-      - name: "verify output of generated matrix for project: empty-project"
+      - name: "verify output of generated matrix for project: ${{ matrix.projectName }}"
         run: diff --color <(echo '${{ steps.expected_matrix.outputs.value }}' | jq --sort-keys) <(echo '${{ steps.matrix_generation.outputs.matrix }}' | jq --sort-keys)
 
   docker-build:
