@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import core from "@actions/core";
 import fs from "fs";
 import checkRequirements from "./src/check-requirements.js";
