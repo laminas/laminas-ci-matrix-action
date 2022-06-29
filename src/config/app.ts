@@ -112,7 +112,8 @@ function discoverPhpVersionsForJob(job: JobDefinitionFromFile, config: Config): 
 }
 
 function discoverComposerDependencySetsForJob(job: JobDefinitionFromFile, config: Config): ComposerDependencySet[] {
-    const dependencySetFromConfig = job.dependencies ?? config.lockedDependenciesExists ? ComposerDependencySet.LOCKED : ComposerDependencySet.LATEST;
+    const dependencySetFromConfig = job.dependencies
+        ?? config.lockedDependenciesExists ? ComposerDependencySet.LOCKED : ComposerDependencySet.LATEST;
 
     if (isAnyComposerDependencySet(dependencySetFromConfig)) {
         return [ ComposerDependencySet.LOWEST, ComposerDependencySet.LATEST ];
@@ -382,7 +383,10 @@ export function gatherChecks(
     logger: Logger
 ): [Job, ...Job[]] {
     if (isExplicitChecksConfiguration(configurationFromFile)) {
-        const checks = (configurationFromFile.checks?.map((job) => convertJobFromFileToJobs(job, config)) ?? []).flat(1);
+        const checks = (configurationFromFile.checks?.map(
+            (job) => convertJobFromFileToJobs(job, config)
+        ) ?? []
+        ).flat(1);
 
         if (checks.length === 0) {
             return [ createNoOpCheck(config) ];
@@ -401,7 +405,9 @@ export function gatherChecks(
         checks = [ ...checks, ...generatedChecksFromAdditionalChecksConfiguration ];
     }
 
-    const exclusions = isConfigurationContainingJobExclusions(configurationFromFile) ? configurationFromFile.exclude ?? [] : [];
+    const exclusions = isConfigurationContainingJobExclusions(configurationFromFile)
+        ? configurationFromFile.exclude ?? []
+        : [];
 
     checks = checks.filter((job) => !isJobExcluded(job, exclusions, config, logger));
     if (checks.length === 0) {
