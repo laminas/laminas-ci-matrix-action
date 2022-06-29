@@ -1,0 +1,8 @@
+{
+    "stablePHP": "7.4",
+    "exclude": [
+        {
+            "name": "./vendor/bin/codecept run on PHP 7.4 with locked dependencies"
+        }
+    ]
+}
