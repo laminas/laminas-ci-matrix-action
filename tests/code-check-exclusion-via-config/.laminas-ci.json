@@ -2,7 +2,7 @@
     "stablePHP": "7.4",
     "exclude": [
         {
-            "name": "Codeception [7.4, latest]"
+            "name": "Codeception [7.4, locked]"
         },
         {
             "name": "PHPUnit [7.4, locked]"
