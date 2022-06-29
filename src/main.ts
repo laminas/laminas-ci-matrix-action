@@ -33,9 +33,9 @@ const filesWithChanges: string[] = process.argv.slice(2).filter((value) => value
 const config = app.createConfiguration(filesWithChanges);
 
 logger.debug(`Generated configuration: ${JSON.stringify(config, null, SPACES_TO_INDENT_JSON)}`);
-if (filesWithChanges.length) {
+if (filesWithChanges.length > 0) {
     logger.debug('Files used for generating configuration:');
-    filesWithChanges.forEach((file) => logger.debug(`   ${ file }`))
+    filesWithChanges.forEach((file) => logger.debug(`   ${ file }`));
 }
 
 const checks = app.createJobs(config);
