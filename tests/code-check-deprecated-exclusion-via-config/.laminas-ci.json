@@ -6,6 +6,9 @@
         },
         {
             "name": "PHPUnit on PHP 7.4 with locked dependencies"
+        },
+        {
+            "name": "PHPUnit on PHP 7.4 with latest dependencies"
         }
     ]
 }
