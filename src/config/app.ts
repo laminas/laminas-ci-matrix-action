@@ -113,7 +113,7 @@ function discoverPhpVersionsForJob(job: JobDefinitionFromFile, config: Config): 
 
 function discoverComposerDependencySetsForJob(job: JobDefinitionFromFile, config: Config): ComposerDependencySet[] {
     const dependencySetFromConfig = job.dependencies
-        ?? config.lockedDependenciesExists ? ComposerDependencySet.LOCKED : ComposerDependencySet.LATEST;
+        ?? (config.lockedDependenciesExists ? ComposerDependencySet.LOCKED : ComposerDependencySet.LATEST);
 
     if (isAnyComposerDependencySet(dependencySetFromConfig)) {
         return [ ComposerDependencySet.LOWEST, ComposerDependencySet.LATEST ];
@@ -385,8 +385,7 @@ export function gatherChecks(
     if (isExplicitChecksConfiguration(configurationFromFile)) {
         const checks = (configurationFromFile.checks?.map(
             (job) => convertJobFromFileToJobs(job, config)
-        ) ?? []
-        ).flat(1);
+        ) ?? []).flat(1);
 
         if (checks.length === 0) {
             return [ createNoOpCheck(config) ];
