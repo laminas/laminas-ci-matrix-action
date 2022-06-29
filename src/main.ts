@@ -18,7 +18,7 @@ if (process.env.GITHUB_ACTIONS !== 'true') {
 const logger: Logger = action.getLogger();
 const app = new App(action, logger);
 
-app.assertSanityChecksArePassing()
+app.assertSanityChecksArePassing();
 
 /**
  * Remove the first two arguments from this process.
@@ -28,11 +28,16 @@ app.assertSanityChecksArePassing()
  * the action is not run from a pull-request.
  */
 /* eslint-disable-next-line no-magic-numbers */
-const filesWithChanges: string[] = process.argv.slice(2);
+const filesWithChanges: string[] = process.argv.slice(2).filter((value) => value !== '');
 
 const config = app.createConfiguration(filesWithChanges);
 
 logger.debug(`Generated configuration: ${JSON.stringify(config, null, SPACES_TO_INDENT_JSON)}`);
+if (filesWithChanges.length) {
+    logger.debug('Files used for generating configuration:');
+    filesWithChanges.forEach((file) => logger.debug(`   ${ file }`))
+}
+
 const checks = app.createJobs(config);
 
 logger.info(`Running code checks: ${config.codeChecks ? 'Yes' : 'No'}`);
