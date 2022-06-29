@@ -9,6 +9,7 @@ RUN apk update \
 
 RUN mkdir /action
 ADD index.js /action/index.js
+RUN chmod u+x /action/index.js
 ADD src /action/src
 ADD package.json /action/package.json
 ADD package-lock.json /action/package-lock.json
