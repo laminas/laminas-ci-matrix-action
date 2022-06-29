@@ -30,6 +30,10 @@ export class Github implements Action {
 
             error(message: string): void {
                 core.error(message);
+            },
+
+            warning(message: string): void {
+                core.warning(message);
             }
         };
     }

@@ -68,7 +68,7 @@ export class App {
         const tools = createTools(appConfig);
 
         this.logger.debug(`Tools detected: ${JSON.stringify(tools, null, SPACES_TO_INDENT_JSON)}`);
-        const jobs: [Job, ...Job[]] = (new DefaultJobCreator(tools))
+        const jobs: [Job, ...Job[]] = (new DefaultJobCreator(tools, this.logger))
             .createJobs(config, appConfig);
 
         this.logger.debug(`Jobs created: ${JSON.stringify(jobs, null, SPACES_TO_INDENT_JSON)}`);

@@ -32,6 +32,10 @@ export class Local implements Action {
             error(message: string): void {
                 console.error(`error: ${message}`);
             },
+
+            warning(message: string): void {
+                console.warn(`warning: ${message}`);
+            }
         };
     }
 }

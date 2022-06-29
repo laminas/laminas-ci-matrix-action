@@ -2,6 +2,7 @@ import fs, {PathLike} from 'fs';
 import semver from 'semver';
 import parseJsonFile from '../json';
 import {Tool, ToolExecutionType} from '../tools';
+import {Logger} from '../logging';
 import {CURRENT_STABLE, INSTALLABLE_VERSIONS, InstallablePhpVersionType, isInstallableVersion} from './php';
 import {ComposerJson} from './composer';
 import {ConfigurationFromFile, isAdditionalChecksConfiguration, isAnyComposerDependencySet, isAnyPhpVersionType, isConfigurationContainingJobExclusions, isExplicitChecksConfiguration, isLatestPhpVersionType, isLowestPhpVersionType, JobDefinitionFromFile, JobFromFile, JobToExcludeFromFile, WILDCARD_ALIAS} from './input';
@@ -190,13 +191,48 @@ function convertJobFromFileToJobs(job: JobFromFile, appConfig: Config): Job[] {
     return jobs;
 }
 
-function isJobExcluded(job: Job, exclusions: JobToExcludeFromFile[]) {
+function isJobExcludedByDeprecatedCommandName(job: Job, exclusions: JobToExcludeFromFile[], appConfig: Config) {
+    if (exclusions.some(
+        (exclude) =>
+            `${ job.job.command } on PHP ${ job.job.php } with ${ job.job.composerDependencySet } dependencies`
+            === exclude.name
+    )) {
+        return true;
+    }
+
+    /**
+     * Until v1.12.0, all code checks were generated with "locked" dependencies even tho no lockfile existed.
+     */
+    return !appConfig.lockedDependenciesExists && exclusions.some(
+        (exclude) =>
+            exclude.name.endsWith('locked dependencies')
+            && `${job.job.command} on PHP ${job.job.php} with locked dependencies`
+            === exclude.name
+    );
+}
+
+function isJobExcluded(job: Job, exclusions: JobToExcludeFromFile[], appConfig: Config, logger: Logger): boolean {
     if (exclusions.length === 0) {
         return false;
     }
 
-    return exclusions
-        .some((exclude) => job.name === exclude.name);
+    if (exclusions.some((exclude) => job.name === exclude.name)) {
+        logger.debug(`Job with name ${ job.name } is excluded due to application config.`);
+
+        return true;
+    }
+
+    // Verify that deprecated exclusion does still work
+    if (isJobExcludedByDeprecatedCommandName(job, exclusions, appConfig)) {
+        logger.warning(
+            'Application uses deprecated job exclusion.'
+            + ` Please modify the job exclusion for the job "${ job.name }" appropriately.`
+        );
+
+        return true;
+    }
+
+    return false;
 }
 
 function createJob(
@@ -279,7 +315,12 @@ function createNoOpCheck(appConfig: Config): Job {
     };
 }
 
-export function gatherChecks(config: ConfigurationFromFile, appConfig: Config, tools: Tool[]): [Job, ...Job[]] {
+export function gatherChecks(
+    config: ConfigurationFromFile,
+    appConfig: Config,
+    tools: Tool[],
+    logger: Logger
+): [Job, ...Job[]] {
     if (isExplicitChecksConfiguration(config)) {
         const checks = (config.checks?.map((job) => convertJobFromFileToJobs(job, appConfig)) ?? []).flat(1);
 
@@ -302,7 +343,7 @@ export function gatherChecks(config: ConfigurationFromFile, appConfig: Config, t
 
     const exclusions = isConfigurationContainingJobExclusions(config) ? config.exclude ?? [] : [];
 
-    checks = checks.filter((job) => !isJobExcluded(job, exclusions));
+    checks = checks.filter((job) => !isJobExcluded(job, exclusions, appConfig, logger));
     if (checks.length === 0) {
         return [
             createNoOpCheck(appConfig)
