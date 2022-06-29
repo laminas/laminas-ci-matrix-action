@@ -5,9 +5,6 @@
             "name": "Codeception [7.4, latest]"
         },
         {
-            "name": "PHPUnit [7.4, lowest]"
-        },
-        {
             "name": "PHPUnit [7.4, locked]"
         },
         {
