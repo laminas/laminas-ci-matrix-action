@@ -155,38 +155,56 @@ function convertJobDefinitionFromFileToJobDefinition(
     job: JobDefinitionFromFile,
     appConfig: Config
 ): JobDefinition {
+    return createJobDefinition(
+        job.command,
+        phpVersion,
+        composerDependencySet,
+        job.extensions ?? appConfig.phpExtensions,
+        job.ini ?? appConfig.phpIni,
+        discoverIgnorePhpPlatformRequirementForJobByVersion(job, phpVersion, appConfig),
+        discoverAdditionalComposerArgumentsForCheck(job, appConfig)
+    );
+}
+
+function createJobDefinition(
+    command: string,
+    phpVersion: InstallablePhpVersionType,
+    composerDependencySet: ComposerDependencySet,
+    phpExtensions: string[],
+    phpIniSettings: string[],
+    ignorePlatformRequirements: boolean,
+    additionalComposerArguments: string[]
+): JobDefinition {
     return {
         php                          : phpVersion,
-        phpExtensions                : job.extensions ?? appConfig.phpExtensions,
-        command                      : job.command,
-        phpIni                       : job.ini ?? appConfig.phpIni,
+        phpExtensions                : phpExtensions,
+        command                      : command,
+        phpIni                       : phpIniSettings,
         composerDependencySet        : composerDependencySet,
-        ignorePhpPlatformRequirement : discoverIgnorePhpPlatformRequirementForJobByVersion(job, phpVersion, appConfig),
-        additionalComposerArguments  : discoverAdditionalComposerArgumentsForCheck(job, appConfig)
+        ignorePhpPlatformRequirement : ignorePlatformRequirements,
+        additionalComposerArguments  : additionalComposerArguments
     };
 }
 
 function convertJobFromFileToJobs(job: JobFromFile, appConfig: Config): Job[] {
-    const jobDefinition: JobDefinitionFromFile = job.job;
-    const composerDependencySets = discoverComposerDependencySetsForJob(jobDefinition);
-    const phpVersionsToRunTheChecksWith = discoverPhpVersionsForJob(jobDefinition, appConfig);
-    const jobs: Job[] = [];
+    const jobDefinitionFromFile: JobDefinitionFromFile = job.job;
+    const composerDependencySets = discoverComposerDependencySetsForJob(jobDefinitionFromFile);
+    const phpVersionsToRunTheChecksWith = discoverPhpVersionsForJob(jobDefinitionFromFile, appConfig);
 
     phpVersionsToRunTheChecksWith.forEach(
-        (version) => composerDependencySets.forEach(
-            (dependencySet) => jobs.push({
-                operatingSystem : OPERATING_SYSTEM,
-                action          : ACTION,
-                job             : convertJobDefinitionFromFileToJobDefinition(
-                    version,
-                    dependencySet,
-                    jobDefinition,
-                    appConfig
-                ),
-                name : job.name
-            })
-        )
+        (version) => composerDependencySets.forEach((dependencySet) => {
+            const jobDefinition = convertJobDefinitionFromFileToJobDefinition(
+                version,
+                dependencySet,
+                jobDefinitionFromFile,
+                appConfig
+            );
+
+            jobs.push(createJob(job.name, jobDefinition));
+        })
     );
+
+    const jobs: Job[] = [];
 
     return jobs;
 }
@@ -237,24 +255,13 @@ function isJobExcluded(job: Job, exclusions: JobToExcludeFromFile[], appConfig: 
 
 function createJob(
     name: string,
-    command: string,
-    phpVersion: InstallablePhpVersionType,
-    composerDependencySet: ComposerDependencySet,
-    config: Config
+    job: JobDefinition
 ): Job {
     return {
-        name            : `${ name } [${ phpVersion }, ${ composerDependencySet }]`,
+        name            : `${ name } [${ job.php }, ${ job.composerDependencySet }]`,
         action          : ACTION,
         operatingSystem : OPERATING_SYSTEM,
-        job             : {
-            command,
-            php                          : phpVersion,
-            phpExtensions                : config.phpExtensions,
-            phpIni                       : config.phpIni,
-            composerDependencySet        : composerDependencySet,
-            ignorePhpPlatformRequirement : config.ignorePhpPlatformRequirements[phpVersion] ?? false,
-            additionalComposerArguments  : config.additionalComposerArguments
-        }
+        job             : job
     };
 }
 
@@ -270,23 +277,57 @@ function createJobs(
             : ComposerDependencySet.LATEST;
 
 
-        return [ createJob(tool.name, tool.command, config.minimumPhpVersion, lockedOrLatestDependencySet, config) ];
+        return [
+            createJob(
+                tool.name,
+                createJobDefinition(
+                    tool.command,
+                    config.minimumPhpVersion,
+                    lockedOrLatestDependencySet,
+                    config.phpExtensions,
+                    config.phpIni,
+                    config.ignorePhpPlatformRequirements[config.minimumPhpVersion] ?? false,
+                    config.additionalComposerArguments
+                )
+            )
+        ];
     }
 
     if (tool.executionType === ToolExecutionType.MATRIX) {
         if (config.lockedDependenciesExists) {
             jobs.push(createJob(
                 tool.name,
-                tool.command,
-                config.minimumPhpVersion,
-                ComposerDependencySet.LOCKED,
-                config
+                createJobDefinition(
+                    tool.command,
+                    config.minimumPhpVersion,
+                    ComposerDependencySet.LOCKED,
+                    config.phpExtensions,
+                    config.phpIni,
+                    config.ignorePhpPlatformRequirements[config.minimumPhpVersion] ?? false,
+                    config.additionalComposerArguments
+                )
             ));
         }
 
         config.versions.forEach((version) => jobs.push(
-            createJob(tool.name, tool.command, version, ComposerDependencySet.LOWEST, config),
-            createJob(tool.name, tool.command, version, ComposerDependencySet.LATEST, config),
+            createJob(tool.name, createJobDefinition(
+                tool.command,
+                version,
+                ComposerDependencySet.LOWEST,
+                config.phpExtensions,
+                config.phpIni,
+                config.ignorePhpPlatformRequirements[version] ?? false,
+                config.additionalComposerArguments
+            )),
+            createJob(tool.name, createJobDefinition(
+                tool.command,
+                version,
+                ComposerDependencySet.LATEST,
+                config.phpExtensions,
+                config.phpIni,
+                config.ignorePhpPlatformRequirements[version] ?? false,
+                config.additionalComposerArguments
+            )),
         ));
     }
 
