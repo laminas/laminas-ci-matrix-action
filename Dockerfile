@@ -23,6 +23,7 @@ ADD https://getcomposer.org/schema.json /action/composer.schema.json
 ADD laminas-ci.schema.json /action/
 
 COPY --from=compiler /usr/local/source/dist/main.js /action/
+RUN chmod u+x /action/main.js
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
 

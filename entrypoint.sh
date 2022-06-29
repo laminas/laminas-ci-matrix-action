@@ -79,4 +79,4 @@ if [[ "$DIFF" != "" ]];then
     echo ${DIFF}
 fi
 
-node /action/main.js ${DIFF}
+/action/main.js ${DIFF}
