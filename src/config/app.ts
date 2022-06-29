@@ -63,6 +63,14 @@ export interface Job {
     action: string;
 }
 
+interface JobFromTool extends Job {
+    tool: Tool
+}
+
+function isJobFromTool(job: Job): job is JobFromTool {
+    return (job as JobFromTool).tool !== undefined;
+}
+
 export interface JobToExclude {
     name: string;
 }
@@ -218,6 +226,14 @@ function isJobExcludedByDeprecatedCommandName(job: Job, exclusions: JobToExclude
         return true;
     }
 
+    if (isJobFromTool(job) && exclusions.some(
+        (exclude) =>
+            `${ job.tool.name } on PHP ${ job.job.php } with ${ job.job.composerDependencySet } dependencies`
+            === exclude.name
+    )) {
+        return true;
+    }
+
     /**
      * Until v1.12.0, all QA checks did not contain the composer dependency set
      */
@@ -245,7 +261,7 @@ function isJobExcluded(job: Job, exclusions: JobToExcludeFromFile[], appConfig: 
     }
 
     if (exclusions.some((exclude) => job.name === exclude.name)) {
-        logger.debug(`Job with name ${ job.name } is excluded due to application config.`);
+        logger.info(`Job with name ${ job.name } is excluded due to application config.`);
 
         return true;
     }
@@ -265,21 +281,28 @@ function isJobExcluded(job: Job, exclusions: JobToExcludeFromFile[], appConfig: 
 
 function createJob(
     name: string,
-    job: JobDefinition
-): Job {
-    return {
+    job: JobDefinition,
+    tool: Tool|null = null
+): Job | JobFromTool {
+    let createdJob: Job | JobFromTool = {
         name            : `${ name } [${ job.php }, ${ job.composerDependencySet }]`,
         action          : ACTION,
         operatingSystem : OPERATING_SYSTEM,
         job             : job
     };
+
+    if (tool !== null) {
+        createdJob = { ...createdJob, tool: tool};
+    }
+
+    return createdJob;
 }
 
-function createJobs(
+function createJobsForTool(
     config: Config,
     tool: Tool
-): Job[] {
-    const jobs: Job[] = [];
+): JobFromTool[] {
+    const jobs: JobFromTool[] = [];
 
     if (tool.executionType === ToolExecutionType.STATIC) {
         const lockedOrLatestDependencySet: ComposerDependencySet = config.lockedDependenciesExists
@@ -298,8 +321,9 @@ function createJobs(
                     config.phpIni,
                     config.ignorePhpPlatformRequirements[config.minimumPhpVersion] ?? false,
                     config.additionalComposerArguments
-                )
-            )
+                ),
+                tool
+            ) as JobFromTool
         ];
     }
 
@@ -315,8 +339,9 @@ function createJobs(
                     config.phpIni,
                     config.ignorePhpPlatformRequirements[config.minimumPhpVersion] ?? false,
                     config.additionalComposerArguments
-                )
-            ));
+                ),
+                tool
+            ) as JobFromTool);
         }
 
         config.versions.forEach((version) => jobs.push(
@@ -328,7 +353,8 @@ function createJobs(
                 config.phpIni,
                 config.ignorePhpPlatformRequirements[version] ?? false,
                 config.additionalComposerArguments
-            )),
+            ), tool) as JobFromTool,
+
             createJob(tool.name, createJobDefinition(
                 tool.command,
                 version,
@@ -337,16 +363,16 @@ function createJobs(
                 config.phpIni,
                 config.ignorePhpPlatformRequirements[version] ?? false,
                 config.additionalComposerArguments
-            )),
+            ), tool) as JobFromTool,
         ));
     }
 
     return jobs;
 }
 
-export function createChecksForKnownTools(config: Config, tools: Tool[]): Job[] {
+export function createChecksForKnownTools(config: Config, tools: Tool[]): JobFromTool[] {
     return tools
-        .flatMap((tool) => createJobs(config, tool));
+        .flatMap((tool) => createJobsForTool(config, tool));
 }
 
 function createNoOpCheck(appConfig: Config): Job {
@@ -382,7 +408,7 @@ export function gatherChecks(
         return checks as [Job, ...Job[]];
     }
 
-    let checks = createChecksForKnownTools(appConfig, tools);
+    let checks: Job[] | JobFromTool[] = createChecksForKnownTools(appConfig, tools);
 
     if (isAdditionalChecksConfiguration(config)) {
         const generatedChecksFromAdditionalChecksConfiguration = (
