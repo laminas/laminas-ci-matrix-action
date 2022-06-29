@@ -219,7 +219,17 @@ function isJobExcludedByDeprecatedCommandName(job: Job, exclusions: JobToExclude
     }
 
     /**
-     * Until v1.12.0, all code checks were generated with "locked" dependencies even tho no lockfile existed.
+     * Until v1.12.0, all QA checks did not contain the composer dependency set
+     */
+    if (exclusions.some(
+        (exclude) =>
+            `${ job.job.command } on PHP ${ job.job.php }` === exclude.name
+    )) {
+        return true;
+    }
+
+    /**
+     * Until v1.12.0, all code checks were executed with `locked` dependencies even with missing `composer.lock`
      */
     return !appConfig.lockedDependenciesExists && exclusions.some(
         (exclude) =>
