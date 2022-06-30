@@ -1,4 +1,3 @@
-import {PathLike} from 'fs';
 import {Action} from '../action';
 import {Output} from '../config/output';
 import { Logger } from '../logging';
@@ -13,10 +12,6 @@ export class Local implements Action {
     markFailed(reason: string): never {
         console.error(`failed: ${reason}`);
         process.exit(1);
-    }
-
-    getApplicationDirectory(): PathLike {
-        return '.';
     }
 
     getLogger(): Logger {

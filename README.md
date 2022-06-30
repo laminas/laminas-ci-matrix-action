@@ -221,3 +221,14 @@ $ docker run -v $(realpath .):/github/workspace -w=/github/workspace ghcr.io/lam
 ```
 
 This will run the action locally and detail what matrix will be produced; it can be particularly useful for debugging issues with your `.laminas-ci.json` configuration.
+
+## Development
+
+In case you want to contribute features, bugfixes, tests or JSONSchema enhancements, you might want to build the docker container locally.
+
+To do so, you can follow these steps:
+
+1. Build the docker container by executing `$ docker build -t laminas/laminas-ci-matrix-action:dev-local .`
+2. Change to the `tests/` directory you want to create a matrix for
+3. Run the docker container while overriding the `entrypoint.sh` to ensure the `diff` is being passed to the matrix generator
+   - `docker run -it --entrypoint "/action/main.js" -v $(realpath .):/github/workspace -w=/github/workspace docker.io/laminas/laminas-ci-matrix-action:dev-local $(test -r diff && cat diff || echo "")`

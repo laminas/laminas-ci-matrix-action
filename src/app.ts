@@ -5,7 +5,7 @@ import createConfigObject, { Config, Job, Requirements } from './config/app';
 import { createJobForMatrixFromJob, JobForMatrix } from './config/output';
 import { ConfigurationFromFile } from './config/input';
 import createTools from './tools';
-import { Action } from './action';
+import {Action, APPLICATION_IN_DOCKER_DIRECTORY} from './action';
 import { DefaultJobCreator } from './jobs';
 import {Logger} from './logging';
 
@@ -86,9 +86,11 @@ export class App {
     }
 
     private projectContainsValidJsonConfiguration(schemaName: PathLike, fileName: PathLike): ValidationResult {
-        const schemaPath = `${this.action.getApplicationDirectory()}/${schemaName}`;
+        const schemaPath = `${APPLICATION_IN_DOCKER_DIRECTORY}/${ schemaName }`;
 
         if (!fs.existsSync(schemaPath) || !fs.existsSync(fileName)) {
+            this.logger.debug(`Schema validation for ${ fileName } passed as either the schema or the file does not exist.`);
+
             return { valid: true, errors: [] };
         }
 

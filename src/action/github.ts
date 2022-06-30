@@ -1,4 +1,3 @@
-import {PathLike} from 'fs';
 import core from '@actions/core';
 import {Action} from '../action';
 import {Output} from '../config/output';
@@ -12,10 +11,6 @@ export class Github implements Action {
     markFailed(reason: string): never {
         core.setFailed(reason);
         process.exit(1);
-    }
-
-    getApplicationDirectory(): PathLike {
-        return '/action';
     }
 
     getLogger(): Logger {
