@@ -23,7 +23,7 @@ export class App {
 
     public assertSanityChecksArePassing(): void {
         let schemaValidationResult = this.projectContainsValidJsonConfiguration(
-            'composer.json.schema',
+            'composer.schema.json',
             this.composerJsonFileName
         );
 
@@ -86,12 +86,14 @@ export class App {
     }
 
     private projectContainsValidJsonConfiguration(schemaName: PathLike, fileName: PathLike): ValidationResult {
-        const schemaPath = `${APPLICATION_IN_DOCKER_DIRECTORY}/${ schemaName }`;
+        const schemaPath = `${ APPLICATION_IN_DOCKER_DIRECTORY }/${ schemaName }`;
 
-        if (!fs.existsSync(schemaPath) || !fs.existsSync(fileName)) {
-            this.logger.debug(`Schema validation for ${ fileName } passed as either the schema or the file does not exist.`);
+        if (!fs.existsSync(schemaPath)) {
+            this.action.markFailed(`Could not detect JSONSchema at expected location: ${ schemaPath }`)
+        }
 
-            return { valid: true, errors: [] };
+        if (!fs.existsSync(fileName)) {
+            return { valid: true, errors: [] }
         }
 
         return this.validateJsonSchema(fileName, schemaPath);
