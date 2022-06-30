@@ -89,11 +89,11 @@ export class App {
         const schemaPath = `${ APPLICATION_IN_DOCKER_DIRECTORY }/${ schemaName }`;
 
         if (!fs.existsSync(schemaPath)) {
-            this.action.markFailed(`Could not detect JSONSchema at expected location: ${ schemaPath }`)
+            this.action.markFailed(`Could not detect JSONSchema at expected location: ${ schemaPath }`);
         }
 
         if (!fs.existsSync(fileName)) {
-            return { valid: true, errors: [] }
+            return { valid: true, errors: [] };
         }
 
         return this.validateJsonSchema(fileName, schemaPath);
