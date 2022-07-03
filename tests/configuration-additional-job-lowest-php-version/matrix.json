@@ -1,8 +1,8 @@
 {
     "include": [
         {
-            "name": "Whatever Check on PHP 5.6 with locked dependencies",
-            "job": "{\"command\":\"test\",\"php\":\"5.6\",\"extensions\":[],\"ini\":[\"memory_limit        = -1\"],\"dependencies\":\"locked\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}",
+            "name": "Whatever Check [5.6, latest]",
+            "job": "{\"command\":\"test\",\"php\":\"5.6\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

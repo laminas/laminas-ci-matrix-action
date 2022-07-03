@@ -2,16 +2,13 @@
     "stablePHP": "7.4",
     "exclude": [
         {
-            "name": "./vendor/bin/codecept run on PHP 7.4"
+            "name": "Codeception [7.4, locked]"
         },
         {
-            "name": "PHPUnit on PHP 7.4 with lowest dependencies"
+            "name": "PHPUnit [7.4, locked]"
         },
         {
-            "name": "PHPUnit on PHP 7.4 with locked dependencies"
-        },
-        {
-            "name": "PHPUnit on PHP 7.4 with latest dependencies"
+            "name": "PHPUnit [7.4, latest]"
         }
     ]
 }

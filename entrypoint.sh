@@ -79,4 +79,4 @@ if [[ "$DIFF" != "" ]];then
     echo ${DIFF}
 fi
 
-/action/index.js ${DIFF}
+/action/main.js ${DIFF}

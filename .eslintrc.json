@@ -1,0 +1,41 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "env": {
+        "browser": false,
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "incredible",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "ecmaFeatures": {
+            "modules": true
+        }
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "error",
+        "node/no-unpublished-import": ["error", {
+            "allowModules": ["@cfworker/json-schema"]
+        }],
+        "no-process-exit": "off",
+        "no-sync": "off",
+        "no-shadow": "off",
+        "object-curly-spacing": "off",
+        "comma-dangle": "off",
+        "censor/no-swear": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "object-shorthand": "off"
+    },
+    "settings": {
+        "import/resolver": {
+            "typescript": {}
+        }
+    }
+}

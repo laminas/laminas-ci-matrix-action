@@ -24,7 +24,7 @@
             ],
             "exclude": [
                 {
-                    "name": "vendor/bin/codecept run on PHP 7.4"
+                    "name": "Codeception [7.4, latest]"
                 }
             ],
             "ignore_php_platform_requirements": {
@@ -281,7 +281,7 @@
             "examples": [
                 [
                     {
-                        "name": "vendor/bin/codecept run on PHP 7.4"
+                        "name": "Codeception [7.4, latest]"
                     }
                 ]
             ],
@@ -290,7 +290,7 @@
                 "title": "The job description to be excluded",
                 "examples": [
                     {
-                        "name": "vendor/bin/codecept run on PHP 7.4"
+                        "name": "Codeception [7.4, latest]"
                     }
                 ],
                 "required": [
@@ -303,7 +303,7 @@
                         "description": "The name of the job to be excluded. Must be an exact match.",
                         "minLength": 1,
                         "examples": [
-                            "vendor/bin/codecept run on PHP 7.4"
+                            "Codeception [7.4, latest]"
                         ]
                     }
                 },
@@ -353,13 +353,21 @@
             "properties": {
                 "php": {
                     "type": "string",
-                    "title": "The php schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "examples": [
+                    "title": "The php version",
+                    "description": "The PHP version to be used. If the wildcard `*` is passed, a list of checks is created containing *every* supported PHP version by the project and the matrix action.",
+                    "enum": [
+                        "5.6",
+                        "7.0",
+                        "7.1",
+                        "7.2",
+                        "7.3",
                         "7.4",
-                        "*"
-                    ],
-                    "minLength": 1
+                        "8.0",
+                        "8.1",
+                        "*",
+                        "@latest",
+                        "@lowest"
+                    ]
                 },
                 "dependencies": {
                     "type": "string",
