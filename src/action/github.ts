@@ -16,7 +16,11 @@ export class Github implements Action {
     getLogger(): Logger {
         return {
             debug(message: string): void {
-                core.debug(message);
+                if (!core.isDebug()) {
+                    return;
+                }
+
+                core.info(message);
             },
 
             info(message: string): void {
