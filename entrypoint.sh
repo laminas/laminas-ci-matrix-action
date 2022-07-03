@@ -65,7 +65,7 @@ function checkout {
     fi
 }
 
-git config --global --add safe.directory '*'
+git config --global --add safe.directory /github/workspace
 checkout
 
 DIFF=
