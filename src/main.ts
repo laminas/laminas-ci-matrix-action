@@ -1,19 +1,10 @@
 import { App } from './app';
 import { Action } from './action';
-import { Local } from './action/local';
 import { Github } from './action/github';
 import { SPACES_TO_INDENT_JSON } from './json';
 import {Logger} from './logging';
 
-let action: Action = new Github();
-
-/**
- * Default environment variable provided by GHA to each run
- * https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
- */
-if (process.env.GITHUB_ACTIONS !== 'true') {
-    action = new Local();
-}
+const action: Action = new Github();
 
 const logger: Logger = action.getLogger();
 const app = new App(action, logger);
