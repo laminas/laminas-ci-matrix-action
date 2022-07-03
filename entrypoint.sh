@@ -65,6 +65,7 @@ function checkout {
     fi
 }
 
+git config --global --add safe.directory '*'
 checkout
 
 DIFF=
