@@ -54,14 +54,14 @@ function checkout {
 
     if [[ "$REF" == "$LOCAL_BRANCH" ]];then
         echo "Checking out ref ${REF}"
-        git checkout $REF
+        git checkout "$REF"
     else
         echo "Checking out branch ${BASE_BRANCH}"
-        git checkout ${BASE_BRANCH}
+        git checkout "${BASE_BRANCH}"
         echo "Fetching target ref ${REF}"
-        git fetch origin ${REF}:${LOCAL_BRANCH_NAME}
+        git fetch origin "${REF}":"${LOCAL_BRANCH_NAME}"
         echo "Checking out target ref to ${LOCAL_BRANCH_NAME}"
-        git checkout ${LOCAL_BRANCH_NAME}
+        git checkout "${LOCAL_BRANCH_NAME}"
     fi
 }
 
@@ -72,12 +72,12 @@ DIFF=
 
 if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]];then
     echo "Preparing file diff"
-    DIFF=$(git diff --name-only $GITHUB_BASE_REF...HEAD)
+    DIFF=$(git diff --name-only "$GITHUB_BASE_REF"...HEAD)
 fi
 
 if [[ "$DIFF" != "" ]];then
     echo "Found changes in the following files:"
-    echo ${DIFF}
+    echo "${DIFF}"
 fi
 
-/action/main.js ${DIFF}
+/action/main.js "${DIFF}"
