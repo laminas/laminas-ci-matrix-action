@@ -83,5 +83,3 @@ export type AnyComposerDependencySet = typeof WILDCARD_ALIAS;
 export function isAnyComposerDependencySet(dependency: string): dependency is AnyComposerDependencySet {
     return dependency === WILDCARD_ALIAS;
 }
-
-export type Configuration = ExplicitChecksConfigurationFromFile | AdditionalChecksConfigurationFromFile;

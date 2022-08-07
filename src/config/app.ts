@@ -71,10 +71,6 @@ function isJobFromTool(job: Job): job is JobFromTool {
     return (job as JobFromTool).tool !== undefined;
 }
 
-export interface JobToExclude {
-    name: string;
-}
-
 export interface Config {
     readonly codeChecks: boolean;
     readonly docLinting: boolean;
