@@ -1,8 +1,8 @@
 import fs, {PathLike} from 'fs';
-import semver from 'semver';
 import parseJsonFile from '../json';
 import {Tool, ToolExecutionType} from '../tools';
 import {Logger} from '../logging';
+import {satisfies} from '../semver';
 import {CURRENT_STABLE, INSTALLABLE_VERSIONS, InstallablePhpVersionType, isInstallableVersion} from './php';
 import {ComposerJson} from './composer';
 import {ConfigurationFromFile, isAdditionalChecksConfiguration, isAnyComposerDependencySet, isAnyPhpVersionType, isConfigurationContainingJobExclusions, isExplicitChecksConfiguration, isLatestPhpVersionType, isLowestPhpVersionType, JobDefinitionFromFile, JobFromFile, JobToExcludeFromFile} from './input';
@@ -16,19 +16,33 @@ export enum ComposerDependencySet {
     LATEST = 'latest',
 }
 
-function gatherVersions(composerJson: ComposerJson): InstallablePhpVersionType[] {
+function gatherVersions(composerJson: ComposerJson, logger: Logger): InstallablePhpVersionType[] {
     if (JSON.stringify(composerJson) === '{}') {
+        logger.debug('The composer.json file is either empty or does not exist.');
+
         return [];
     }
 
     const composerPhpVersion: string = (composerJson.require?.php ?? '').replace(/,\s/, ' ');
 
     if (composerPhpVersion === '') {
+        logger.debug('`composer.json` does not contain any PHP requirement.');
+
         return [];
     }
 
     return INSTALLABLE_VERSIONS
-        .filter((version) => semver.satisfies(`${version}.0`, composerPhpVersion));
+        .filter((version) => {
+            if (satisfies(`${version}.0`, composerPhpVersion)) {
+                logger.debug(`PHP ${version} is supported by projects \`composer.json\`!`);
+
+                return true;
+            }
+
+            logger.debug(`PHP ${version} is NOT supported by projects \`composer.json\`!`);
+
+            return false;
+        });
 }
 
 function gatherExtensions(composerJson: ComposerJson): Set<string> {
@@ -418,12 +432,13 @@ export default function createConfig(
     requirements: Requirements,
     composerJsonFileName: PathLike,
     composerLockJsonFileName: PathLike,
-    continousIntegrationConfigurationJsonFileName: PathLike
+    continousIntegrationConfigurationJsonFileName: PathLike,
+    logger: Logger
 ): Config {
     const composerJson: ComposerJson = parseJsonFile(composerJsonFileName) as ComposerJson;
     const configurationFromFile: ConfigurationFromFile =
         parseJsonFile(continousIntegrationConfigurationJsonFileName) as ConfigurationFromFile;
-    const phpVersionsSupportedByProject: InstallablePhpVersionType[] = gatherVersions(composerJson);
+    const phpVersionsSupportedByProject: InstallablePhpVersionType[] = gatherVersions(composerJson, logger);
     let phpExtensions: Set<string> = gatherExtensions(composerJson);
     let stablePHPVersion: InstallablePhpVersionType = CURRENT_STABLE;
 
