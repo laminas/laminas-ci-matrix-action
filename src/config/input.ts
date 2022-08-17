@@ -11,7 +11,6 @@ export interface ConfigurationFromFile {
     ignore_php_platform_requirements?: IgnorePhpPlatformRequirements;
     stablePHP?: string;
     additional_composer_arguments?: string[];
-    before_script: string[];
 }
 
 export interface JobExclusionsFromFile {

@@ -10,8 +10,8 @@ export interface JobDefinitionForMatrix
     dependencies: ComposerDependencySet,
     ignore_platform_reqs_8: boolean, // eslint-disable-line camelcase
     ignore_php_platform_requirement: boolean, // eslint-disable-line camelcase
-    additional_composer_arguments: Array<string> // eslint-disable-line camelcase
-    before_script: string[]; // eslint-disable-line camelcase
+    additional_composer_arguments: Array<string>, // eslint-disable-line camelcase
+    before_script: Array<string>, // eslint-disable-line camelcase
 }
 
 export interface JobForMatrix {

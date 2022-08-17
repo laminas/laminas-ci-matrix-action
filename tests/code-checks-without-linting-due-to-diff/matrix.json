@@ -2,19 +2,19 @@
     "include": [
         {
             "name": "PHPUnit [8.1, locked]",
-            "job": "{\"command\":\"./vendor/bin/phpunit\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"locked\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "job": "{\"command\":\"./vendor/bin/phpunit\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"locked\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[\"xmllint --schema vendor/phpunit/phpunit/phpunit.xsd phpunit.xml.dist\"]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         },
         {
             "name": "PHPUnit [8.1, lowest]",
-            "job": "{\"command\":\"./vendor/bin/phpunit\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"lowest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "job": "{\"command\":\"./vendor/bin/phpunit\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"lowest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[\"xmllint --schema vendor/phpunit/phpunit/phpunit.xsd phpunit.xml.dist\"]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         },
         {
             "name": "PHPUnit [8.1, latest]",
-            "job": "{\"command\":\"./vendor/bin/phpunit\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "job": "{\"command\":\"./vendor/bin/phpunit\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[\"xmllint --schema vendor/phpunit/phpunit/phpunit.xsd phpunit.xml.dist\"]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }
