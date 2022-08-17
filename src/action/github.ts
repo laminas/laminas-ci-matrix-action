@@ -1,9 +1,7 @@
+import * as core from '@actions/core';
 import {Action} from '../action';
 import {Output} from '../config/output';
 import {Logger} from '../logging';
-
-/* eslint-disable-next-line import/no-commonjs, @typescript-eslint/no-var-requires */
-const core = require('@actions/core');
 
 export class Github implements Action {
     publish(variable: string, output: Output): void {

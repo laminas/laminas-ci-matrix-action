@@ -20,6 +20,7 @@
   },
   "scripts": {
     "lint": "eslint src/ --ext .ts",
+    "lint-fix": "eslint src/ --ext .ts --fix",
     "build": "tsc --build && webpack --mode=production"
   },
   "dependencies": {

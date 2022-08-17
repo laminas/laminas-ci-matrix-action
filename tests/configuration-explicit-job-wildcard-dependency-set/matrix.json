@@ -2,13 +2,13 @@
     "include": [
         {
             "name": "Whatever Check [8.1, lowest]",
-            "job": "{\"command\":\"test\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"lowest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}",
+            "job": "{\"command\":\"test\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"lowest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         },
         {
             "name": "Whatever Check [8.1, latest]",
-            "job": "{\"command\":\"test\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}",
+            "job": "{\"command\":\"test\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

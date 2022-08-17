@@ -11,6 +11,7 @@ export interface JobDefinitionForMatrix
     ignore_platform_reqs_8: boolean, // eslint-disable-line camelcase
     ignore_php_platform_requirement: boolean, // eslint-disable-line camelcase
     additional_composer_arguments: Array<string> // eslint-disable-line camelcase
+    before_script: string[]; // eslint-disable-line camelcase
 }
 
 export interface JobForMatrix {
@@ -47,7 +48,9 @@ export function createJobForMatrixFromJob(job: Job): JobForMatrix {
             /* eslint-disable-next-line camelcase */
             ignore_php_platform_requirement : job.job.ignorePhpPlatformRequirement,
             /* eslint-disable-next-line camelcase */
-            additional_composer_arguments   : job.job.additionalComposerArguments
+            additional_composer_arguments   : job.job.additionalComposerArguments,
+            /* eslint-disable-next-line camelcase */
+            before_script                   : job.job.beforeScript,
         }
     };
 }

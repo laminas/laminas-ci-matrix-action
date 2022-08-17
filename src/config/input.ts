@@ -11,6 +11,7 @@ export interface ConfigurationFromFile {
     ignore_php_platform_requirements?: IgnorePhpPlatformRequirements;
     stablePHP?: string;
     additional_composer_arguments?: string[];
+    before_script: string[];
 }
 
 export interface JobExclusionsFromFile {
@@ -77,6 +78,7 @@ export interface JobDefinitionFromFile {
     ignore_php_platform_requirement?: boolean;
     additional_composer_arguments: string[];
     command: string;
+    before_script: string[];
 }
 
 export type AnyComposerDependencySet = typeof WILDCARD_ALIAS;
