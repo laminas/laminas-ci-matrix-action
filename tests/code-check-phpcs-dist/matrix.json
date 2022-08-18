@@ -2,7 +2,7 @@
     "include": [
         {
             "name": "PHPCodeSniffer [7.4, latest]",
-            "job": "{\"command\":\"./vendor/bin/phpcs -q --report=checkstyle | cs2pr\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}",
+            "job": "{\"command\":\"./vendor/bin/phpcs -q --report=checkstyle | cs2pr\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[\"xmllint --schema vendor/squizlabs/php_codesniffer/phpcs.xsd phpcs.xml.dist\"]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }
