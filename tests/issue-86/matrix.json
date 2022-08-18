@@ -1,0 +1,52 @@
+{
+    "include": [
+        {
+            "name": "Whatever Check [5.6, latest]",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"test\",\"php\":\"5.6\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}"
+        },
+        {
+            "name": "Whatever Check [7.0, latest]",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"test\",\"php\":\"7.0\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}"
+        },
+        {
+            "name": "Whatever Check [7.1, latest]",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"test\",\"php\":\"7.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}"
+        },
+        {
+            "name": "Whatever Check [7.2, latest]",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"test\",\"php\":\"7.2\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}"
+        },
+        {
+            "name": "Whatever Check [7.3, latest]",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"test\",\"php\":\"7.3\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}"
+        },
+        {
+            "name": "Whatever Check [7.4, latest]",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"test\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}"
+        },
+        {
+            "name": "Whatever Check [8.0, latest]",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"test\",\"php\":\"8.0\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}"
+        },
+        {
+            "name": "Whatever Check [8.1, latest]",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"test\",\"php\":\"8.1\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}"
+        }
+    ]
+}

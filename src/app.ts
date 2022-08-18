@@ -81,7 +81,8 @@ export class App {
             this.checkRequirements(filesFromDiff),
             this.composerJsonFileName,
             this.composerLockJsonFileName,
-            this.continousIntegrationConfigurationJsonFileName
+            this.continousIntegrationConfigurationJsonFileName,
+            this.logger
         );
     }
 
