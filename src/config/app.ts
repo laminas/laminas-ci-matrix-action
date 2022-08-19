@@ -54,7 +54,6 @@ export interface JobDefinition {
     composerDependencySet: ComposerDependencySet;
     ignorePhpPlatformRequirement: boolean;
     additionalComposerArguments: string[];
-    beforeScript: string[];
 }
 
 export interface Job {
@@ -151,8 +150,7 @@ function convertJobDefinitionFromFileToJobDefinition(
         job.extensions ?? config.phpExtensions,
         job.ini ?? config.phpIni,
         discoverIgnorePhpPlatformRequirementForJobByVersion(job, phpVersion, config),
-        discoverAdditionalComposerArgumentsForCheck(job, config),
-        job.before_script
+        discoverAdditionalComposerArgumentsForCheck(job, config)
     );
 }
 
@@ -163,8 +161,7 @@ function createJobDefinition(
     phpExtensions: string[],
     phpIniSettings: string[],
     ignorePlatformRequirements: boolean,
-    additionalComposerArguments: string[],
-    beforeScript: string[],
+    additionalComposerArguments: string[]
 ): JobDefinition {
     return {
         php                          : phpVersion,
@@ -173,8 +170,7 @@ function createJobDefinition(
         phpIni                       : phpIniSettings,
         composerDependencySet        : composerDependencySet,
         ignorePhpPlatformRequirement : ignorePlatformRequirements,
-        additionalComposerArguments  : additionalComposerArguments,
-        beforeScript                 : beforeScript,
+        additionalComposerArguments  : additionalComposerArguments
     };
 }
 
@@ -287,14 +283,12 @@ function createJobsForTool(
     tool: Tool
 ): JobFromTool[] {
     const jobs: JobFromTool[] = [];
-    const beforeScript: string[] = tool.lintConfigCommand
-        ? tool.filesToCheck.map((file) => `${tool.lintConfigCommand} ${file}`)
-        : [];
 
     if (tool.executionType === ToolExecutionType.STATIC) {
         const lockedOrLatestDependencySet: ComposerDependencySet = config.lockedDependenciesExists
             ? ComposerDependencySet.LOCKED
             : ComposerDependencySet.LATEST;
+
 
         return [
             createJob(
@@ -306,8 +300,7 @@ function createJobsForTool(
                     config.phpExtensions,
                     config.phpIni,
                     config.ignorePhpPlatformRequirements[config.minimumPhpVersion] ?? false,
-                    config.additionalComposerArguments,
-                    beforeScript,
+                    config.additionalComposerArguments
                 ),
                 tool
             ) as JobFromTool
@@ -325,8 +318,7 @@ function createJobsForTool(
                     config.phpExtensions,
                     config.phpIni,
                     config.ignorePhpPlatformRequirements[config.minimumPhpVersion] ?? false,
-                    config.additionalComposerArguments,
-                    beforeScript,
+                    config.additionalComposerArguments
                 ),
                 tool
             ) as JobFromTool);
@@ -340,8 +332,7 @@ function createJobsForTool(
                 config.phpExtensions,
                 config.phpIni,
                 config.ignorePhpPlatformRequirements[version] ?? false,
-                config.additionalComposerArguments,
-                beforeScript,
+                config.additionalComposerArguments
             ), tool) as JobFromTool,
 
             createJob(tool.name, createJobDefinition(
@@ -351,8 +342,7 @@ function createJobsForTool(
                 config.phpExtensions,
                 config.phpIni,
                 config.ignorePhpPlatformRequirements[version] ?? false,
-                config.additionalComposerArguments,
-                beforeScript,
+                config.additionalComposerArguments
             ), tool) as JobFromTool,
         ));
     }
@@ -378,7 +368,6 @@ function createNoOpCheck(config: Config): Job {
             phpIni                       : [],
             ignorePhpPlatformRequirement : config.ignorePhpPlatformRequirements[config.stablePhpVersion] ?? false,
             additionalComposerArguments  : config.additionalComposerArguments,
-            beforeScript                 : [],
         }
     };
 }
