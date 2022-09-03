@@ -8,4 +8,5 @@ export interface Action {
     publish(variable: string, output: Output): void;
     markFailed(reason: string): never;
     getLogger(): Logger;
+    getBaseBranchSha1(): string | null;
 }
