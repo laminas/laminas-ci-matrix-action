@@ -1,7 +1,8 @@
-import fs, { PathLike } from 'fs';
-import { Config } from './config/app';
-import { ComposerJson } from './config/composer';
+import fs, {PathLike} from 'fs';
+import {Config} from './config/app';
+import {ComposerJson} from './config/composer';
 import parseJsonFile from './json';
+import {Action} from './action';
 
 export enum ToolExecutionType {
     /**
@@ -41,8 +42,26 @@ function detectInfectionCommand(): string {
     return './vendor/bin/infection';
 }
 
-export default function createTools(config: Config): Array<Tool> {
-    return [
+function backwardCompatibilityCheckTool(action: Action): Tool | null {
+    const baseSha1 = action.getBaseBranchSha1();
+
+    if (baseSha1 === null) {
+        return null;
+    }
+
+    return {
+        // @TODO need to `git fetch baseSha1` from source repo!
+        executionType : ToolExecutionType.STATIC,
+        name          : 'Backward Compatibility Check',
+        command       : `roave-backward-compatibility-check check --from="${ baseSha1 }" --install-development-dependencies`,
+        filesToCheck  : [ 'composer.json' ],
+        toolType      : ToolType.CODE_CHECK,
+    } as Tool;
+}
+
+export default function createTools(config: Config, action: Action): Array<Tool> {
+    const bcTool = backwardCompatibilityCheckTool(action);
+    const tools = [
         {
             executionType : ToolExecutionType.STATIC,
             name          : 'Documentation Linting',
@@ -129,8 +148,15 @@ export default function createTools(config: Config): Array<Tool> {
             command       : './vendor/bin/php-cs-fixer fix -v --diff --dry-run',
             filesToCheck  : [ '.php-cs-fixer.php', '.php-cs-fixer.dist.php' ],
             toolType      : ToolType.CODE_CHECK,
-        }
-    ]
+        },
+    ] as Tool[];
+
+    if (bcTool !== null) {
+        const bcToolToAdd = bcTool as Tool;
+        tools.push(bcToolToAdd);
+    }
+
+    return tools
         // Remove all tools which do not need to run
         .filter((tool) =>
             (config.docLinting && tool.toolType === ToolType.LINTER)

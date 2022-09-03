@@ -1,4 +1,6 @@
 import * as core from '@actions/core';
+import * as github from '@actions/github';
+import {PullRequest} from '@octokit/webhooks-definitions/schema';
 import {Action} from '../action';
 import {Output} from '../config/output';
 import {Logger} from '../logging';
@@ -31,5 +33,15 @@ export class Github implements Action {
                 core.warning(message);
             }
         };
+    }
+
+    getBaseBranchSha1(): string | null {
+        if (github.context.eventName !== 'pull_request') {
+            return null;
+        }
+
+        const pullRequestPayload = github.context.payload as PullRequest;
+
+        return pullRequestPayload.base.sha;
     }
 }
