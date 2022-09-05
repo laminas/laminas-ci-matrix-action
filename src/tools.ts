@@ -120,7 +120,7 @@ export default function createTools(config: Config): Array<Tool> {
             executionType : ToolExecutionType.STATIC,
             name          : 'PHP CS Fixer',
             command       : './vendor/bin/php-cs-fixer fix -v --diff --dry-run',
-            filesToCheck  : [ '.php-cs-fixer.php' ],
+            filesToCheck  : [ '.php-cs-fixer.php', '.php-cs-fixer.dist.php' ],
             toolType      : ToolType.CODE_CHECK,
         }
     ]
