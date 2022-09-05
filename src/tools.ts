@@ -115,6 +115,13 @@ export default function createTools(config: Config): Array<Tool> {
             command       : './vendor/bin/codecept run',
             filesToCheck  : [ 'codeception.yml.dist', 'codeception.yml' ],
             toolType      : ToolType.CODE_CHECK,
+        },
+        {
+            executionType : ToolExecutionType.STATIC,
+            name          : 'PHP CS Fixer',
+            command       : './vendor/bin/php-cs-fixer fix -v --diff --dry-run',
+            filesToCheck  : [ '.php-cs-fixer.php' ],
+            toolType      : ToolType.CODE_CHECK,
         }
     ]
         // Remove all tools which do not need to run
