@@ -6,6 +6,7 @@ export const PHP_73 = '7.3';
 export const PHP_74 = '7.4';
 export const PHP_80 = '8.0';
 export const PHP_81 = '8.1';
+export const PHP_82 = '8.2';
 
 export const CURRENT_STABLE = PHP_74;
 
@@ -21,7 +22,8 @@ export const INSTALLABLE_VERSIONS = [
     PHP_73,
     PHP_74,
     PHP_80,
-    PHP_81
+    PHP_81,
+    PHP_82
 ] as const;
 
 export type InstallablePhpVersionType = typeof INSTALLABLE_VERSIONS[number];
