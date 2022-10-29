@@ -4,7 +4,7 @@ RUN mkdir -p /usr/local/source
 WORKDIR /usr/local/source
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY webpack.config.js ./
+COPY webpack.config.ts ./
 RUN npm ci
 COPY ./src ./src
 RUN npm run build
