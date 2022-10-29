@@ -2,7 +2,7 @@
 import {Config} from 'jest';
 
 const config: Config = {
-    verbose         : true,
+    reporters       : [ 'default', 'github-actions' ],
     transform       : {'^.+\\.ts?$': 'ts-jest'},
     testEnvironment : 'node',
     testRegex       : '/src/.*\\.spec\\.ts$',
