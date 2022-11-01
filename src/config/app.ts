@@ -16,7 +16,7 @@ export enum ComposerDependencySet {
     LATEST = 'latest',
 }
 
-function gatherVersions(composerJson: ComposerJson): InstallablePhpVersionType[] {
+export function gatherVersions(composerJson: ComposerJson): InstallablePhpVersionType[] {
     if (JSON.stringify(composerJson) === '{}') {
         return [];
     }
