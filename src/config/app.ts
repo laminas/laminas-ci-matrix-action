@@ -28,7 +28,7 @@ export function gatherVersions(composerJson: ComposerJson): InstallablePhpVersio
     }
 
     return INSTALLABLE_VERSIONS
-        .filter((version) => semver.satisfies(`${version}.0`, composerPhpVersion));
+        .filter((version) => semver.satisfies(`${version}.99`, composerPhpVersion));
 }
 
 function gatherExtensions(composerJson: ComposerJson): Set<string> {
