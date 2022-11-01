@@ -17,7 +17,7 @@ describe('config/app', () => {
             ${'~8.1.0'}                    | ${[ '8.1' ]}
             ${'~8.1.12'}                   | ${[ '8.1' ]}
             ${'^7.4 || ~8.0.0 || ~8.1.12'} | ${[ '7.4', '8.0', '8.1' ]}
-        `('gatherVersions() for "$constraint" === $expected', ({constraint, expected}) => {
+        `('for "$constraint" === $expected', ({constraint, expected}) => {
             expect(gatherVersions({require: {php: constraint}})).toEqual(expected);
         });
     });
