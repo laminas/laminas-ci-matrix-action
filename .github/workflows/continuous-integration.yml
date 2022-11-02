@@ -126,6 +126,7 @@ jobs:
       - uses: "actions/setup-node@v3"
         with:
           check-latest: true
+          node: 19
       - name: "Install node modules"
         run: "npm ci"
       - name: Run ESLint
@@ -138,6 +139,7 @@ jobs:
       - uses: "actions/setup-node@v3"
         with:
           check-latest: true
+          node: 19
       - name: "Install node modules"
         run: "npm ci"
       - name: Run Jest
