@@ -21,14 +21,15 @@ export function gatherVersions(composerJson: ComposerJson): InstallablePhpVersio
         return [];
     }
 
-    const composerPhpVersion: string = (composerJson.require?.php ?? '').replace(/,\s/, ' ');
+    const composerPhpVersion: string = (composerJson.require?.php ?? '')
+        .replace(/,\s/, ' ')
+        .replace(/(\d+)\.(\d+)\.([1-9]+)/g, '$1.$2.0');
 
     if (composerPhpVersion === '') {
         return [];
     }
 
-    return INSTALLABLE_VERSIONS
-        .filter((version) => semver.satisfies(`${version}.99`, composerPhpVersion));
+    return INSTALLABLE_VERSIONS.filter((version) => semver.satisfies(`${version}.0`, composerPhpVersion));
 }
 
 function gatherExtensions(composerJson: ComposerJson): Set<string> {
