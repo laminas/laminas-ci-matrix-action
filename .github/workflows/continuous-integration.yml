@@ -130,3 +130,15 @@ jobs:
         run: "npm ci"
       - name: Run ESLint
         run: "npm run lint"
+
+  testing:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v3"
+      - uses: "actions/setup-node@v3"
+        with:
+          check-latest: true
+      - name: "Install node modules"
+        run: "npm ci"
+      - name: Run Jest
+        run: "npm run test"

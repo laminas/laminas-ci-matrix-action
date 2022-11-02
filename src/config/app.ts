@@ -16,19 +16,20 @@ export enum ComposerDependencySet {
     LATEST = 'latest',
 }
 
-function gatherVersions(composerJson: ComposerJson): InstallablePhpVersionType[] {
+export function gatherVersions(composerJson: ComposerJson): InstallablePhpVersionType[] {
     if (JSON.stringify(composerJson) === '{}') {
         return [];
     }
 
-    const composerPhpVersion: string = (composerJson.require?.php ?? '').replace(/,\s/, ' ');
+    const composerPhpVersion: string = (composerJson.require?.php ?? '')
+        .replace(/,\s/, ' ')
+        .replace(/(\d+)\.(\d+)\.([1-9]+)/g, '$1.$2.0');
 
     if (composerPhpVersion === '') {
         return [];
     }
 
-    return INSTALLABLE_VERSIONS
-        .filter((version) => semver.satisfies(`${version}.0`, composerPhpVersion));
+    return INSTALLABLE_VERSIONS.filter((version) => semver.satisfies(`${version}.0`, composerPhpVersion));
 }
 
 function gatherExtensions(composerJson: ComposerJson): Set<string> {
