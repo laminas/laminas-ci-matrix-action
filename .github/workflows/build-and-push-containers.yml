@@ -16,7 +16,7 @@ jobs:
           MAJOR="${PREFIX}:$(echo ${TAG} | cut -d. -f1)"
           MINOR="${MAJOR}.$(echo ${TAG} | cut -d. -f2)"
           PATCH="${PREFIX}:${TAG}"
-          echo "::set-output name=tags::[\"${MAJOR}\",\"${MINOR}\",\"${PATCH}\"]"
+          echo "tags=[\"${MAJOR}\",\"${MINOR}\",\"${PATCH}\"]" >> $GITHUB_OUTPUT
 
       - name: Checkout
         uses: actions/checkout@v3
