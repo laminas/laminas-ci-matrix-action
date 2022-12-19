@@ -80,4 +80,6 @@ if [[ "$DIFF" != "" ]];then
     echo "${DIFF}"
 fi
 
-/action/main.js "${DIFF}"
+# This variable is deliberately unquoted so that it can be properly processed on the other side.
+# shellcheck disable=SC2086
+/action/main.js ${DIFF}
