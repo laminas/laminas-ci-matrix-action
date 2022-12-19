@@ -8,8 +8,8 @@
         "test": "jest --logHeapUsage"
     },
     "engines": {
-        "npm": "^8",
-        "node": "^19"
+        "npm": "^9.2.0",
+        "node": "^19.3.0"
     },
     "dependencies": {
         "@actions/core": "^1.10.0",
