@@ -39,7 +39,7 @@ describe('config/app', () => {
                 codeChecks                    : true,
                 docLinting                    : true,
                 versions                      : [ '8.1' ],
-                stablePhpVersion              : '7.4',
+                stablePhpVersion              : '8.0',
                 minimumPhpVersion             : '8.1',
                 latestPhpVersion              : '8.1',
                 lockedDependenciesExists      : false,

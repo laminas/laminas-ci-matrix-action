@@ -146,7 +146,7 @@ The package can include a configuration file in its root, `.laminas-ci.json`, wh
   "ignore_php_platform_requirements": {
       "8.0": true
   },
-  "stablePHP": "7.4",
+  "stablePHP": "8.0",
   "additional_composer_arguments": [
   ]
 }

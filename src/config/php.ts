@@ -8,7 +8,7 @@ export const PHP_80 = '8.0';
 export const PHP_81 = '8.1';
 export const PHP_82 = '8.2';
 
-export const CURRENT_STABLE = PHP_74;
+export const CURRENT_STABLE = PHP_80;
 
 /**
  * NOTE: Please keep this list ordered as the ordering is used to detect the minimum supported version of a project
