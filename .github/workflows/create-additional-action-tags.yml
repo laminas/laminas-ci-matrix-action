@@ -16,7 +16,7 @@ jobs:
           TAG=${GITHUB_REF/refs\/tags\//}
           MAJOR="v$(echo ${TAG} | cut -d. -f1)"
           MINOR="${MAJOR}.$(echo ${GITHUB_REF} | cut -d. -f2)"
-          EOF="$(uuid)"
+          EOF="$(uuidgen)"
           echo "tags<<${EOF}" >> $GITHUB_OUTPUT
           echo "${MAJOR}" >> $GITHUB_OUTPUT
           echo "${MINOR}" >> $GITHUB_OUTPUT
