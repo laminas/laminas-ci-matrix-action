@@ -46,15 +46,8 @@ export default function createTools(config: Config): Array<Tool> {
         {
             executionType : ToolExecutionType.STATIC,
             name          : 'Documentation Linting',
-            command       : 'markdownlint doc/book/**/*.md',
-            filesToCheck  : [ 'doc/book/' ],
-            toolType      : ToolType.LINTER,
-        },
-        {
-            executionType : ToolExecutionType.STATIC,
-            name          : 'Documentation Linting',
             command       : 'markdownlint docs/book/**/*.md',
-            filesToCheck  : [ 'docs/book/' ],
+            filesToCheck  : [ 'doc/book/', 'docs/book/' ],
             toolType      : ToolType.LINTER,
         },
         {
