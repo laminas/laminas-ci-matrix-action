@@ -43,7 +43,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build container for CI pipeline
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           load: true
@@ -115,7 +115,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: false
 
