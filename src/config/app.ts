@@ -240,7 +240,12 @@ function isJobExcludedByDeprecatedCommandName(job: Job, exclusions: JobToExclude
     );
 }
 
-function isJobExcludedByConfiguration(job: Job, exclude: JobToExcludeFromFile, config: Config): boolean {
+function isJobExcludedByConfiguration(
+    job: Job,
+    exclude: JobToExcludeFromFile,
+    config: Config,
+    logger: Logger
+): boolean {
     const jobName = isJobFromTool(job) ? job.tool.name : job.name;
 
     if (jobName !== exclude.name) {
@@ -251,23 +256,35 @@ function isJobExcludedByConfiguration(job: Job, exclude: JobToExcludeFromFile, c
     const dependenciesToExclude = exclude.dependencies ?? WILDCARD_ALIAS;
 
     if (!isAnyPhpVersionType(phpVersionToExclude)) {
+        const nonExcludedPhpVersionDebugMessage = `Job with name ${ jobName } is not matching exclusion rule`
+            + ` with name ${ exclude.name } due to non-excluded php version.`;
+
         if (isLowestPhpVersionType(phpVersionToExclude) && job.job.php !== config.minimumPhpVersion) {
+            logger.debug(nonExcludedPhpVersionDebugMessage);
+
             return false;
         }
 
         if (isLatestPhpVersionType(phpVersionToExclude) && job.job.php !== config.latestPhpVersion) {
+            logger.debug(nonExcludedPhpVersionDebugMessage);
+
             return false;
         }
 
         if (phpVersionToExclude !== job.job.php) {
+            logger.debug(nonExcludedPhpVersionDebugMessage);
+
             return false;
         }
     }
 
-    if (!isAnyComposerDependencySet(dependenciesToExclude)) {
-        if (dependenciesToExclude !== job.job.composerDependencySet) {
-            return false;
-        }
+    if (!isAnyComposerDependencySet(dependenciesToExclude) && dependenciesToExclude !== job.job.composerDependencySet) {
+        logger.debug(
+            `Job with name ${ jobName } is not matching exclusion rule`
+            + ` with name ${ exclude.name } due to non-excluded Composer dependencies.`
+        );
+
+        return false;
     }
 
     return true;
@@ -278,7 +295,7 @@ function isJobExcluded(job: Job, exclusions: JobToExcludeFromFile[], config: Con
         return false;
     }
 
-    if (exclusions.some((exclude) => isJobExcludedByConfiguration(job, exclude, config))) {
+    if (exclusions.some((exclude) => isJobExcludedByConfiguration(job, exclude, config, logger))) {
         logger.info(`Job with name ${ job.name } is excluded due to application config.`);
 
         return true;
