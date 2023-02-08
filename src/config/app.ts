@@ -241,7 +241,9 @@ function isJobExcludedByDeprecatedCommandName(job: Job, exclusions: JobToExclude
 }
 
 function isJobExcludedByConfiguration(job: Job, exclude: JobToExcludeFromFile, config: Config): boolean {
-    if (job.name !== exclude.name) {
+    const jobName = isJobFromTool(job) ? job.tool.name : job.name;
+
+    if (jobName !== exclude.name) {
         return false;
     }
 
