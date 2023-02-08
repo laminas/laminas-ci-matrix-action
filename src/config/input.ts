@@ -3,6 +3,8 @@ import {ComposerDependencySet, IgnorePhpPlatformRequirements} from './app';
 
 export interface JobToExcludeFromFile {
     name: string;
+    php?: InstallablePhpVersionType,
+    dependencies?: ComposerDependencySet,
 }
 
 export interface ConfigurationFromFile {
