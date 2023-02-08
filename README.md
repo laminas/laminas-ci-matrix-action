@@ -200,15 +200,42 @@ The tool discovers checks first, then appends any `additional_checks` are concat
 
 ### Excluding specific jobs
 
-The easiest way to exclude a single job is via the `name` parameter:
+You can exclude specific jobs by using their names:
 
 ```json
 {
   "exclude": [
     {
-      "name": "PHPUnit on PHP 8.0 with latest dependencies"
+      "name": "PHPUnit"
     }
   ]
+}
+```
+
+If you want to limit the exclusion to specific PHP versions, you can additionally add a PHP version:
+
+```json
+{
+   "exclude": [
+      {
+         "name": "PHPUnit",
+         "php": "8.0"
+      }
+   ]
+}
+```
+
+In case you only want to exclude jobs for specific composer dependency sets, add `dependencies` to the `exclude` configuration:
+
+```json
+{
+   "exclude": [
+      {
+         "name": "PHPUnit",
+         "php": "8.0",
+         "dependencies": "latest"
+      }
+   ]
 }
 ```
 
