@@ -91,16 +91,18 @@ jobs:
         run: cd tests/${PROJECT_NAME_TO_TEST} && docker run -i --entrypoint "/action/main.js" -v $(realpath .):/github/workspace -w=/github/workspace ${TEST_TAG} $(test -r diff && cat diff || echo -n "")
 
       - name: "Output generated matrix"
-        uses: sergeysova/jq-action@v2.2.1
+        uses: sergeysova/jq-action@v2
         with:
-            cmd: "jq . < <(echo '${{ steps.matrix_generation.outputs.matrix }}')"
+          multiline: true
+          cmd: "jq . < <(echo '${{ steps.matrix_generation.outputs.matrix }}')"
 
       - name: Minify matrix from test directory
-        uses: sergeysova/jq-action@v2.2.1
+        uses: sergeysova/jq-action@v2
         id: expected_matrix
         env:
           PROJECT_NAME_TO_TEST: ${{ matrix.projectName }}
         with:
+          multiline: true
           cmd: 'jq -c . < tests/${PROJECT_NAME_TO_TEST}/matrix.json'
 
       - name: "verify output of generated matrix for project: ${{ matrix.projectName }}"
