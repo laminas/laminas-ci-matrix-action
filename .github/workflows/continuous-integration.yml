@@ -25,11 +25,7 @@ jobs:
         # This provides a dedicated "check" to asynchronously test all integration tests within the tests/ directory
         # The project name from the tests/ directory is then re-used within the "qa" job to run the generated "container"
         # within that directory.
-        run: |
-          cd tests;
-          echo 'matrix<<EOF' >> $GITHUB_OUTPUT
-          echo "[\"$(ls -d * | tr '\n' ' ' | sed 's/ $//' | sed 's/ /\",\"/g')\"]" >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
+        run: cd tests; echo "matrix=[\"$(ls -d * | tr '\n' ' ' | sed 's/ $//' | sed 's/ /\",\"/g')\"]" >> $GITHUB_OUTPUT
 
   container:
     name: Prepare docker container
