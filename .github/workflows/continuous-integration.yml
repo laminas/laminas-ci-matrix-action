@@ -25,7 +25,11 @@ jobs:
         # This provides a dedicated "check" to asynchronously test all integration tests within the tests/ directory
         # The project name from the tests/ directory is then re-used within the "qa" job to run the generated "container"
         # within that directory.
-        run: cd tests; echo "matrix=[\"$(ls -d * | tr '\n' ' ' | sed 's/ $//' | sed 's/ /\",\"/g')\"]" >> $GITHUB_OUTPUT
+        run: |
+          cd tests;
+          echo 'matrix<<EOF' >> $GITHUB_OUTPUT
+          echo "[\"$(ls -d * | tr '\n' ' ' | sed 's/ $//' | sed 's/ /\",\"/g')\"]" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
   container:
     name: Prepare docker container
@@ -89,7 +93,8 @@ jobs:
       - name: "Output generated matrix"
         uses: sergeysova/jq-action@v2
         with:
-            cmd: "jq . < <(echo '${{ steps.matrix_generation.outputs.matrix }}')"
+          multiline: true
+          cmd: "jq . < <(echo '${{ steps.matrix_generation.outputs.matrix }}')"
 
       - name: Minify matrix from test directory
         uses: sergeysova/jq-action@v2
@@ -97,6 +102,7 @@ jobs:
         env:
           PROJECT_NAME_TO_TEST: ${{ matrix.projectName }}
         with:
+          multiline: true
           cmd: 'jq -c . < tests/${PROJECT_NAME_TO_TEST}/matrix.json'
 
       - name: "verify output of generated matrix for project: ${{ matrix.projectName }}"
