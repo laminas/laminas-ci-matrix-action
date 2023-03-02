@@ -1,14 +1,14 @@
 {
-    "stablePHP": "7.4",
+    "stablePHP": "8.2",
     "exclude": [
         {
-            "name": "Codeception [7.4, locked]"
+            "name": "Codeception [8.2, locked]"
         },
         {
-            "name": "PHPUnit [7.4, locked]"
+            "name": "PHPUnit [8.2, locked]"
         },
         {
-            "name": "PHPUnit [7.4, latest]"
+            "name": "PHPUnit [8.2, latest]"
         }
     ]
 }
