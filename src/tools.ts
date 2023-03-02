@@ -35,10 +35,10 @@ function detectInfectionCommand(): string {
     const composerJson: ComposerJson = parseJsonFile('composer.json', true) as ComposerJson;
 
     if (composerJson['require-dev']?.['roave/infection-static-analysis-plugin'] !== undefined) {
-        return 'phpdbg -qrr ./vendor/bin/roave-infection-static-analysis-plugin';
+        return './vendor/bin/roave-infection-static-analysis-plugin';
     }
 
-    return 'phpdbg -qrr ./vendor/bin/infection';
+    return './vendor/bin/infection';
 }
 
 export default function createTools(config: Config): Array<Tool> {
