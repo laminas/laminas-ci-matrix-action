@@ -1,8 +1,8 @@
 {
     "include": [
         {
-            "name": "Documentation Linting [7.4, latest]",
-            "job": "{\"command\":\"markdownlint docs/book/**/*.md\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "name": "Documentation Linting [8.2, latest]",
+            "job": "{\"command\":\"markdownlint docs/book/**/*.md\",\"php\":\"8.2\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

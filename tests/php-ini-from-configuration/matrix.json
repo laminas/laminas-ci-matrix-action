@@ -1,8 +1,8 @@
 {
     "include": [
         {
-            "name": "Some Job [7.4, latest]",
-            "job": "{\"command\":\"test\",\"php\":\"7.4\",\"extensions\":[\"mbstring\",\"json\"],\"ini\":[\"error_reporting=E_ALL\"],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}",
+            "name": "Some Job [8.2, latest]",
+            "job": "{\"command\":\"test\",\"php\":\"8.2\",\"extensions\":[\"mbstring\",\"json\"],\"ini\":[\"error_reporting=E_ALL\"],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }
