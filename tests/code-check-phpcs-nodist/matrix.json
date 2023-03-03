@@ -1,8 +1,8 @@
 {
     "include": [
         {
-            "name": "PHPCodeSniffer [8.2, latest]",
-            "job": "{\"command\":\"./vendor/bin/phpcs -q --report=checkstyle | cs2pr\",\"php\":\"8.2\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[\"xmllint --schema vendor/squizlabs/php_codesniffer/phpcs.xsd phpcs.xml\"]}",
+            "name": "PHPCodeSniffer [8.2, lowest]",
+            "job": "{\"command\":\"./vendor/bin/phpcs -q --report=checkstyle | cs2pr\",\"php\":\"8.2\",\"extensions\":[],\"ini\":[],\"dependencies\":\"lowest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[\"xmllint --schema vendor/squizlabs/php_codesniffer/phpcs.xsd phpcs.xml\"]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

@@ -1,8 +1,8 @@
 {
     "include": [
         {
-            "name": "Composer Require Checker [8.2, latest]",
-            "job": "{\"command\":\"./vendor/bin/composer-require-checker check --config-file=composer-require-checker.json -n -v composer.json\",\"php\":\"8.2\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "name": "Composer Require Checker [8.2, lowest]",
+            "job": "{\"command\":\"./vendor/bin/composer-require-checker check --config-file=composer-require-checker.json -n -v composer.json\",\"php\":\"8.2\",\"extensions\":[],\"ini\":[],\"dependencies\":\"lowest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

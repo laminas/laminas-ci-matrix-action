@@ -119,6 +119,15 @@ The "job" element will have the following elements, but is not restricted to the
 }
 ```
 
+Note: Configuring jobs to run with `latest` composer dependencies is not endorsed.
+      The default generated matrix will contain entries for `lowest` and `locked` dependencies.
+      This action operates under the assumption that you do your due diligence, and keep `composer.json`
+      and `composer.lock` updated.
+      By operating on locked dependencies, you will be able to pinpoint the exact dependency
+      change that caused a test regression.
+      We endorse regularly updating dependencies with automation like [renovate](https://github.com/renovatebot) or
+      [dependabot](https://github.com/dependabot).
+
 ## Configuration
 
 The package can include a configuration file in its root, `.laminas-ci.json`, which can provide the following:
@@ -206,7 +215,7 @@ The easiest way to exclude a single job is via the `name` parameter:
 {
   "exclude": [
     {
-      "name": "PHPUnit on PHP 8.0 with latest dependencies"
+      "name": "PHPUnit on PHP 8.0 with lowest dependencies"
     }
   ]
 }
