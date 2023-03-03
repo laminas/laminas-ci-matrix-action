@@ -13,7 +13,6 @@ export const ACTION = 'laminas/laminas-continuous-integration-action@v1';
 export enum ComposerDependencySet {
     LOWEST = 'lowest',
     LOCKED = 'locked',
-    LATEST = 'latest',
 }
 
 export function gatherVersions(composerJson: ComposerJson): InstallablePhpVersionType[] {
@@ -111,10 +110,10 @@ function discoverPhpVersionsForJob(job: JobDefinitionFromFile, config: Config): 
 
 function discoverComposerDependencySetsForJob(job: JobDefinitionFromFile, config: Config): ComposerDependencySet[] {
     const dependencySetFromConfig = job.dependencies
-        ?? (config.lockedDependenciesExists ? ComposerDependencySet.LOCKED : ComposerDependencySet.LATEST);
+        ?? (config.lockedDependenciesExists ? ComposerDependencySet.LOCKED : ComposerDependencySet.LOWEST);
 
     if (isAnyComposerDependencySet(dependencySetFromConfig)) {
-        return [ ComposerDependencySet.LOWEST, ComposerDependencySet.LATEST ];
+        return [ ComposerDependencySet.LOWEST ];
     }
 
     return [ dependencySetFromConfig ];
@@ -295,7 +294,7 @@ function createJobsForTool(
     if (tool.executionType === ToolExecutionType.STATIC) {
         const lockedOrLatestDependencySet: ComposerDependencySet = config.lockedDependenciesExists
             ? ComposerDependencySet.LOCKED
-            : ComposerDependencySet.LATEST;
+            : ComposerDependencySet.LOWEST;
 
         return [
             createJob(
@@ -343,18 +342,7 @@ function createJobsForTool(
                 config.ignorePhpPlatformRequirements[version] ?? false,
                 config.additionalComposerArguments,
                 beforeScript,
-            ), tool) as JobFromTool,
-
-            createJob(tool.name, createJobDefinition(
-                tool.command,
-                version,
-                ComposerDependencySet.LATEST,
-                config.phpExtensions,
-                config.phpIni,
-                config.ignorePhpPlatformRequirements[version] ?? false,
-                config.additionalComposerArguments,
-                beforeScript,
-            ), tool) as JobFromTool,
+            ), tool) as JobFromTool
         ));
     }
 

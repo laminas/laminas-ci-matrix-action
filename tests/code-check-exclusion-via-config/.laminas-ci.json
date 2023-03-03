@@ -6,9 +6,6 @@
         },
         {
             "name": "PHPUnit [8.2, locked]"
-        },
-        {
-            "name": "PHPUnit [8.2, latest]"
         }
     ]
 }

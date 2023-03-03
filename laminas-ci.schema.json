@@ -24,7 +24,7 @@
             ],
             "exclude": [
                 {
-                    "name": "Codeception [8.2, latest]"
+                    "name": "Codeception [8.2, lowest]"
                 }
             ],
             "ignore_php_platform_requirements": {
@@ -281,7 +281,7 @@
             "examples": [
                 [
                     {
-                        "name": "Codeception [8.2, latest]"
+                        "name": "Codeception [8.2, lowest]"
                     }
                 ]
             ],
@@ -290,7 +290,7 @@
                 "title": "The job description to be excluded",
                 "examples": [
                     {
-                        "name": "Codeception [8.2, latest]"
+                        "name": "Codeception [8.2, lowest]"
                     }
                 ],
                 "required": [
@@ -303,7 +303,7 @@
                         "description": "The name of the job to be excluded. Must be an exact match.",
                         "minLength": 1,
                         "examples": [
-                            "Codeception [8.2, latest]"
+                            "Codeception [8.2, lowest]"
                         ]
                     }
                 },
@@ -368,7 +368,7 @@
                     "type": "string",
                     "enum": ["latest", "lowest", "locked", "*"],
                     "title": "The composer dependencies to be used",
-                    "description": "The composer dependencies to be used. If the wildcard `*` is passed, a list of checks is created containing each `lowest` and `latest` composer dependencies.",
+                    "description": "The composer dependencies to be used. If the wildcard `*` is passed, a list of checks is created containing each `lowest` and `locked` composer dependencies.",
                     "default": "locked"
                 },
                 "command": {

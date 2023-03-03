@@ -6,9 +6,6 @@
         },
         {
             "name": "PHPUnit on PHP 8.2 with locked dependencies"
-        },
-        {
-            "name": "PHPUnit on PHP 8.2 with latest dependencies"
         }
     ]
 }
