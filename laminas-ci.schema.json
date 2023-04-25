@@ -392,7 +392,7 @@
                     "description": "The command to run to perform the check. The command MUST be executable.",
                     "minLength": 1,
                     "examples": [
-                        "vendor/bin/codecept run"
+                        "vendor/bin/codecept run --debug"
                     ]
                 }
             },
