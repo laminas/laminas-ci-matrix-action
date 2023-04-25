@@ -122,8 +122,6 @@ The "job" element will have the following elements, but is not restricted to the
 
 \* [github action with debug enabled](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging)
 
-__
-
 ## Configuration
 
 The package can include a configuration file in its root, `.laminas-ci.json`, which can provide the following:
