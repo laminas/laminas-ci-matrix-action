@@ -2,7 +2,7 @@
     "include": [
         {
             "name": "Codeception [7.4, latest]",
-            "job": "{\"command\":\"./vendor/bin/codecept run\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "job": "{\"command\":\"./vendor/bin/codecept run\",\"debugCommand\":\"./vendor/bin/codecept run --debug\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

@@ -4,6 +4,7 @@ import {ComposerDependencySet, Job} from './app';
 export interface JobDefinitionForMatrix
 {
     command: string,
+    debugCommand: string|null,
     php: InstallablePhpVersionType,
     extensions: Array<string>,
     ini: Array<string>,
@@ -39,6 +40,7 @@ export function createJobForMatrixFromJob(job: Job): JobForMatrix {
         action          : job.action,
         job             : {
             command                         : job.job.command,
+            debugCommand                    : job.job.debugCommand,
             php                             : job.job.php,
             extensions                      : job.job.phpExtensions,
             ini                             : job.job.phpIni,

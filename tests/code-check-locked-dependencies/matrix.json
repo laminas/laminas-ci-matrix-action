@@ -2,7 +2,7 @@
     "include": [
         {
             "name": "Infection [7.4, locked]",
-            "job": "{\"command\":\"phpdbg -qrr ./vendor/bin/infection\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"locked\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "job": "{\"command\":\"phpdbg -qrr ./vendor/bin/infection\",\"debugCommand\":\"phpdbg -qrr ./vendor/bin/infection --debug\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"locked\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

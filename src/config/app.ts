@@ -49,6 +49,7 @@ function gatherExtensions(composerJson: ComposerJson): Set<string> {
 
 export interface JobDefinition {
     command: string;
+    debugCommand: string|null;
     php: InstallablePhpVersionType;
     phpExtensions: string[];
     phpIni: string[];
@@ -147,6 +148,7 @@ function convertJobDefinitionFromFileToJobDefinition(
 ): JobDefinition {
     return createJobDefinition(
         job.command,
+        job.debugCommand ?? null,
         phpVersion,
         composerDependencySet,
         job.extensions ?? config.phpExtensions,
@@ -159,6 +161,7 @@ function convertJobDefinitionFromFileToJobDefinition(
 
 function createJobDefinition(
     command: string,
+    debugCommand: string|null,
     phpVersion: InstallablePhpVersionType,
     composerDependencySet: ComposerDependencySet,
     phpExtensions: string[],
@@ -176,6 +179,7 @@ function createJobDefinition(
         ignorePhpPlatformRequirement : ignorePlatformRequirements,
         additionalComposerArguments  : additionalComposerArguments,
         beforeScript                 : beforeScript,
+        debugCommand                 : debugCommand,
     };
 }
 
@@ -302,6 +306,7 @@ function createJobsForTool(
                 tool.name,
                 createJobDefinition(
                     tool.command,
+                    tool.debugCommand ?? null,
                     config.minimumPhpVersion,
                     lockedOrLatestDependencySet,
                     config.phpExtensions,
@@ -321,6 +326,7 @@ function createJobsForTool(
                 tool.name,
                 createJobDefinition(
                     tool.command,
+                    tool.debugCommand ?? null,
                     config.minimumPhpVersion,
                     ComposerDependencySet.LOCKED,
                     config.phpExtensions,
@@ -336,6 +342,7 @@ function createJobsForTool(
         config.versions.forEach((version) => jobs.push(
             createJob(tool.name, createJobDefinition(
                 tool.command,
+                tool.debugCommand ?? null,
                 version,
                 ComposerDependencySet.LOWEST,
                 config.phpExtensions,
@@ -347,6 +354,7 @@ function createJobsForTool(
 
             createJob(tool.name, createJobDefinition(
                 tool.command,
+                tool.debugCommand ?? null,
                 version,
                 ComposerDependencySet.LATEST,
                 config.phpExtensions,
@@ -380,6 +388,7 @@ function createNoOpCheck(config: Config): Job {
             ignorePhpPlatformRequirement : config.ignorePhpPlatformRequirements[config.stablePhpVersion] ?? false,
             additionalComposerArguments  : config.additionalComposerArguments,
             beforeScript                 : [],
+            debugCommand                 : null,
         }
     };
 }

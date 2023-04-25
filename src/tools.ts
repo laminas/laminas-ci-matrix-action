@@ -29,6 +29,7 @@ export type Tool = {
     command: string;
     filesToCheck: PathLike[],
     lintConfigCommand?: string,
+    debugCommand?: string
 }
 
 function detectInfectionCommand(): string {
@@ -71,6 +72,7 @@ export default function createTools(config: Config): Array<Tool> {
             filesToCheck      : [ 'phpunit.xml.dist', 'phpunit.xml' ],
             toolType          : ToolType.CODE_CHECK,
             lintConfigCommand : 'xmllint --schema vendor/phpunit/phpunit/phpunit.xsd',
+            debugCommand      : './vendor/bin/phpunit --debug'
         },
         {
             executionType : ToolExecutionType.STATIC,
@@ -78,6 +80,7 @@ export default function createTools(config: Config): Array<Tool> {
             command       : detectInfectionCommand(),
             filesToCheck  : [ 'infection.json', 'infection.json.dist' ],
             toolType      : ToolType.CODE_CHECK,
+            debugCommand  : `${detectInfectionCommand()  } --debug`
         },
         {
             executionType     : ToolExecutionType.STATIC,
@@ -94,6 +97,7 @@ export default function createTools(config: Config): Array<Tool> {
             filesToCheck      : [ 'psalm.xml.dist', 'psalm.xml' ],
             toolType          : ToolType.CODE_CHECK,
             lintConfigCommand : 'xmllint --schema vendor/vimeo/psalm/config.xsd',
+            debugCommand      : './vendor/bin/psalm --shepherd --stats --output-format=github --no-cache --debug',
         },
         {
             executionType : ToolExecutionType.STATIC,
@@ -115,6 +119,7 @@ export default function createTools(config: Config): Array<Tool> {
             command       : './vendor/bin/codecept run',
             filesToCheck  : [ 'codeception.yml.dist', 'codeception.yml' ],
             toolType      : ToolType.CODE_CHECK,
+            debugCommand  : './vendor/bin/codecept run --debug',
         },
         {
             executionType : ToolExecutionType.STATIC,

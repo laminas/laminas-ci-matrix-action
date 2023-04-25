@@ -115,9 +115,14 @@ The "job" element will have the following elements, but is not restricted to the
   "ignore_php_platform_requirement": "(optional) boolean; whether to add `--ignore-platform-req=php` to composer for this job.",
   "additional_composer_arguments": [
       "(optional) list of arguments to be passed to `composer install` and `composer update`"
-  ]
+  ],
+   "debugCommand": "(optional) command to run to perform the check when github action is executed with debug enabled*"
 }
 ```
+
+\* [github action with debug enabled](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging)
+
+__
 
 ## Configuration
 

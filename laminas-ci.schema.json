@@ -385,6 +385,15 @@
                     "examples": [
                         "vendor/bin/codecept run"
                     ]
+                },
+                "debugCommand": {
+                    "type": "string",
+                    "title": "The command to be executed",
+                    "description": "The command to run to perform the check. The command MUST be executable.",
+                    "minLength": 1,
+                    "examples": [
+                        "vendor/bin/codecept run"
+                    ]
                 }
             },
             "additionalProperties": false

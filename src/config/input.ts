@@ -77,6 +77,7 @@ export interface JobDefinitionFromFile {
     ignore_php_platform_requirement?: boolean;
     additional_composer_arguments: string[];
     command: string;
+    debugCommand?: string;
     before_script: string[];
 }
 
