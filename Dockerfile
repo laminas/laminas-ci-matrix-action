@@ -1,4 +1,4 @@
-FROM node:20.1.0-alpine as compiler
+FROM node:20.2.0-alpine as compiler
 
 RUN mkdir -p /usr/local/source
 WORKDIR /usr/local/source
@@ -10,7 +10,7 @@ COPY ./src ./src
 RUN npm run build
 
 
-FROM node:20.1.0-alpine
+FROM node:20.2.0-alpine
 LABEL "repository"="http://github.com/laminas/laminas-ci-matrix-action"
 LABEL "homepage"="http://github.com/laminas/laminas-ci-matrix-action"
 LABEL "maintainer"="https://github.com/laminas/technical-steering-committee/"
