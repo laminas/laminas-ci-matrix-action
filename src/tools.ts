@@ -65,6 +65,13 @@ export default function createTools(config: Config): Array<Tool> {
             toolType      : ToolType.LINTER,
         },
         {
+            executionType : ToolExecutionType.STATIC,
+            name          : 'README Linting',
+            command       : 'markdownlint README.md',
+            filesToCheck  : [ 'README.md' ],
+            toolType      : ToolType.LINTER,
+        },
+        {
             executionType     : ToolExecutionType.MATRIX,
             name              : 'PHPUnit',
             command           : './vendor/bin/phpunit',
