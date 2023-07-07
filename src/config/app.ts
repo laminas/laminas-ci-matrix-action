@@ -22,8 +22,8 @@ export function gatherVersions(composerJson: ComposerJson): InstallablePhpVersio
     }
 
     const composerPhpVersion: string = (composerJson.require?.php ?? '')
-        .replace(/,\s/, ' ')
-        .replace(/(\d+)\.(\d+)\.([1-9]+)/g, '$1.$2.0');
+        .replaceAll(/,\s/g, ' ')
+        .replaceAll(/(\d+)\.(\d+)\.([1-9]+)/g, '$1.$2.0');
 
     if (composerPhpVersion === '') {
         return [];
@@ -449,7 +449,7 @@ export default function createConfig(
     if (phpVersionsSupportedByProject.length > 0) {
         minimumPHPVersion = phpVersionsSupportedByProject[0] as InstallablePhpVersionType;
         maximumPHPVersion =
-            phpVersionsSupportedByProject[phpVersionsSupportedByProject.length - 1] as InstallablePhpVersionType;
+            phpVersionsSupportedByProject.at(-1) as InstallablePhpVersionType;
     }
 
     configurationFromFile.extensions?.forEach((extension) => phpExtensions = phpExtensions.add(extension));
