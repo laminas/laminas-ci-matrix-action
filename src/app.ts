@@ -140,7 +140,7 @@ export class App {
         ];
 
         const docLintingRegularExpressions: RegExp[] = [
-            /(^mkdocs.yml|docs?\/book\/.*\.md$)/
+            /(^mkdocs.yml|docs?\/book\/.*\.md|README.md$)/
         ];
 
         diff.forEach(

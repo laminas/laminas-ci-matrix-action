@@ -9,6 +9,9 @@
         },
         {
             "name": "PHPUnit on PHP 7.4 with latest dependencies"
+        },
+        {
+            "name": "README Linting on PHP 7.4 with locked dependencies"
         }
     ]
 }
