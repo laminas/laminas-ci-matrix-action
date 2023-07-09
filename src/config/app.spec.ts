@@ -2,6 +2,13 @@ import {PathLike} from 'fs';
 import {configDotenv} from 'dotenv';
 import createConfig, {gatherVersions} from './app';
 
+beforeEach(() => {
+    jest.resetModules();
+
+    // Clean enviroment to avoid side-effects
+    process.env = {};
+});
+
 describe('config/app', () => {
     describe('gatherVersions()', () => {
         test.each`
