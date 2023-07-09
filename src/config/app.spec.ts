@@ -1,5 +1,6 @@
 import {PathLike} from 'fs';
 import createConfig, {gatherVersions} from './app';
+import {configDotenv} from "dotenv";
 
 describe('config/app', () => {
     describe('gatherVersions()', () => {
@@ -25,6 +26,7 @@ describe('config/app', () => {
 
     describe('createConfig()', () => {
         const phpIniFromConfigurationPath: PathLike = 'tests/php-ini-from-configuration';
+        const roaveBackwardCompatibilityPath: PathLike = 'tests/code-check-roave-backward-compatibility';
 
         it('should return valid config', () => {
             expect(createConfig(
@@ -47,7 +49,40 @@ describe('config/app', () => {
                 phpIni                        : [ 'error_reporting=E_ALL' ],
                 ignorePhpPlatformRequirements : {},
                 additionalComposerArguments   : [],
+                backwardCompatibilityCheck    : false,
+                targetReference               : null,
             });
+        });
+
+        it('should detect GITHUB_BASE_REF', () => {
+            const environment = process.env;
+            configDotenv({path: `${roaveBackwardCompatibilityPath}/test.env`});
+
+            expect(createConfig(
+                {
+                    codeChecks: true,
+                    docLinting: true,
+                },
+                `${roaveBackwardCompatibilityPath}/composer.json`,
+                `${roaveBackwardCompatibilityPath}/composer.lock`,
+                `${roaveBackwardCompatibilityPath}/.laminas-ci.json`
+            )).toEqual({
+                codeChecks: true,
+                docLinting: true,
+                versions: [],
+                stablePhpVersion: '7.4',
+                minimumPhpVersion: '7.4',
+                latestPhpVersion: '7.4',
+                lockedDependenciesExists: false,
+                phpExtensions: [],
+                phpIni: [],
+                ignorePhpPlatformRequirements: {},
+                additionalComposerArguments: [],
+                backwardCompatibilityCheck: true,
+                targetReference: "1111222233334444aaaabbbbccccdddd",
+            });
+
+            process.env = environment;
         });
     });
 });

@@ -480,7 +480,7 @@ export default function createConfig(
         ignorePhpPlatformRequirements : configurationFromFile.ignore_php_platform_requirements ?? {},
         additionalComposerArguments   : [ ... new Set(configurationFromFile.additional_composer_arguments ?? []) ],
         backwardCompatibilityCheck    : configurationFromFile.backwardCompatibilityCheck ?? false,
-        targetReference                     : process.env.GITHUB_BASE_REF ?? null,
+        targetReference               : process.env.GITHUB_BASE_REF ?? null,
     };
 }
 
