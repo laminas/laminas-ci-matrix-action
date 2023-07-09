@@ -65,7 +65,7 @@ export class App {
         appConfig: Config
     ): [JobForMatrix, ...JobForMatrix[]] {
         const config = parseJsonFile(this.continousIntegrationConfigurationJsonFileName, true) as ConfigurationFromFile;
-        const tools = createTools(appConfig, this.action);
+        const tools = createTools(appConfig);
 
         this.logger.debug(`Tools detected: ${JSON.stringify(tools, null, SPACES_TO_INDENT_JSON)}`);
         const jobs: [Job, ...Job[]] = (new DefaultJobCreator(tools, this.logger))

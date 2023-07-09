@@ -2,7 +2,7 @@ import fs, {PathLike} from 'fs';
 import {Config} from './config/app';
 import {ComposerJson} from './config/composer';
 import parseJsonFile from './json';
-import {Action} from './action';
+import {CONTAINER_DEFAULT_PHP_VERSION} from './config/php';
 
 export enum ToolExecutionType {
     /**
@@ -32,6 +32,10 @@ export type Tool = {
     lintConfigCommand?: string,
 }
 
+export type ToolRunningContainerDefaultPhpVersion = Tool & {
+    php: typeof CONTAINER_DEFAULT_PHP_VERSION,
+}
+
 function detectInfectionCommand(): string {
     const composerJson: ComposerJson = parseJsonFile('composer.json', true) as ComposerJson;
 
@@ -42,10 +46,12 @@ function detectInfectionCommand(): string {
     return './vendor/bin/infection';
 }
 
-function backwardCompatibilityCheckTool(action: Action): Tool | null {
-    const baseSha1 = action.getBaseBranchSha1();
+function backwardCompatibilityCheckTool(config: Config): ToolRunningContainerDefaultPhpVersion | null {
+    if (!config.backwardCompatibilityCheck) {
+        return null;
+    }
 
-    if (baseSha1 === null) {
+    if (config.targetReference === null) {
         return null;
     }
 
@@ -53,14 +59,14 @@ function backwardCompatibilityCheckTool(action: Action): Tool | null {
         // @TODO need to `git fetch baseSha1` from source repo!
         executionType : ToolExecutionType.STATIC,
         name          : 'Backward Compatibility Check',
-        command       : `roave-backward-compatibility-check check --from="${ baseSha1 }" --install-development-dependencies`,
+        command       : `roave-backward-compatibility-check check --from="${ config.targetReference }" --install-development-dependencies`,
         filesToCheck  : [ 'composer.json' ],
         toolType      : ToolType.CODE_CHECK,
-    } as Tool;
+        php           : CONTAINER_DEFAULT_PHP_VERSION,
+    } as ToolRunningContainerDefaultPhpVersion;
 }
 
-export default function createTools(config: Config, action: Action): Array<Tool> {
-    const bcTool = backwardCompatibilityCheckTool(action);
+export default function createTools(config: Config): Array<Tool> {
     const tools = [
         {
             executionType : ToolExecutionType.STATIC,
@@ -149,12 +155,8 @@ export default function createTools(config: Config, action: Action): Array<Tool>
             filesToCheck  : [ '.php-cs-fixer.php', '.php-cs-fixer.dist.php' ],
             toolType      : ToolType.CODE_CHECK,
         },
-    ] as Tool[];
-
-    if (bcTool !== null) {
-        const bcToolToAdd = bcTool as Tool;
-        tools.push(bcToolToAdd);
-    }
+        backwardCompatibilityCheckTool(config),
+    ].filter((tool) => tool !== null) as Tool[];
 
     return tools
         // Remove all tools which do not need to run
@@ -171,4 +173,8 @@ export function removeNonExistentFilesToCheck(tool: Tool): Tool {
         ...tool,
         filesToCheck : tool.filesToCheck.filter((file) => fs.existsSync(file))
     };
+}
+
+export function isToolRunningContainerDefaultPhpVersion(tool: Tool): tool is ToolRunningContainerDefaultPhpVersion {
+    return (tool as ToolRunningContainerDefaultPhpVersion).php === CONTAINER_DEFAULT_PHP_VERSION;
 }
