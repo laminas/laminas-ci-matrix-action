@@ -1,7 +1,7 @@
 import fs, {PathLike} from 'fs';
 import semver from 'semver';
 import parseJsonFile from '../json';
-import {Tool, ToolExecutionType} from '../tools';
+import {isToolRunningContainerDefaultPhpVersion, Tool, ToolExecutionType} from '../tools';
 import {Logger} from '../logging';
 import {CURRENT_STABLE, INSTALLABLE_VERSIONS, InstallablePhpVersionType, isInstallableVersion} from './php';
 import {ComposerJson} from './composer';
@@ -85,6 +85,8 @@ export interface Config {
     readonly phpIni: string[];
     readonly ignorePhpPlatformRequirements: IgnorePhpPlatformRequirements;
     readonly additionalComposerArguments: string[];
+    readonly backwardCompatibilityCheck: boolean;
+    readonly targetReference: string|null;
 }
 export interface Requirements {
     readonly codeChecks: boolean;
@@ -283,6 +285,17 @@ function createJob(
     return createdJob;
 }
 
+function detectPhpVersionForTool(
+    tool: Tool,
+    config: Config
+): InstallablePhpVersionType {
+    if (isToolRunningContainerDefaultPhpVersion(tool)) {
+        return tool.php;
+    }
+
+    return config.minimumPhpVersion;
+}
+
 function createJobsForTool(
     config: Config,
     tool: Tool
@@ -302,7 +315,7 @@ function createJobsForTool(
                 tool.name,
                 createJobDefinition(
                     tool.command,
-                    config.minimumPhpVersion,
+                    detectPhpVersionForTool(tool, config),
                     lockedOrLatestDependencySet,
                     config.phpExtensions,
                     config.phpIni,
@@ -466,6 +479,8 @@ export default function createConfig(
         lockedDependenciesExists      : fs.existsSync(composerLockJsonFileName),
         ignorePhpPlatformRequirements : configurationFromFile.ignore_php_platform_requirements ?? {},
         additionalComposerArguments   : [ ... new Set(configurationFromFile.additional_composer_arguments ?? []) ],
+        backwardCompatibilityCheck    : configurationFromFile.backwardCompatibilityCheck ?? false,
+        targetReference                     : process.env.GITHUB_BASE_REF ?? null,
     };
 }
 
