@@ -22,7 +22,7 @@
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": "error",
         "node/no-unpublished-import": ["error", {
-            "allowModules": ["@cfworker/json-schema"]
+            "allowModules": ["@cfworker/json-schema", "dotenv"]
         }],
         "no-process-exit": "off",
         "no-sync": "off",
