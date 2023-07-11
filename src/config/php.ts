@@ -3,6 +3,7 @@ export const PHP_81 = '8.1';
 export const PHP_82 = '8.2';
 
 export const CURRENT_STABLE = PHP_80;
+export const CONTAINER_DEFAULT_PHP_VERSION = '@default';
 
 /**
  * NOTE: Please keep this list ordered as the ordering is used to detect the minimum supported version of a project
@@ -11,7 +12,8 @@ export const CURRENT_STABLE = PHP_80;
 export const INSTALLABLE_VERSIONS = [
     PHP_80,
     PHP_81,
-    PHP_82
+    PHP_82,
+    CONTAINER_DEFAULT_PHP_VERSION,
 ] as const;
 
 export type InstallablePhpVersionType = typeof INSTALLABLE_VERSIONS[number];

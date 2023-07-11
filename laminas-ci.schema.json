@@ -183,6 +183,9 @@
                 "stablePHP": {
                     "$ref": "#/definitions/stablePHP"
                 },
+                "backwardCompatibilityCheck": {
+                    "$ref": "#/definitions/backwardCompatibilityCheck"
+                },
                 "additional_checks": {
                     "type": "array",
                     "title": "A list of additional checks to be executed",
@@ -328,14 +331,20 @@
             }
         },
         "stablePHP": {
-                "type": "string",
-                "minLength": 1,
-                "title": "The PHP version to be used for stable checks",
-                "description": "This PHP version is used for all QA check jobs. The default depends on the `composer.json` of the project and usually reflects the minimum supported PHP version of that project.",
-                "examples": [
-                    "8.0"
-                ]
-            },
+            "type": "string",
+            "minLength": 1,
+            "title": "The PHP version to be used for stable checks",
+            "description": "This PHP version is used for all QA check jobs. The default depends on the `composer.json` of the project and usually reflects the minimum supported PHP version of that project.",
+            "examples": [
+                "8.0"
+            ]
+        },
+        "backwardCompatibilityCheck": {
+            "type": "boolean",
+            "title": "Flag to enable/disable backwards compatibility check",
+            "description": "This flag enables/disables backwards compatibility check using roave/backward-compatibility-check.",
+            "default": false
+        },
         "job": {
             "type": "object",
             "title": "The job to be executed",

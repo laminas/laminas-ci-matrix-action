@@ -1,7 +1,7 @@
 import fs, {PathLike} from 'fs';
 import semver from 'semver';
 import parseJsonFile from '../json';
-import {Tool, ToolExecutionType} from '../tools';
+import {isToolRunningContainerDefaultPhpVersion, Tool, ToolExecutionType} from '../tools';
 import {Logger} from '../logging';
 import {CURRENT_STABLE, INSTALLABLE_VERSIONS, InstallablePhpVersionType, isInstallableVersion} from './php';
 import {ComposerJson} from './composer';
@@ -22,8 +22,8 @@ export function gatherVersions(composerJson: ComposerJson): InstallablePhpVersio
     }
 
     const composerPhpVersion: string = (composerJson.require?.php ?? '')
-        .replace(/,\s/, ' ')
-        .replace(/(\d+)\.(\d+)\.([1-9]+)/g, '$1.$2.0');
+        .replaceAll(/,\s/g, ' ')
+        .replaceAll(/(\d+)\.(\d+)\.([1-9]+)/g, '$1.$2.0');
 
     if (composerPhpVersion === '') {
         return [];
@@ -85,6 +85,8 @@ export interface Config {
     readonly phpIni: string[];
     readonly ignorePhpPlatformRequirements: IgnorePhpPlatformRequirements;
     readonly additionalComposerArguments: string[];
+    readonly backwardCompatibilityCheck: boolean;
+    readonly baseReference: string|null;
 }
 export interface Requirements {
     readonly codeChecks: boolean;
@@ -283,6 +285,17 @@ function createJob(
     return createdJob;
 }
 
+function detectPhpVersionForTool(
+    tool: Tool,
+    config: Config
+): InstallablePhpVersionType {
+    if (isToolRunningContainerDefaultPhpVersion(tool)) {
+        return tool.php;
+    }
+
+    return config.minimumPhpVersion;
+}
+
 function createJobsForTool(
     config: Config,
     tool: Tool
@@ -302,7 +315,7 @@ function createJobsForTool(
                 tool.name,
                 createJobDefinition(
                     tool.command,
-                    config.minimumPhpVersion,
+                    detectPhpVersionForTool(tool, config),
                     lockedOrLatestDependencySet,
                     config.phpExtensions,
                     config.phpIni,
@@ -449,7 +462,7 @@ export default function createConfig(
     if (phpVersionsSupportedByProject.length > 0) {
         minimumPHPVersion = phpVersionsSupportedByProject[0] as InstallablePhpVersionType;
         maximumPHPVersion =
-            phpVersionsSupportedByProject[phpVersionsSupportedByProject.length - 1] as InstallablePhpVersionType;
+            phpVersionsSupportedByProject.at(-1) as InstallablePhpVersionType;
     }
 
     configurationFromFile.extensions?.forEach((extension) => phpExtensions = phpExtensions.add(extension));
@@ -466,6 +479,8 @@ export default function createConfig(
         lockedDependenciesExists      : fs.existsSync(composerLockJsonFileName),
         ignorePhpPlatformRequirements : configurationFromFile.ignore_php_platform_requirements ?? {},
         additionalComposerArguments   : [ ... new Set(configurationFromFile.additional_composer_arguments ?? []) ],
+        backwardCompatibilityCheck    : configurationFromFile.backwardCompatibilityCheck ?? false,
+        baseReference                 : process.env.GITHUB_BASE_REF ?? null,
     };
 }
 

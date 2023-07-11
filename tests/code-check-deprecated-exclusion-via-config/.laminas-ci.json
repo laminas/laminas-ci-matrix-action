@@ -9,6 +9,9 @@
         },
         {
             "name": "PHPUnit on PHP 8.2 with latest dependencies"
+        },
+        {
+            "name": "README Linting on PHP 8.2 with locked dependencies"
         }
     ]
 }

@@ -84,7 +84,15 @@ jobs:
         id: matrix_generation
         env:
           PROJECT_NAME_TO_TEST: ${{ matrix.projectName }}
-        run: cd tests/${PROJECT_NAME_TO_TEST} && docker run -i --entrypoint "/action/main.js" -v $(realpath .):/github/workspace -w=/github/workspace ${TEST_TAG} $(test -r diff && cat diff || echo -n "")
+        run: |
+          cd tests/${PROJECT_NAME_TO_TEST} && \
+          docker run \
+            -i \
+            --entrypoint "/action/main.js" \
+            -v $(realpath .):/github/workspace \
+            --env-file=test.env \
+            -w=/github/workspace \
+            ${TEST_TAG} $(test -r diff && cat diff || echo -n "")
 
       - name: "Output generated matrix"
         uses: sergeysova/jq-action@v2
@@ -128,7 +136,7 @@ jobs:
       - uses: "actions/setup-node@v3"
         with:
           check-latest: true
-          node-version: 19
+          node-version: 20
       - name: "Install node modules"
         run: "npm ci"
       - name: Run ESLint
@@ -141,7 +149,7 @@ jobs:
       - uses: "actions/setup-node@v3"
         with:
           check-latest: true
-          node-version: 19
+          node-version: 20
       - name: "Install node modules"
         run: "npm ci"
       - name: Run Jest
