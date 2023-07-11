@@ -24,7 +24,7 @@ describe('config/app', () => {
             ${'~8.1'}                      | ${[ '8.1' ]}
             ${'~8.1.0'}                    | ${[ '8.1' ]}
             ${'~8.1.12'}                   | ${[ '8.1' ]}
-            ${'^7.4 || ~8.0.0 || ~8.1.12'} | ${[ '8.0', '8.1' ]}
+            ${'^8.0 || ~8.0.0 || ~8.1.12'} | ${[ '8.0', '8.1', '8.2' ]}
             ${'<=8.1.0'}                   | ${[ '8.0', '8.1' ]}
         `('for "$constraint" === $expected', ({constraint, expected}) => {
             expect(gatherVersions({require: {php: constraint}})).toEqual(expected);
@@ -78,9 +78,9 @@ describe('config/app', () => {
                 codeChecks                    : true,
                 docLinting                    : true,
                 versions                      : [],
-                stablePhpVersion              : '7.4',
-                minimumPhpVersion             : '7.4',
-                latestPhpVersion              : '7.4',
+                stablePhpVersion              : '8.0',
+                minimumPhpVersion             : '8.0',
+                latestPhpVersion              : '8.0',
                 lockedDependenciesExists      : false,
                 phpExtensions                 : [],
                 phpIni                        : [],
