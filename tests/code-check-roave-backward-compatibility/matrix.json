@@ -2,7 +2,7 @@
     "include": [
         {
             "name": "Backward Compatibility Check [@default, latest]",
-            "job": "{\"command\":\"roave-backward-compatibility-check check --from=\\\"1111222233334444aaaabbbbccccdddd\\\" --install-development-dependencies\",\"php\":\"@default\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "job": "{\"command\":\"roave-backward-compatibility-check check --from=\\\\\\\"1111222233334444aaaabbbbccccdddd\\\\\\\" --install-development-dependencies\",\"php\":\"@default\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }
