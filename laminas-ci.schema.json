@@ -342,7 +342,8 @@
         "backwardCompatibilityCheck": {
             "type": "boolean",
             "title": "Flag to enable/disable backwards compatibility check",
-            "description": "This flag enables/disables backwards compatibility check using roave/backward-compatibility-check."
+            "description": "This flag enables/disables backwards compatibility check using roave/backward-compatibility-check.",
+            "default": false
         },
         "job": {
             "type": "object",
