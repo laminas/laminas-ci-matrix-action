@@ -467,6 +467,12 @@ export default function createConfig(
 
     configurationFromFile.extensions?.forEach((extension) => phpExtensions = phpExtensions.add(extension));
 
+    let baseReference: string|null = (process.env.GITHUB_BASE_REF ?? '').replaceAll('"', '');
+
+    if (baseReference === '') {
+        baseReference = null;
+    }
+
     return {
         codeChecks                    : requirements.codeChecks,
         docLinting                    : requirements.docLinting,
@@ -480,7 +486,7 @@ export default function createConfig(
         ignorePhpPlatformRequirements : configurationFromFile.ignore_php_platform_requirements ?? {},
         additionalComposerArguments   : [ ... new Set(configurationFromFile.additional_composer_arguments ?? []) ],
         backwardCompatibilityCheck    : configurationFromFile.backwardCompatibilityCheck ?? false,
-        baseReference                 : process.env.GITHUB_BASE_REF ?? null,
+        baseReference                 : baseReference,
     };
 }
 
