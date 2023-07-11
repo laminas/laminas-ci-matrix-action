@@ -51,7 +51,7 @@ function backwardCompatibilityCheckTool(config: Config): ToolRunningContainerDef
         return null;
     }
 
-    if (config.targetReference === null) {
+    if (config.baseReference === null) {
         return null;
     }
 
@@ -59,7 +59,7 @@ function backwardCompatibilityCheckTool(config: Config): ToolRunningContainerDef
         // @TODO need to `git fetch baseSha1` from source repo!
         executionType : ToolExecutionType.STATIC,
         name          : 'Backward Compatibility Check',
-        command       : `roave-backward-compatibility-check check --from="${ config.targetReference }" --install-development-dependencies`,
+        command       : `roave-backward-compatibility-check check --from="${ config.baseReference }" --install-development-dependencies`,
         filesToCheck  : [ 'composer.json' ],
         toolType      : ToolType.CODE_CHECK,
         php           : CONTAINER_DEFAULT_PHP_VERSION,

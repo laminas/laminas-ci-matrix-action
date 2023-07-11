@@ -86,7 +86,7 @@ export interface Config {
     readonly ignorePhpPlatformRequirements: IgnorePhpPlatformRequirements;
     readonly additionalComposerArguments: string[];
     readonly backwardCompatibilityCheck: boolean;
-    readonly targetReference: string|null;
+    readonly baseReference: string|null;
 }
 export interface Requirements {
     readonly codeChecks: boolean;
@@ -480,7 +480,7 @@ export default function createConfig(
         ignorePhpPlatformRequirements : configurationFromFile.ignore_php_platform_requirements ?? {},
         additionalComposerArguments   : [ ... new Set(configurationFromFile.additional_composer_arguments ?? []) ],
         backwardCompatibilityCheck    : configurationFromFile.backwardCompatibilityCheck ?? false,
-        targetReference               : process.env.GITHUB_BASE_REF ?? null,
+        baseReference                 : process.env.GITHUB_BASE_REF ?? null,
     };
 }
 
