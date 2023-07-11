@@ -57,7 +57,7 @@ describe('config/app', () => {
                 ignorePhpPlatformRequirements : {},
                 additionalComposerArguments   : [],
                 backwardCompatibilityCheck    : false,
-                targetReference               : null,
+                baseReference                 : null,
             });
         });
 
@@ -87,7 +87,7 @@ describe('config/app', () => {
                 ignorePhpPlatformRequirements : {},
                 additionalComposerArguments   : [],
                 backwardCompatibilityCheck    : true,
-                targetReference               : '1111222233334444aaaabbbbccccdddd',
+                baseReference                 : '1111222233334444aaaabbbbccccdddd',
             });
 
             process.env = environment;
