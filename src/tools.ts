@@ -58,7 +58,7 @@ function backwardCompatibilityCheckTool(config: Config): ToolRunningContainerDef
     return {
         executionType : ToolExecutionType.STATIC,
         name          : 'Backward Compatibility Check',
-        command       : `roave-backward-compatibility-check --from=\\"${ config.baseReference }\\" --install-development-dependencies`,
+        command       : `roave-backward-compatibility-check --from=${ config.baseReference } --install-development-dependencies`,
         filesToCheck  : [ 'composer.json' ],
         toolType      : ToolType.CODE_CHECK,
         php           : CONTAINER_DEFAULT_PHP_VERSION,
