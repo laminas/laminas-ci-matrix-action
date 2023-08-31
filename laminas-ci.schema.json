@@ -25,6 +25,11 @@
             "exclude": [
                 {
                     "name": "Codeception [7.4, latest]"
+                },
+                {
+                    "name": "Codeception",
+                    "php": "7.4",
+                    "dependencies": "latest"
                 }
             ],
             "ignore_php_platform_requirements": {
@@ -285,6 +290,11 @@
                 [
                     {
                         "name": "Codeception [7.4, latest]"
+                    },
+                    {
+                        "name": "Codeception",
+                        "php": "7.4",
+                        "dependencies": "latest"
                     }
                 ]
             ],
@@ -294,6 +304,11 @@
                 "examples": [
                     {
                         "name": "Codeception [7.4, latest]"
+                    },
+                    {
+                        "name": "Codeception",
+                        "php": "7.4",
+                        "dependencies": "latest"
                     }
                 ],
                 "required": [
@@ -306,8 +321,36 @@
                         "description": "The name of the job to be excluded. Must be an exact match.",
                         "minLength": 1,
                         "examples": [
-                            "Codeception [7.4, latest]"
+                            "Codeception [7.4, latest]",
+                            "Codeception"
                         ]
+                    },
+                    "php": {
+                        "type": "string",
+                        "title": "The php version",
+                        "description": "The PHP version to to be excluded.",
+                        "enum": [
+                            "5.6",
+                            "7.0",
+                            "7.1",
+                            "7.2",
+                            "7.3",
+                            "7.4",
+                            "8.0",
+                            "8.1",
+                            "8.2",
+                            "*",
+                            "@latest",
+                            "@lowest"
+                        ],
+                        "default": "*"
+                    },
+                    "dependencies": {
+                        "type": "string",
+                        "enum": ["latest", "lowest", "locked", "*"],
+                        "title": "The composer dependencies to be excluded",
+                        "description": "The composer dependencies to be excluded. If the wildcard `*` is passed, all dependencies are being excluded",
+                        "default": "*"
                     }
                 },
                 "additionalProperties": false

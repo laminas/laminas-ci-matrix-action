@@ -5,7 +5,7 @@ import {isToolRunningContainerDefaultPhpVersion, Tool, ToolExecutionType} from '
 import {Logger} from '../logging';
 import {CURRENT_STABLE, INSTALLABLE_VERSIONS, InstallablePhpVersionType, isInstallableVersion} from './php';
 import {ComposerJson} from './composer';
-import {ConfigurationFromFile, isAdditionalChecksConfiguration, isAnyComposerDependencySet, isAnyPhpVersionType, isConfigurationContainingJobExclusions, isExplicitChecksConfiguration, isLatestPhpVersionType, isLowestPhpVersionType, JobDefinitionFromFile, JobFromFile, JobToExcludeFromFile} from './input';
+import {ConfigurationFromFile, isAdditionalChecksConfiguration, isAnyComposerDependencySet, isAnyPhpVersionType, isConfigurationContainingJobExclusions, isExplicitChecksConfiguration, isLatestPhpVersionType, isLowestPhpVersionType, JobDefinitionFromFile, JobFromFile, JobToExcludeFromFile, WILDCARD_ALIAS} from './input';
 
 export const OPERATING_SYSTEM = 'ubuntu-latest';
 export const ACTION = 'laminas/laminas-continuous-integration-action@v1';
@@ -242,12 +242,62 @@ function isJobExcludedByDeprecatedCommandName(job: Job, exclusions: JobToExclude
     );
 }
 
+function isJobExcludedByConfiguration(
+    job: Job,
+    exclude: JobToExcludeFromFile,
+    config: Config,
+    logger: Logger
+): boolean {
+    const jobName = isJobFromTool(job) ? job.tool.name : job.name;
+
+    if (jobName !== exclude.name) {
+        return false;
+    }
+
+    const phpVersionToExclude = exclude.php ?? WILDCARD_ALIAS;
+    const dependenciesToExclude = exclude.dependencies ?? WILDCARD_ALIAS;
+
+    if (!isAnyPhpVersionType(phpVersionToExclude)) {
+        const nonExcludedPhpVersionDebugMessage = `Job with name ${ jobName } is not matching exclusion rule`
+            + ` with name ${ exclude.name } due to non-excluded php version.`;
+
+        if (isLowestPhpVersionType(phpVersionToExclude) && job.job.php !== config.minimumPhpVersion) {
+            logger.debug(nonExcludedPhpVersionDebugMessage);
+
+            return false;
+        }
+
+        if (isLatestPhpVersionType(phpVersionToExclude) && job.job.php !== config.latestPhpVersion) {
+            logger.debug(nonExcludedPhpVersionDebugMessage);
+
+            return false;
+        }
+
+        if (phpVersionToExclude !== job.job.php) {
+            logger.debug(nonExcludedPhpVersionDebugMessage);
+
+            return false;
+        }
+    }
+
+    if (!isAnyComposerDependencySet(dependenciesToExclude) && dependenciesToExclude !== job.job.composerDependencySet) {
+        logger.debug(
+            `Job with name ${ jobName } is not matching exclusion rule`
+            + ` with name ${ exclude.name } due to non-excluded Composer dependencies.`
+        );
+
+        return false;
+    }
+
+    return true;
+}
+
 function isJobExcluded(job: Job, exclusions: JobToExcludeFromFile[], config: Config, logger: Logger): boolean {
     if (exclusions.length === 0) {
         return false;
     }
 
-    if (exclusions.some((exclude) => job.name === exclude.name)) {
+    if (exclusions.some((exclude) => isJobExcludedByConfiguration(job, exclude, config, logger))) {
         logger.info(`Job with name ${ job.name } is excluded due to application config.`);
 
         return true;

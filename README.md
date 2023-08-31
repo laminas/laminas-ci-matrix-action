@@ -111,8 +111,8 @@ The "job" element will have the following elements, but is not restricted to the
   ],
   "dependencies": "(optional) dependencies to test against; one of lowest, locked, latest. default: locked",
   "command": "(required) command to run to perform the check", 
-  "ignore_platform_reqs_8": "(optional; deprecated) boolean; whether to add `--ignore-platform-req=php` to composer for PHP 8.0. default: true",
-  "ignore_php_platform_requirement": "(optional) boolean; whether to add `--ignore-platform-req=php` to composer for this job.",
+  "ignore_platform_reqs_8": "(optional; deprecated) boolean; whether to add `--ignore-platform-req=php` to Composer for PHP 8.0. default: true",
+  "ignore_php_platform_requirement": "(optional) boolean; whether to add `--ignore-platform-req=php` to Composer for this job.",
   "additional_composer_arguments": [
       "(optional) list of arguments to be passed to `composer install` and `composer update`"
   ]
@@ -200,15 +200,42 @@ The tool discovers checks first, then appends any `additional_checks` are concat
 
 ### Excluding specific jobs
 
-The easiest way to exclude a single job is via the `name` parameter:
+You can exclude specific jobs by using their names:
 
 ```json
 {
   "exclude": [
     {
-      "name": "PHPUnit on PHP 8.0 with latest dependencies"
+      "name": "PHPUnit"
     }
   ]
+}
+```
+
+If you want to limit the exclusion to specific PHP versions, you can additionally add a PHP version:
+
+```json
+{
+   "exclude": [
+      {
+         "name": "PHPUnit",
+         "php": "8.0"
+      }
+   ]
+}
+```
+
+In case you only want to exclude jobs for specific Composer dependency sets, add `dependencies` to the `exclude` configuration:
+
+```json
+{
+   "exclude": [
+      {
+         "name": "PHPUnit",
+         "php": "8.0",
+         "dependencies": "latest"
+      }
+   ]
 }
 ```
 
