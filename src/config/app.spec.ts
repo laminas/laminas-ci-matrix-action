@@ -59,8 +59,6 @@ describe('config/app', () => {
                 backwardCompatibilityCheck    : false,
                 baseReference                 : null,
             });
-
-            process.env = environment;
         });
 
         it('should detect GITHUB_BASE_REF', () => {
