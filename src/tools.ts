@@ -65,25 +65,6 @@ function backwardCompatibilityCheckTool(config: Config): ToolRunningContainerDef
     } as ToolRunningContainerDefaultPhpVersion;
 }
 
-function backwardCompatibilityCheckTool(config: Config): ToolRunningContainerDefaultPhpVersion | null {
-    if (!config.backwardCompatibilityCheck) {
-        return null;
-    }
-
-    if (config.baseReference === null) {
-        return null;
-    }
-
-    return {
-        executionType : ToolExecutionType.STATIC,
-        name          : 'Backward Compatibility Check',
-        command       : `roave-backward-compatibility-check --from=${ config.baseReference } --install-development-dependencies`,
-        filesToCheck  : [ 'composer.json' ],
-        toolType      : ToolType.CODE_CHECK,
-        php           : CONTAINER_DEFAULT_PHP_VERSION,
-    } as ToolRunningContainerDefaultPhpVersion;
-}
-
 export default function createTools(config: Config): Array<Tool> {
     const tools = [
         {
