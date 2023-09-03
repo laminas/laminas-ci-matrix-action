@@ -13,8 +13,8 @@ describe('config/app', () => {
     describe('gatherVersions()', () => {
         test.each`
             constraint                     | expected
-            ${'7.0'}                       | ${[ '7.0' ]}
-            ${'^7.0'}                      | ${[ '7.0', '7.1', '7.2', '7.3', '7.4' ]}
+            ${'7.0'}                       | ${[ ]}
+            ${'^7.0'}                      | ${[ ]}
             ${'8.1'}                       | ${[ '8.1' ]}
             ${'8.1.0'}                     | ${[ '8.1' ]}
             ${'8.1.12'}                    | ${[ '8.1' ]}
@@ -24,8 +24,8 @@ describe('config/app', () => {
             ${'~8.1'}                      | ${[ '8.1' ]}
             ${'~8.1.0'}                    | ${[ '8.1' ]}
             ${'~8.1.12'}                   | ${[ '8.1' ]}
-            ${'^7.4 || ~8.0.0 || ~8.1.12'} | ${[ '7.4', '8.0', '8.1' ]}
-            ${'<=8.1.0'}                   | ${[ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1' ]}
+            ${'^8.0 || ~8.0.0 || ~8.1.12'} | ${[ '8.0', '8.1', '8.2' ]}
+            ${'<=8.1.0'}                   | ${[ '8.0', '8.1' ]}
         `('for "$constraint" === $expected', ({constraint, expected}) => {
             expect(gatherVersions({require: {php: constraint}})).toEqual(expected);
         });
@@ -59,6 +59,8 @@ describe('config/app', () => {
                 backwardCompatibilityCheck    : false,
                 baseReference                 : null,
             });
+
+            process.env = environment;
         });
 
         it('should detect GITHUB_BASE_REF', () => {

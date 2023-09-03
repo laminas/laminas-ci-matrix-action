@@ -40,10 +40,29 @@ function detectInfectionCommand(): string {
     const composerJson: ComposerJson = parseJsonFile('composer.json', true) as ComposerJson;
 
     if (composerJson['require-dev']?.['roave/infection-static-analysis-plugin'] !== undefined) {
-        return 'phpdbg -qrr ./vendor/bin/roave-infection-static-analysis-plugin';
+        return './vendor/bin/roave-infection-static-analysis-plugin';
     }
 
-    return 'phpdbg -qrr ./vendor/bin/infection';
+    return './vendor/bin/infection';
+}
+
+function backwardCompatibilityCheckTool(config: Config): ToolRunningContainerDefaultPhpVersion | null {
+    if (!config.backwardCompatibilityCheck) {
+        return null;
+    }
+
+    if (config.baseReference === null) {
+        return null;
+    }
+
+    return {
+        executionType : ToolExecutionType.STATIC,
+        name          : 'Backward Compatibility Check',
+        command       : `roave-backward-compatibility-check --from=${ config.baseReference } --install-development-dependencies`,
+        filesToCheck  : [ 'composer.json' ],
+        toolType      : ToolType.CODE_CHECK,
+        php           : CONTAINER_DEFAULT_PHP_VERSION,
+    } as ToolRunningContainerDefaultPhpVersion;
 }
 
 function backwardCompatibilityCheckTool(config: Config): ToolRunningContainerDefaultPhpVersion | null {

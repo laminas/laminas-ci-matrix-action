@@ -1,17 +1,17 @@
 {
-    "stablePHP": "7.4",
+    "stablePHP": "8.2",
     "exclude": [
         {
-            "name": "./vendor/bin/codecept run on PHP 7.4"
+            "name": "./vendor/bin/codecept run on PHP 8.2"
         },
         {
-            "name": "PHPUnit on PHP 7.4 with locked dependencies"
+            "name": "PHPUnit on PHP 8.2 with locked dependencies"
         },
         {
-            "name": "PHPUnit on PHP 7.4 with latest dependencies"
+            "name": "PHPUnit on PHP 8.2 with latest dependencies"
         },
         {
-            "name": "README Linting on PHP 7.4 with locked dependencies"
+            "name": "README Linting on PHP 8.2 with locked dependencies"
         }
     ]
 }

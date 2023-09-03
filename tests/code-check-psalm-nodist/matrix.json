@@ -1,8 +1,8 @@
 {
     "include": [
         {
-            "name": "Psalm [7.4, latest]",
-            "job": "{\"command\":\"./vendor/bin/psalm --shepherd --stats --output-format=github --no-cache\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[\"xmllint --schema vendor/vimeo/psalm/config.xsd psalm.xml\"]}",
+            "name": "Psalm [8.2, latest]",
+            "job": "{\"command\":\"./vendor/bin/psalm --shepherd --stats --output-format=github --no-cache\",\"php\":\"8.2\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[\"xmllint --schema vendor/vimeo/psalm/config.xsd psalm.xml\"]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

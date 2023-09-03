@@ -1,8 +1,8 @@
 {
     "include": [
         {
-            "name": "README Linting [7.4, latest]",
-            "job": "{\"command\":\"markdownlint README.md\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "name": "README Linting [8.0, latest]",
+            "job": "{\"command\":\"markdownlint README.md\",\"php\":\"8.0\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

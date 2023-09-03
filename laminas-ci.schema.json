@@ -24,12 +24,12 @@
             ],
             "exclude": [
                 {
-                    "name": "Codeception [7.4, latest]"
+                    "name": "Codeception [8.2, latest]"
                 }
             ],
             "ignore_php_platform_requirements": {
                 "8.0": true,
-                "7.4": false
+                "8.2": false
             },
             "stablePHP": "8.0",
             "additional_composer_arguments": []
@@ -50,14 +50,14 @@
                     "operatingSystem": "ubuntu-latest",
                     "action": "laminas/laminas-continuous-integration-action@v1",
                     "job": {
-                        "php": "7.4",
+                        "php": "8.2",
                         "command": "find src/ -type f -name \"*.php\" -exec php -l {} \\;"
                     }
                 }
             ],
             "ignore_php_platform_requirements": {
                 "8.0": true,
-                "7.4": false
+                "8.2": false
             },
             "stablePHP": "8.0",
             "additional_composer_arguments": []
@@ -95,13 +95,13 @@
                         [
                             {
                                 "name": "Stringified job",
-                                "job": "{\"php\": \"7.4\", \"command\": \"php -v\"}"
+                                "job": "{\"php\": \"8.2\", \"command\": \"php -v\"}"
                             },
                             {
                                 "name": "JSON object job",
                                 "operatingSystem": "debian-latest",
                                 "job": {
-                                    "php": "7.4",
+                                    "php": "8.2",
                                     "command": "php -v"
                                 }
                             }
@@ -284,7 +284,7 @@
             "examples": [
                 [
                     {
-                        "name": "Codeception [7.4, latest]"
+                        "name": "Codeception [8.2, latest]"
                     }
                 ]
             ],
@@ -293,7 +293,7 @@
                 "title": "The job description to be excluded",
                 "examples": [
                     {
-                        "name": "Codeception [7.4, latest]"
+                        "name": "Codeception [8.2, latest]"
                     }
                 ],
                 "required": [
@@ -306,7 +306,7 @@
                         "description": "The name of the job to be excluded. Must be an exact match.",
                         "minLength": 1,
                         "examples": [
-                            "Codeception [7.4, latest]"
+                            "Codeception [8.2, latest]"
                         ]
                     }
                 },
@@ -365,12 +365,6 @@
                     "title": "The php version",
                     "description": "The PHP version to be used. If the wildcard `*` is passed, a list of checks is created containing *every* supported PHP version by the project and the matrix action.",
                     "enum": [
-                        "5.6",
-                        "7.0",
-                        "7.1",
-                        "7.2",
-                        "7.3",
-                        "7.4",
                         "8.0",
                         "8.1",
                         "8.2",
