@@ -19,7 +19,7 @@ jobs:
       matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
       - name: Checkout sourcecode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
       - name: Gather integration test directory names
         id: matrix
         # This provides a dedicated "check" to asynchronously test all integration tests within the tests/ directory
@@ -34,7 +34,7 @@ jobs:
       fail-fast: true
     steps:
       - name: Checkout sourcecode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -69,7 +69,7 @@ jobs:
         projectName: ${{ fromJSON(needs.matrix.outputs.matrix) }}
     steps:
       - name: Checkout sourcecode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
 
       - name: Download container artifact
         uses: actions/download-artifact@v3
@@ -116,7 +116,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -132,7 +132,7 @@ jobs:
   linting:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v4.1.1"
       - uses: "actions/setup-node@v3"
         with:
           check-latest: true
@@ -145,7 +145,7 @@ jobs:
   testing:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v4.1.1"
       - uses: "actions/setup-node@v3"
         with:
           check-latest: true

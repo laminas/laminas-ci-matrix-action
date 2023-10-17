@@ -19,7 +19,7 @@ jobs:
           echo "tags=[\"${MAJOR}\",\"${MINOR}\",\"${PATCH}\"]" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
