@@ -9,7 +9,7 @@
     },
     "engines": {
         "npm": "^10.0.0",
-        "node": "^21.7.0"
+        "node": "^22.0.0"
     },
     "dependencies": {
         "@actions/core": "^1.10.0",
