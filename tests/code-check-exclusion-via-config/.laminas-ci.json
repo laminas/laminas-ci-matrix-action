@@ -9,6 +9,9 @@
         },
         {
             "name": "PHPUnit [7.4, latest]"
+        },
+        {
+            "name": "Composer Validate [7.4, locked]"
         }
     ]
 }

@@ -5,6 +5,12 @@
             "job": "{\"command\":\"roave-backward-compatibility-check --from=1111222233334444aaaabbbbccccdddd --install-development-dependencies\",\"php\":\"@default\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
+        },
+        {
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"composer validate --strict\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "name": "Composer Validate [7.4, latest]",
+            "operatingSystem": "ubuntu-latest"
         }
     ]
 }
