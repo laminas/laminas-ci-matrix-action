@@ -1,22 +1,26 @@
 
-NODE_IMG=node:24.10.0-alpine
+NODE_IMG=laminas-ci/node:dev
 
-npm-install: ## Install node deps
+build-container:
+	$(if ${NODE_IMG}, $(info Image already built), docker build -t ${NODE_IMG} .)
+.PHONY: build-container
+
+npm-install: build-container ## Install node deps
 	docker run -it -w /app -v ${PWD}:/app --rm ${NODE_IMG} npm ci
 .PHONY: npm-install
 
-npm-update: ## Update node deps
+npm-update: build-container ## Update node deps
 	docker run -it -w /app -v ${PWD}:/app --rm ${NODE_IMG} npm update
 .PHONY: npm-update
 
-lint: ## Lint
+lint: build-container ## Lint
 	docker run -it -w /app -v ${PWD}:/app --rm ${NODE_IMG} npm run lint
 .PHONY: lint
 
-test: ## Tests
+test: build-container ## Tests
 	docker run -it -w /app -v ${PWD}:/app --rm ${NODE_IMG} npm run test
 .PHONY: test
 
-shell:
-	docker run -it -w /app -v ${PWD}:/app --rm ${NODE_IMG}
+shell: build-container
+	docker run -it -w /app -v ${PWD}:/app --rm ${NODE_IMG} sh
 .PHONY:
