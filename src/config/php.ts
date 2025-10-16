@@ -3,6 +3,7 @@ export const PHP_81 = '8.1';
 export const PHP_82 = '8.2';
 export const PHP_83 = '8.3';
 export const PHP_84 = '8.4';
+export const PHP_85 = '8.5';
 
 export const CURRENT_STABLE = PHP_81;
 export const CONTAINER_DEFAULT_PHP_VERSION = '@default';
@@ -17,6 +18,7 @@ export const INSTALLABLE_VERSIONS = [
     PHP_82,
     PHP_83,
     PHP_84,
+    PHP_85,
     CONTAINER_DEFAULT_PHP_VERSION,
 ] as const;
 
