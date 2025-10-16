@@ -18,7 +18,6 @@ app.assertSanityChecksArePassing();
  * After the first two arguments, all remaining arguments should contain filenames from a `diff`. Can be empty in case
  * the action is not run from a pull-request.
  */
-/* eslint-disable-next-line no-magic-numbers */
 const filesWithChanges: string[] = process.argv.slice(2).filter((value) => value !== '');
 
 const config = app.createConfiguration(filesWithChanges);
