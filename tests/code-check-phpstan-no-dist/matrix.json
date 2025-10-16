@@ -1,8 +1,8 @@
 {
     "include": [
         {
-            "name": "PHPStan [7.4, latest]",
-            "job": "{\"command\":\"./vendor/bin/phpstan analyse --error-format=github --ansi --no-progress\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "name": "PHPStan [8.3, latest]",
+            "job": "{\"command\":\"./vendor/bin/phpstan analyse --error-format=github --ansi --no-progress\",\"php\":\"8.3\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
         }

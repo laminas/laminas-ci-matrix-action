@@ -3,7 +3,7 @@
         {
             "name": "Some Job",
             "job": {
-                "php": "7.4",
+                "php": "8.2",
                 "command": "test"
             }
         }
