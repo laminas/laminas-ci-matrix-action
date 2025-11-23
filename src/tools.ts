@@ -6,6 +6,7 @@ import {InfectionTool} from './tools/infection';
 import {PhpCodeSnifferTool} from './tools/codesniffer';
 import {PsalmTool} from './tools/psalm';
 import {ComposerRequireCheckerTool} from './tools/composerRequireChecker';
+import {ComposerDependencyAnalyser} from './tools/composerDependencyAnalyser';
 import {PhpBenchTool} from './tools/phpbench';
 import {CodeceptionTool} from './tools/codeception';
 import {PhpCsFixerTool} from './tools/phpCsFixer';
@@ -80,6 +81,7 @@ export default function createTools(config: Config): Array<Tool> {
         PhpCodeSnifferTool,
         PsalmTool,
         ComposerRequireCheckerTool,
+        ComposerDependencyAnalyser,
         PhpBenchTool,
         CodeceptionTool,
         PhpCsFixerTool,

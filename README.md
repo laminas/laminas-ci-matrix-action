@@ -28,6 +28,7 @@ Currently, it identifies the following:
 - Psalm checks based on the presence of `psalm.xml.dist` or `psalm.xml` files.
 - PHPStan checks based on the presence of `phpstan.neon`, `phpstan.neon.dist` or `phpstan.dist.neon` files.
 - ComposerRequireChecker checks based on the presence of `composer-require-checker.json` file.
+- composer-dependency-analyser checks based on the presence of `composer-dependency-analyser.php` file.
 - phpbench benchmarks based on the presence of a `phpbench.json`.
 - Infection mutation tests based on the presence of `infection.json` or `infection.json.dist`. In case that `roave/infection-static-analysis-plugin` is installed, this will be used instead.
 - Markdown documentation based on the presence of a `mkdocs.yml` and/or markdown files in the `doc/book/` or `doc/books/` trees.
