@@ -19,7 +19,7 @@ jobs:
       matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
       - name: Checkout sourcecode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Gather integration test directory names
         id: matrix
         # This provides a dedicated "check" to asynchronously test all integration tests within the tests/ directory
@@ -34,7 +34,7 @@ jobs:
       fail-fast: true
     steps:
       - name: Checkout sourcecode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -54,7 +54,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Upload container artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: container
           path: /tmp/container.tar
@@ -69,10 +69,10 @@ jobs:
         projectName: ${{ fromJSON(needs.matrix.outputs.matrix) }}
     steps:
       - name: Checkout sourcecode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download container artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: container
           path: /tmp
@@ -116,7 +116,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -132,8 +132,8 @@ jobs:
   linting:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
-      - uses: "actions/setup-node@v4"
+      - uses: "actions/checkout@v6"
+      - uses: "actions/setup-node@v6"
         with:
           check-latest: true
           node-version: 24
@@ -145,8 +145,8 @@ jobs:
   testing:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
-      - uses: "actions/setup-node@v4"
+      - uses: "actions/checkout@v6"
+      - uses: "actions/setup-node@v6"
         with:
           check-latest: true
           node-version: 24
@@ -158,8 +158,8 @@ jobs:
   package-lock-up-to-date:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
-      - uses: "actions/setup-node@v4"
+      - uses: "actions/checkout@v6"
+      - uses: "actions/setup-node@v6"
         with:
           check-latest: true
           node-version: 24
