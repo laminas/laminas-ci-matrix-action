@@ -12,6 +12,9 @@
         },
         {
             "name": "README Linting on PHP 7.4 with locked dependencies"
+        },
+        {
+            "name": "Composer Validate"
         }
     ]
 }

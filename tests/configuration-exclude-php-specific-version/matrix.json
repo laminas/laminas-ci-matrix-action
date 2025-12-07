@@ -23,6 +23,12 @@
             "job": "{\"command\":\"./vendor/bin/phpunit\",\"php\":\"8.2\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[\"xmllint --schema vendor/phpunit/phpunit/phpunit.xsd phpunit.xml.dist\"]}",
             "operatingSystem": "ubuntu-latest",
             "action": "laminas/laminas-continuous-integration-action@v1"
+        },
+        {
+            "action": "laminas/laminas-continuous-integration-action@v1",
+            "job": "{\"command\":\"composer validate --strict\",\"php\":\"7.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "name": "Composer Validate [7.4, latest]",
+            "operatingSystem": "ubuntu-latest"
         }
     ]
 }

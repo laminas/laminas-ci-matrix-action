@@ -11,6 +11,7 @@ import {PhpBenchTool} from './tools/phpbench';
 import {CodeceptionTool} from './tools/codeception';
 import {PhpCsFixerTool} from './tools/phpCsFixer';
 import {PHPStanTool} from './tools/phpstan';
+import {ComposerValidateTool} from './tools/composerValidate';
 import {ToolExecutionType} from './enum/toolExecutionType';
 import {ToolType} from './enum/toolType';
 
@@ -86,6 +87,7 @@ export default function createTools(config: Config): Array<Tool> {
         CodeceptionTool,
         PhpCsFixerTool,
         PHPStanTool,
+        ComposerValidateTool,
         backwardCompatibilityCheckTool(config),
     ].filter((tool) => tool !== null) as Tool[];
 
