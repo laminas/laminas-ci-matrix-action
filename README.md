@@ -39,6 +39,7 @@ The following tools are automatically detected based on their configuration file
 | Composer Require Checker | `composer-require-checker.json` | |
 | Composer Dependency Analyser | `composer-dependency-analyser.php` | |
 | PHPBench | `phpbench.json` | |
+| Twig-CS-Fixer | `.twig-cs-fixer.php`, `.twig-cs-fixer.dist.php` | |
 | Backward Compatibility Check | — | Optional; requires configuration in `.laminas-ci.json` |
 
 ### Documentation Linting
