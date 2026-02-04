@@ -82,6 +82,30 @@ jobs:
 
 Generally, you will use this as a dependency of a job that uses [laminas/laminas-continuous-integration-action](https://github.com/laminas/laminas-continuous-integration-action), as demonstrated in the above configuration.
 
+### Monorepo Support
+
+For monorepo setups where packages are located in subdirectories, use the `working-directory` input:
+
+```yaml
+jobs:
+  matrix:
+    name: Generate job matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Gather CI configuration
+        id: matrix
+        uses: laminas/laminas-ci-matrix-action@v1
+        with:
+          working-directory: packages/my-package
+```
+
+When `working-directory` is specified:
+- The action looks for `composer.json`, `.laminas-ci.json`, and other configuration files in that directory
+- For pull requests, only files changed within the working directory are considered for selective checks
+- File paths in the diff are relative to the working directory
+
 > ### actions/checkout not required
 >
 > An actions/checkout step prior to this action is not required, as it will perform a checkout into the WORKDIR on its own if none has been performed previously.
