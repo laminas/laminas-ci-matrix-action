@@ -69,10 +69,18 @@ git config --global --add safe.directory /github/workspace
 checkout
 
 DIFF=
+WORKING_DIR="${INPUT_WORKING_DIRECTORY:-.}"
+
+# Change to working directory
+if [[ "$WORKING_DIR" != "." ]];then
+    echo "Changing to working directory: ${WORKING_DIR}"
+    cd "${WORKING_DIR}" || { echo "Failed to change to working directory: ${WORKING_DIR}"; exit 1; }
+fi
 
 if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]];then
     echo "Preparing file diff"
-    DIFF=$(git diff --name-only "$GITHUB_BASE_REF"...HEAD)
+    # Use --relative to get paths relative to current working directory
+    DIFF=$(git diff --relative --name-only "$GITHUB_BASE_REF"...HEAD)
 fi
 
 if [[ "$DIFF" != "" ]];then
