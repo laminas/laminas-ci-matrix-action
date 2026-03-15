@@ -92,5 +92,92 @@ describe('config/app', () => {
 
             process.env = environment;
         });
+
+        it('should auto-enable backwardCompatibilityCheck for Laminas-related repositories', () => {
+            const originalEnv = process.env;
+
+            // Mock GITHUB_REPOSITORY for a Laminas repo
+            process.env = {
+                GITHUB_REPOSITORY: 'laminas/laminas-diactoros'
+            };
+
+            const config = createConfig(
+                { codeChecks: true, docLinting: true },
+                `${phpIniFromConfigurationPath}/composer.json`,
+                `${phpIniFromConfigurationPath}/composer.lock`,
+                `${phpIniFromConfigurationPath}/.laminas-ci.json`
+            );
+
+            expect(config.backwardCompatibilityCheck).toBe(true);
+
+            // Mock GITHUB_REPOSITORY for a Mezzio repo
+            process.env = {
+                GITHUB_REPOSITORY: 'mezzio/mezzio-swoole'
+            };
+
+            const mezzioConfig = createConfig(
+                { codeChecks: true, docLinting: true },
+                `${phpIniFromConfigurationPath}/composer.json`,
+                `${phpIniFromConfigurationPath}/composer.lock`,
+                `${phpIniFromConfigurationPath}/.laminas-ci.json`
+            );
+
+            expect(mezzioConfig.backwardCompatibilityCheck).toBe(true);
+
+            // Mock GITHUB_REPOSITORY for a laminas-api-tools repo
+            process.env = {
+                GITHUB_REPOSITORY: 'laminas-api-tools/api-tools-skeleton'
+            };
+
+            const apiToolsConfig = createConfig(
+                { codeChecks: true, docLinting: true },
+                `${phpIniFromConfigurationPath}/composer.json`,
+                `${phpIniFromConfigurationPath}/composer.lock`,
+                `${phpIniFromConfigurationPath}/.laminas-ci.json`
+            );
+
+            expect(apiToolsConfig.backwardCompatibilityCheck).toBe(true);
+
+            process.env = originalEnv;
+        });
+
+        it('should NOT auto-enable backwardCompatibilityCheck for non-Laminas repositories', () => {
+            const originalEnv = process.env;
+
+            process.env = {
+                GITHUB_REPOSITORY: 'some-user/some-repo'
+            };
+
+            const config = createConfig(
+                { codeChecks: true, docLinting: true },
+                `${phpIniFromConfigurationPath}/composer.json`,
+                `${phpIniFromConfigurationPath}/composer.lock`,
+                `${phpIniFromConfigurationPath}/.laminas-ci.json`
+            );
+
+            expect(config.backwardCompatibilityCheck).toBe(false);
+
+            process.env = originalEnv;
+        });
+
+        it('should respect explicit false for backwardCompatibilityCheck even in Laminas repositories', () => {
+            const originalEnv = process.env;
+
+            process.env = {
+                GITHUB_REPOSITORY: 'laminas/laminas-diactoros'
+            };
+
+            const bcCheckDisabledPath = 'tests/bc-check-disabled';
+            const config = createConfig(
+                { codeChecks: true, docLinting: true },
+                `${bcCheckDisabledPath}/composer.json`,
+                `${bcCheckDisabledPath}/composer.lock`,
+                `${bcCheckDisabledPath}/.laminas-ci.json`
+            );
+
+            expect(config.backwardCompatibilityCheck).toBe(false);
+
+            process.env = originalEnv;
+        });
     });
 });

@@ -29,6 +29,11 @@ import {
 
 export const OPERATING_SYSTEM = 'ubuntu-latest';
 export const ACTION = 'laminas/laminas-continuous-integration-action@v1';
+export const LAMINAS_RELATED_ORGANIZATIONS = [
+    'laminas',
+    'mezzio',
+    'laminas-api-tools',
+];
 
 export enum ComposerDependencySet {
     LOWEST = 'lowest',
@@ -555,6 +560,9 @@ export default function createConfig(
         baseReference = null;
     }
 
+    const [ owner = ''] = (process.env.GITHUB_REPOSITORY ?? '').split('/', 2);
+    const isLaminasRelatedRepository = LAMINAS_RELATED_ORGANIZATIONS.includes(owner);
+
     return {
         codeChecks                    : requirements.codeChecks,
         docLinting                    : requirements.docLinting,
@@ -567,7 +575,7 @@ export default function createConfig(
         lockedDependenciesExists      : fs.existsSync(composerLockJsonFileName),
         ignorePhpPlatformRequirements : configurationFromFile.ignore_php_platform_requirements ?? {},
         additionalComposerArguments   : [ ... new Set(configurationFromFile.additional_composer_arguments ?? []) ],
-        backwardCompatibilityCheck    : configurationFromFile.backwardCompatibilityCheck ?? false,
+        backwardCompatibilityCheck    : configurationFromFile.backwardCompatibilityCheck ?? isLaminasRelatedRepository,
         baseReference                 : baseReference,
     };
 }
