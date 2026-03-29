@@ -4,7 +4,7 @@ import {ToolExecutionType} from '../enum/toolExecutionType';
 export const TwigCsFixerTool = {
     executionType : ToolExecutionType.STATIC,
     name          : 'Twig CS Fixer',
-    command       : './vendor/bin/twig-cs-fixer lint --report checkstyle | cs2pr',
+    command       : './vendor/bin/twig-cs-fixer lint --report checkstyle 2>/dev/null | cs2pr',
     filesToCheck  : [ '.twig-cs-fixer.php', '.twig-cs-fixer.dist.php' ],
     toolType      : ToolType.CODE_CHECK,
 };
