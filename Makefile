@@ -22,5 +22,5 @@ test: build-container ## Tests
 .PHONY: test
 
 shell: build-container
-	docker run -it -w /app -v ${PWD}:/app --rm ${NODE_IMG} sh
-.PHONY:
+	docker run --entrypoint /bin/sh -it -w /app -v ${PWD}:/app --rm ${NODE_IMG}
+.PHONY: shell
