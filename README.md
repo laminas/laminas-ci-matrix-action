@@ -27,20 +27,21 @@ It identifies jobs to run based on presence or absence of configuration files in
 
 The following tools are automatically detected based on their configuration files:
 
-| Tool | Configuration Files | Notes |
-|------|---------------------|-------|
-| PHPUnit | `phpunit.xml.dist`, `phpunit.xml` | Runs against all supported PHP versions with lowest/latest dependencies |
-| PHP_CodeSniffer | `phpcs.xml.dist`, `phpcs.xml` | |
-| PHP CS Fixer | `.php-cs-fixer.php`, `.php-cs-fixer.dist.php` | |
-| Psalm | `psalm.xml.dist`, `psalm.xml` | |
-| PHPStan | `phpstan.neon`, `phpstan.neon.dist`, `phpstan.dist.neon` | |
-| Infection | `infection.json`, `infection.json.dist` | Uses `roave/infection-static-analysis-plugin` if installed |
-| Codeception | `codeception.yml.dist`, `codeception.yml` | |
-| Composer Require Checker | `composer-require-checker.json` | |
-| Composer Dependency Analyser | `composer-dependency-analyser.php` | |
-| PHPBench | `phpbench.json` | |
-| Twig-CS-Fixer | `.twig-cs-fixer.php`, `.twig-cs-fixer.dist.php` | |
-| Backward Compatibility Check | — | Optional; requires configuration in `.laminas-ci.json` |
+| Tool                         | Configuration Files                                      | Notes                                                                                             |
+|------------------------------|----------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| PHPUnit                      | `phpunit.xml.dist`, `phpunit.xml`                        | Runs against all supported PHP versions with lowest/latest dependencies                           |
+| PHP_CodeSniffer              | `phpcs.xml.dist`, `phpcs.xml`                            |                                                                                                   |
+| PHP CS Fixer                 | `.php-cs-fixer.php`, `.php-cs-fixer.dist.php`            |                                                                                                   |
+| Psalm                        | `psalm.xml.dist`, `psalm.xml`                            |                                                                                                   |
+| PHPStan                      | `phpstan.neon`, `phpstan.neon.dist`, `phpstan.dist.neon` |                                                                                                   |
+| Infection                    | `infection.json`, `infection.json.dist`                  | Uses `roave/infection-static-analysis-plugin` if installed                                        |
+| Codeception                  | `codeception.yml.dist`, `codeception.yml`                |                                                                                                   |
+| Composer Require Checker     | `composer-require-checker.json`                          |                                                                                                   |
+| Composer Dependency Analyser | `composer-dependency-analyser.php`                       |                                                                                                   |
+| PHPBench                     | `phpbench.json`                                          |                                                                                                   |
+| Twig-CS-Fixer                | `.twig-cs-fixer.php`, `.twig-cs-fixer.dist.php`          |                                                                                                   |
+| Backward Compatibility Check | —                                                        | Optional; requires configuration in `.laminas-ci.json`                                            |
+| Mago                         | `mago.toml`                                              | Runs `lint`, `analyse` and `format --check`. Use `exclude[]` via `.laminas-ci.json` if necessary. |
 
 ### Documentation Linting
 

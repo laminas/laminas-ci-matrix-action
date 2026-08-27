@@ -1,0 +1,22 @@
+{
+    "include": [
+        {
+            "name": "Mago Analyze [8.4, latest]",
+            "job": "{\"command\":\"./vendor/bin/mago analyze --reporting-format=github\",\"php\":\"8.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1"
+        },
+        {
+            "name": "Mago Lint [8.4, latest]",
+            "job": "{\"command\":\"./vendor/bin/mago lint --reporting-format=github\",\"php\":\"8.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1"
+        },
+        {
+            "name": "Mago Format [8.4, latest]",
+            "job": "{\"command\":\"./vendor/bin/mago format --check\",\"php\":\"8.4\",\"extensions\":[],\"ini\":[],\"dependencies\":\"latest\",\"ignore_platform_reqs_8\":false,\"ignore_php_platform_requirement\":false,\"additional_composer_arguments\":[],\"before_script\":[]}",
+            "operatingSystem": "ubuntu-latest",
+            "action": "laminas/laminas-continuous-integration-action@v1"
+        }
+    ]
+}
