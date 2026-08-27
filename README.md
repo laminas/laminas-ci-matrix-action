@@ -18,21 +18,38 @@
 
 This repository represents a GitHub action that allows you to introspect a PHP project in order to build up a test matrix which can later be run by the [laminas/laminas-continuous-integration-action](https://github.com/laminas/laminas-continuous-integration-action).
 
-It identifies jobs to run based on presence or absence of configuration files in the package.
-Currently, it identifies the following:
+It identifies jobs to run based on presence or absence of configuration files in the package:
 
-- PHP versions to run unit tests against based on the `php` constraint in the `composer.json` file.
-- Whether to run against a "locked" set of dependencies based on the presence of a `composer.lock` file.
-- PHPUnit tests based on the presence of `phpunit.xml.dist` or `phpunit.xml` files.
-- phpcs checks based on the presence of `phpcs.xml.dist` or `phpcs.xml` files.
-- Psalm checks based on the presence of `psalm.xml.dist` or `psalm.xml` files.
-- PHPStan checks based on the presence of `phpstan.neon`, `phpstan.neon.dist` or `phpstan.dist.neon` files.
-- ComposerRequireChecker checks based on the presence of `composer-require-checker.json` file.
-- composer-dependency-analyser checks based on the presence of `composer-dependency-analyser.php` file.
-- phpbench benchmarks based on the presence of a `phpbench.json`.
-- Infection mutation tests based on the presence of `infection.json` or `infection.json.dist`. In case that `roave/infection-static-analysis-plugin` is installed, this will be used instead.
-- Markdown documentation based on the presence of a `mkdocs.yml` and/or markdown files in the `doc/book/` or `doc/books/` trees.
-- Codeception checks based on the presence of `codeception.yml.dist` or `codeception.yml` files.
+- **PHP versions** to run unit tests against based on the `php` constraint in the `composer.json` file.
+- **Locked dependencies** testing based on the presence of a `composer.lock` file.
+
+### Supported Tools
+
+The following tools are automatically detected based on their configuration files:
+
+| Tool                         | Configuration Files                                      | Notes                                                                                             |
+|------------------------------|----------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| PHPUnit                      | `phpunit.xml.dist`, `phpunit.xml`                        | Runs against all supported PHP versions with lowest/latest dependencies                           |
+| PHP_CodeSniffer              | `phpcs.xml.dist`, `phpcs.xml`                            |                                                                                                   |
+| PHP CS Fixer                 | `.php-cs-fixer.php`, `.php-cs-fixer.dist.php`            |                                                                                                   |
+| Psalm                        | `psalm.xml.dist`, `psalm.xml`                            |                                                                                                   |
+| PHPStan                      | `phpstan.neon`, `phpstan.neon.dist`, `phpstan.dist.neon` |                                                                                                   |
+| Infection                    | `infection.json`, `infection.json.dist`                  | Uses `roave/infection-static-analysis-plugin` if installed                                        |
+| Codeception                  | `codeception.yml.dist`, `codeception.yml`                |                                                                                                   |
+| Composer Require Checker     | `composer-require-checker.json`                          |                                                                                                   |
+| Composer Dependency Analyser | `composer-dependency-analyser.php`                       |                                                                                                   |
+| PHPBench                     | `phpbench.json`                                          |                                                                                                   |
+| Twig-CS-Fixer                | `.twig-cs-fixer.php`, `.twig-cs-fixer.dist.php`          |                                                                                                   |
+| Backward Compatibility Check | —                                                        | Optional; requires configuration in `.laminas-ci.json`                                            |
+| Mago                         | `mago.toml`                                              | Runs `lint`, `analyse` and `format --check`. Use `exclude[]` via `.laminas-ci.json` if necessary. |
+
+### Documentation Linting
+
+| Tool | Detection | Notes |
+|------|-----------|-------|
+| Markdown Linting | `doc/book/` or `docs/book/` directory | Lints all `*.md` files in the directory |
+| MkDocs Linting | `mkdocs.yml` | YAML validation |
+| README Linting | `README.md` | |
 
 Further, when triggered by a `pull_request` event, it determines what checks are necessary based on which files were affected.
 
