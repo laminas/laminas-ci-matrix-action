@@ -3,6 +3,11 @@ description: 'Creates a continuous integration matrix for use with laminas-conti
 branding:
   icon: 'share-2'
   color: 'blue'
+inputs:
+  working-directory:
+    description: 'Working directory for monorepo support. The action will look for composer.json and other configuration files in this directory.'
+    required: false
+    default: '.'
 outputs:
   config:
     description: >-
