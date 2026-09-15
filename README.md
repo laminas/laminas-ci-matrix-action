@@ -42,6 +42,7 @@ The following tools are automatically detected based on their configuration file
 | Twig-CS-Fixer                | `.twig-cs-fixer.php`, `.twig-cs-fixer.dist.php`          |                                                                                                   |
 | Backward Compatibility Check | —                                                        | Optional; requires configuration in `.laminas-ci.json`                                            |
 | Mago                         | `mago.toml`                                              | Runs `lint`, `analyse` and `format --check`. Use `exclude[]` via `.laminas-ci.json` if necessary. |
+| StructArmed                  | `structarmed.php`                                        | Runs `analyse`.                                                                                   |
 
 ### Documentation Linting
 
