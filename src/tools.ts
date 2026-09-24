@@ -11,6 +11,11 @@ import {PhpBenchTool} from './tools/phpbench';
 import {CodeceptionTool} from './tools/codeception';
 import {PhpCsFixerTool} from './tools/phpCsFixer';
 import {PHPStanTool} from './tools/phpstan';
+import {TwigCsFixerTool} from './tools/twigCsFixer';
+import {MagoAnalyzeTool} from './tools/mago-analyze';
+import {MagoFormatTool} from './tools/mago-format';
+import {MagoLintTool} from './tools/mago-lint';
+import {StructArmedTool} from './tools/structarmed';
 import {ToolExecutionType} from './enum/toolExecutionType';
 import {ToolType} from './enum/toolType';
 
@@ -86,7 +91,12 @@ export default function createTools(config: Config): Array<Tool> {
         CodeceptionTool,
         PhpCsFixerTool,
         PHPStanTool,
+        TwigCsFixerTool,
         backwardCompatibilityCheckTool(config),
+        MagoAnalyzeTool,
+        MagoLintTool,
+        MagoFormatTool,
+        StructArmedTool,
     ].filter((tool) => tool !== null) as Tool[];
 
     return tools
